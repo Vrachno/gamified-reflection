@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Gamified Reflection</title>
+        <h:outputStylesheet library="webjars" name="bootstrap/4.0.0-alpha.6-1/css/bootstrap.min-jsf.css" />
+    </h:head>
+    <h:body>
+        <ui:include src="header.xhtml"/>
+
+        <h:form class="container jumbotron">
+            <div class="row">
+            <p:dataList class="col-md-4" value="#{indexController.students}" var="student">
+                <p:commandLink action="#{indexController.setSelectedStudent(student)}" value="#{student.id} #{student.firstName} #{student.lastName}" ajax="true" update="@form:studentDetails" />
+            </p:dataList>
+            <p:panel id="studentDetails" class="col-md-4">
+                <p:dataList value="#{indexController.selectedStudent.skillsMapList}" var="skill" emptyMessage="Please select a student">
+                    <p:outputLabel value="#{skill.categoryId.title}: #{skill.skillLevel}"/>
+                </p:dataList>
+            </p:panel>
+            </div>
+        </h:form>
+
+    </h:body>
+
+</html>
+
