@@ -9,7 +9,7 @@
         <ui:composition>
             <p:tabMenu activeIndex="#{(request.requestURI).equalsIgnoreCase('/GamifiedReflection/index.html') ? 0 :
                                       (request.requestURI).equalsIgnoreCase('/GamifiedReflection/categories.html') ? 1 :
-                                      (request.requestURI).equalsIgnoreCase('/GamifiedReflection/actions.html') ? 2 : 3}">
+                                      (request.requestURI).equalsIgnoreCase('/GamifiedReflection/activities.html') ? 2 : 0}">
                 <p:menuitem outcome="index.html" value="Students" class="text-center"/>
                 <p:menuitem outcome="categories.html" value="Categories" class="text-center"/>
                 <p:menuitem outcome="activities.html" value="Activities" class="text-center"/>

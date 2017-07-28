@@ -47,8 +47,12 @@ public class TransactionsController {
     public void addActivity(Activity activity) {
         em.persist(activity);
     }
-    
-        public void deleteActivity(Activity activity) {
+
+    public void saveActivity(Activity activity) {
+        em.merge(activity);
+    }
+
+    public void deleteActivity(Activity activity) {
         em.remove(em.merge(activity));
     }
 }

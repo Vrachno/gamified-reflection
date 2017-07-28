@@ -15,31 +15,27 @@
         <h:form class="container jumbotron">
             <div class="row">
                 <p:dataTable id="categoriesList"
-                             class="col-md-4"
+                             class="col-md-6"
                              value="#{categoriesController.categories}"
                              var="category"
                              editable="true">
 
                     <p:ajax event="rowEdit" listener="#{categoriesController.onRowEdit}" update="@form:categoriesList" />
 
-                    <p:column>
+                    <p:column headerText="Skills">
                         <p:cellEditor>
                             <f:facet name="output"><h:outputText value="#{category.title}" /></f:facet>
                             <f:facet name="input"><p:inputText id="titleInput" value="#{category.title}" style="width:100%"/></f:facet>
                         </p:cellEditor>
                     </p:column>
-                    <p:column style="width:32px">
+                    <p:column headerText="Edit" style="width:10%">
                         <p:rowEditor />
                     </p:column>
-                    <p:column style="width:32px">
+                    <p:column headerText="Delete" style="width:15%" class="text-center">
                         <p:commandLink value="X" style="color: red" actionListener="#{categoriesController.deleteCategory(category)}" ajax="true" update="@form:categoriesList"/>
                     </p:column>
                 </p:dataTable>
-
-
-
             </div>
-
             <p:commandButton value="Add New Skill" type="button" onclick="PF('newCategoryDialog').show();" />
         </h:form>
 

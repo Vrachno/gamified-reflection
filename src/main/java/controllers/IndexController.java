@@ -5,14 +5,20 @@
  */
 package controllers;
 
+import entities.SkillsMap;
 import entities.Student;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import org.primefaces.model.chart.Axis;
+import org.primefaces.model.chart.AxisType;
+import org.primefaces.model.chart.ChartSeries;
+import org.primefaces.model.chart.HorizontalBarChartModel;
 
 /**
  *
@@ -27,6 +33,7 @@ public class IndexController implements Serializable {
 
     private List<Student> students;
     private Student selectedStudent;
+    private HorizontalBarChartModel barModel;
 
     /**
      * Creates a new instance of indexController
@@ -41,6 +48,7 @@ public class IndexController implements Serializable {
         for (Student student : students) {
             student.setSkillsMapList(em.createNamedQuery("SkillsMap.findByStudentId").setParameter("studentId", student).getResultList());
         }
+        barModel = new HorizontalBarChartModel();
 
     }
 
@@ -58,11 +66,41 @@ public class IndexController implements Serializable {
 
     public void setSelectedStudent(Student selectedStudent) {
         this.selectedStudent = selectedStudent;
-    }
+        createBarModel(selectedStudent);
+    }   
     
     public void setStudentSkills(Student student) {
         student.setSkillsMapList(em.createNamedQuery("SkillsMap.findByStudentId").setParameter("studentId", student).getResultList());
     }
-    
+
+    public HorizontalBarChartModel getBarModel() {
+        return barModel;
+    }
+
+    public void createBarModel(Student student) {
+
+        barModel = new HorizontalBarChartModel();
+
+        ChartSeries skills = new ChartSeries();
+            for (SkillsMap skillsMap : student.getSkillsMapList()) {
+                skills.set(skillsMap.getCategoryId().getTitle(), skillsMap.getSkillLevel());
+            }
+
+        barModel.addSeries(skills);
+
+        barModel.setTitle("Student Skills");
+        barModel.setStacked(true);
+
+        Axis xAxis = barModel.getAxis(AxisType.X);
+        xAxis.setLabel("Level");
+        xAxis.setMin(0);
+        xAxis.setMax(200);
+
+        Axis yAxis = barModel.getAxis(AxisType.Y);
+        yAxis.setLabel("Skill");
+
+    }
+
+
 
 }

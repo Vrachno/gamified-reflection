@@ -7,16 +7,16 @@ package controllers;
 
 import entities.Activity;
 import entities.Category;
-import entities.Student;
 import java.io.Serializable;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
-import javax.inject.Named;
-import javax.faces.view.ViewScoped;
+import javax.faces.bean.ViewScoped;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import org.primefaces.context.RequestContext;
+import org.primefaces.event.RowEditEvent;
 
 /**
  *
@@ -33,7 +33,7 @@ public class ActivitiesController implements Serializable {
 
     private List<Category> categories;
     private Category selectedCategory;
-    private List<Category> categoryActivities;
+    private List<Activity> categoryActivities;
     private Activity selectedActivity;
     private String newActivityTitle;
 
@@ -67,18 +67,17 @@ public class ActivitiesController implements Serializable {
 
     public void setSelectedCategory(Category selectedCategory) {
         this.selectedCategory = selectedCategory;
+        setCategoryActivities(selectedCategory.getActivityList());
     }
 
-    public List<Category> getCategoryActivities() {
+    public List<Activity> getCategoryActivities() {
         return categoryActivities;
     }
 
-    public void setCategoryActivities(List<Category> categoryActivities) {
+    public void setCategoryActivities(List<Activity> categoryActivities) {
         this.categoryActivities = categoryActivities;
     }
     
-    
-
     public Activity getSelectedActivity() {
         return selectedActivity;
     }
@@ -87,8 +86,6 @@ public class ActivitiesController implements Serializable {
         this.selectedActivity = selectedActivity;
     }
     
-    
-
     public String getNewActivityTitle() {
         return newActivityTitle;
     }
@@ -96,13 +93,33 @@ public class ActivitiesController implements Serializable {
     public void setNewActivityTitle(String newActivityTitle) {
         this.newActivityTitle = newActivityTitle;
     }
-    
-        public void addActivity(String title, Category category) {
+
+    public void addActivity(String title, Category category) {
         Activity newActivity = new Activity();
         newActivity.setTitle(title);
         newActivity.setCategoryId(category);
         transactions.addActivity(newActivity);
+        setNewActivityTitle(null);
+        updateActivitiesList(category);
         init();
+    }
+
+    public void onRowEdit(RowEditEvent event) {
+        transactions.saveActivity((Activity) event.getObject());
+    }
+
+    public void deleteActivity(Activity activity) {
+
+        transactions.deleteActivity(activity);
+        updateActivitiesList(activity.getCategoryId());
+        init();
+    }
+    
+    public void updateActivitiesList(Category category) {
+        
+        selectedCategory.setActivityList(em.createNamedQuery("Activity.findByCategoryId").setParameter("categoryId", category).getResultList());
+        setCategoryActivities(selectedCategory.getActivityList());
+        
     }
 
 }

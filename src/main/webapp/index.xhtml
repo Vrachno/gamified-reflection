@@ -20,7 +20,8 @@
                 <p:dataList value="#{indexController.selectedStudent.skillsMapList}" var="skill" emptyMessage="Please select a student">
                     <p:outputLabel value="#{skill.categoryId.title}: #{skill.skillLevel}"/>
                 </p:dataList>
-            </p:panel>
+<!--                <p:chart id="barChart" type="bar" model="#{indexController.barModel}" />-->
+            </p:panel>  
             </div>
         </h:form>
 

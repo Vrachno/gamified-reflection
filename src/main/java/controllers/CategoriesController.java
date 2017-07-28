@@ -6,7 +6,6 @@
 package controllers;
 
 import entities.Category;
-import entities.Student;
 import java.io.Serializable;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -15,7 +14,6 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import org.primefaces.context.RequestContext;
 import org.primefaces.event.RowEditEvent;
 
 /**

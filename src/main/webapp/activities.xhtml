@@ -3,28 +3,69 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
         <title>Gamified Reflection</title>
         <h:outputStylesheet library="webjars" name="bootstrap/4.0.0-alpha.6-1/css/bootstrap.min-jsf.css" />
+        <style>
+            .empty thead {
+    display:none;
+}
+        </style>
     </h:head>
     <h:body>
         <ui:include src="header.xhtml"/>
 
-        <h:form class="container jumbotron">
+        <h:form id="activitiesForm" class="container jumbotron">
             <div class="row">
                 <p:dataList class="col-md-4" value="#{activitiesController.categories}" var="category">
-                    <p:commandLink action="#{activitiesController.setSelectedCategory(category)}" value="#{category.title}" ajax="true" update="@form:activities" />
-            </p:dataList>
-            <p:panel id="activities" class="col-md-4">
-                <p:dataList value="#{activitiesController.selectedCategory.activityList}" var="actvity" emptyMessage="Please select a skill">
-                    <p:outputLabel value="#{actvity.title}"/>
+                    <p:commandLink actionListener="#{activitiesController.setSelectedCategory(category)}" value="#{category.title}" ajax="true" update="@form:activities, @form:newAcrivityButton" />
                 </p:dataList>
-            </p:panel>
+                <p:dataTable
+                    id="activities"
+                    value="#{activitiesController.categoryActivities}"
+                    var="actvity"
+                    styleClass="#{activitiesController.selectedCategory eq null ? 'empty col-md-6' : 'col-md-6'}"
+                    emptyMessage="#{activitiesController.selectedCategory eq null ? 'Please select a skill' : 'No activities added'}"
+                    editable="true">
+
+                    <p:ajax event="rowEdit" listener="#{activitiesController.onRowEdit}" update="@this" />
+
+                    <p:column headerText="#{activitiesController.selectedCategory.title} Activities">
+                        <p:cellEditor>
+                            <f:facet name="output"><h:outputText value="#{actvity.title}" /></f:facet>
+                            <f:facet name="input"><p:inputText id="titleInput" value="#{actvity.title}" style="width:100%"/></f:facet>
+                        </p:cellEditor>
+                    </p:column>
+                    <p:column headerText="Edit" style="width: 10%">
+                        <p:rowEditor />
+                    </p:column>
+                    <p:column headerText="Delete" style="width: 15%" class="text-center">
+                        <p:commandLink value="X" style="color: red" actionListener="#{activitiesController.deleteActivity(actvity)}" ajax="true" update=":activitiesForm"/>
+                    </p:column>
+                </p:dataTable>
             </div>
+            <p:commandButton id="newAcrivityButton" disabled="#{activitiesController.selectedCategory eq null}" value="Add New Activity" type="button" onclick="PF('newActivityDialog').show();" />
         </h:form>
 
     </h:body>
+    <p:dialog widgetVar="newActivityDialog" modal="true" dynamic="true" height="100px" showHeader="true" header="Add new activity">
+        <p:panel>
+            <h:form>
+                <p:inputText value="#{activitiesController.newActivityTitle}"/>
+                <p:commandButton actionListener="#{activitiesController.addActivity(activitiesController.newActivityTitle, activitiesController.selectedCategory)}" value="OK" oncomplete="PF('newActivityDialog').hide();}" ajax="true" update=":activitiesForm" resetValues="true"/>
+            </h:form>
+        </p:panel>
+    </p:dialog>
+    <script>
+        $(document).on("keydown", ".ui-cell-editor-input input", function (event) {
+            if (event.keyCode === 13) {
+                $(this).closest("tr").find(".ui-row-editor .ui-icon-check").click();
+            }
+        }
+        );
+    </script>
 
 </html>
 
