@@ -1,0 +1,67 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package controllers;
+
+import entities.AppUser;
+import entities.SkillsMap;
+import java.io.Serializable;
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+import javax.faces.bean.ManagedBean;
+import javax.faces.context.FacesContext;
+import javax.faces.bean.ViewScoped;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.servlet.http.HttpServletRequest;
+import org.primefaces.model.chart.HorizontalBarChartModel;
+
+/**
+ *
+ * @author dpattas
+ */
+@ManagedBean(name = "profileController")
+@ViewScoped
+public class ProfileController implements Serializable{
+
+    @PersistenceContext
+    private EntityManager em;
+    
+    @EJB
+    Auxilliary aux;
+
+    private AppUser student;
+    private HorizontalBarChartModel barModel;
+
+    public ProfileController() {
+    }
+
+    @PostConstruct
+    public void init() {
+        HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        student = em.find(AppUser.class, request.getUserPrincipal().getName());
+        setBarModel(aux.createBarModel(student, barModel));
+    }
+
+    public AppUser getStudent() {
+        return student;
+    }
+
+    public void setStudent(AppUser student) {
+        this.student = student;
+    }
+
+    public HorizontalBarChartModel getBarModel() {
+        return barModel;
+    }
+
+    public void setBarModel(HorizontalBarChartModel barModel) {
+        this.barModel = barModel;
+    }
+    
+    
+    
+    
+}

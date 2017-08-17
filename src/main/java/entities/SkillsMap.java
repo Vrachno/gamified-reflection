@@ -31,7 +31,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "SkillsMap.findAll", query = "SELECT s FROM SkillsMap s")
     , @NamedQuery(name = "SkillsMap.findById", query = "SELECT s FROM SkillsMap s WHERE s.id = :id")
     , @NamedQuery(name = "SkillsMap.findBySkillLevel", query = "SELECT s FROM SkillsMap s WHERE s.skillLevel = :skillLevel")
-    , @NamedQuery(name = "SkillsMap.findByStudentId", query = "SELECT s FROM SkillsMap s WHERE s.studentId = :studentId")})
+    , @NamedQuery(name = "SkillsMap.findByStudentEmail", query = "SELECT s FROM SkillsMap s WHERE s.studentEmail = :studentEmail")})
 public class SkillsMap implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -47,9 +47,9 @@ public class SkillsMap implements Serializable {
     @JoinColumn(name = "CATEGORY_ID", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     private Category categoryId;
-    @JoinColumn(name = "STUDENT_ID", referencedColumnName = "ID")
+    @JoinColumn(name = "STUDENT_EMAIL", referencedColumnName = "EMAIL")
     @ManyToOne(optional = false)
-    private Student studentId;
+    private AppUser studentEmail;
 
     public SkillsMap() {
     }
@@ -87,12 +87,12 @@ public class SkillsMap implements Serializable {
         this.categoryId = categoryId;
     }
 
-    public Student getStudentId() {
-        return studentId;
+    public AppUser getStudentEmail() {
+        return studentEmail;
     }
 
-    public void setStudentId(Student studentId) {
-        this.studentId = studentId;
+    public void setStudentEmail(AppUser studentEmail) {
+        this.studentEmail = studentEmail;
     }
 
     @Override

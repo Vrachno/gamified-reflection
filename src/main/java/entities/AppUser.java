@@ -28,56 +28,59 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author dpattas
  */
 @Entity
-@Table(name = "STUDENT")
+@Table(name = "APP_USER")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Student.findAll", query = "SELECT s FROM Student s")
-    , @NamedQuery(name = "Student.findById", query = "SELECT s FROM Student s WHERE s.id = :id")
-    , @NamedQuery(name = "Student.findByFirstName", query = "SELECT s FROM Student s WHERE s.firstName = :firstName")
-    , @NamedQuery(name = "Student.findByLastName", query = "SELECT s FROM Student s WHERE s.lastName = :lastName")})
-public class Student implements Serializable {
+    @NamedQuery(name = "AppUser.findAll", query = "SELECT u FROM AppUser u")
+    , @NamedQuery(name = "AppUser.findByEmail", query = "SELECT u FROM AppUser u WHERE u.email = :email")
+    , @NamedQuery(name = "AppUser.findByFirstName", query = "SELECT u FROM AppUser u WHERE u.firstName = :firstName")
+    , @NamedQuery(name = "AppUser.findByLastName", query = "SELECT u FROM AppUser u WHERE u.lastName = :lastName")
+    , @NamedQuery(name = "AppUser.findByUserRole", query = "SELECT u FROM AppUser u WHERE u.userRole = :userRole")
+    , @NamedQuery(name = "AppUser.findByPassword", query = "SELECT u FROM AppUser u WHERE u.password = :password")})
+public class AppUser implements Serializable {
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "studentId")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "appUser")
+    private List<Groups> groupsList;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "studentEmail")
     private List<SkillsMap> skillsMapList;
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "ID")
-    private Long id;
     @Basic(optional = false)
     @NotNull
+    @Size(min = 1, max = 255)
+    @Column(name = "EMAIL")
+    private String email;
+    @Basic(optional = false)
     @Size(min = 1, max = 255)
     @Column(name = "FIRST_NAME")
     private String firstName;
     @Basic(optional = false)
-    @NotNull
     @Size(min = 1, max = 255)
     @Column(name = "LAST_NAME")
     private String lastName;
-    @OneToMany(mappedBy = "studentId")
+    @Column(name = "USER_ROLE")
+    private Short userRole;
+    @Size(max = 255)
+    @Column(name = "PASSWORD")
+    private String password;
+    @OneToMany(mappedBy = "studentEmail")
     private List<SkillsMap> skills;
 
-    public Student() {
+    public AppUser() {
     }
 
-    public Student(Long id) {
-        this.id = id;
+    public AppUser(String email) {
+        this.email = email;
     }
 
-    public Student(Long id, String firstName, String lastName) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
+    public String getEmail() {
+        return email;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getFirstName() {
@@ -96,21 +99,29 @@ public class Student implements Serializable {
         this.lastName = lastName;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
+        hash += (email != null ? email.hashCode() : 0);
         return hash;
     }
 
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Student)) {
+        if (!(object instanceof AppUser)) {
             return false;
         }
-        Student other = (Student) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+        AppUser other = (AppUser) object;
+        if ((this.email == null && other.email != null) || (this.email != null && !this.email.equals(other.email))) {
             return false;
         }
         return true;
@@ -118,7 +129,7 @@ public class Student implements Serializable {
 
     @Override
     public String toString() {
-        return "entities.Student[ id=" + id + " ]";
+        return "entities.AppUser[ email=" + email + " ]";
     }
 
     @XmlTransient
@@ -129,5 +140,22 @@ public class Student implements Serializable {
     public void setSkillsMapList(List<SkillsMap> skillsMapList) {
         this.skillsMapList = skillsMapList;
     }
-    
+
+    public Short getUserRole() {
+        return userRole;
+    }
+
+    public void setUserRole(Short userRole) {
+        this.userRole = userRole;
+    }
+
+    @XmlTransient
+    public List<Groups> getGroupsList() {
+        return groupsList;
+    }
+
+    public void setGroupsList(List<Groups> groupsList) {
+        this.groupsList = groupsList;
+    }
+
 }

@@ -8,7 +8,8 @@ package controllers;
 import entities.Activity;
 import entities.Category;
 import entities.SkillsMap;
-import entities.Student;
+import entities.AppUser;
+import entities.Groups;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -30,10 +31,10 @@ public class TransactionsController {
 
     public void addCategory(Category category) {
         em.persist(category);
-        List<Student> students = em.createNamedQuery("Student.findAll").getResultList();
-        for (Student student : students) {
+        List<AppUser> students = em.createNamedQuery("AppUser.findByUserRole").setParameter("userRole", 1).getResultList();
+        for (AppUser student : students) {
             SkillsMap newSkill = new SkillsMap();
-            newSkill.setStudentId(student);
+            newSkill.setStudentEmail(student);
             newSkill.setCategoryId(category);
             em.merge(newSkill);
  
@@ -54,5 +55,18 @@ public class TransactionsController {
 
     public void deleteActivity(Activity activity) {
         em.remove(em.merge(activity));
+    }
+    
+    public void addUser(AppUser user) {
+        em.persist(new Groups(user.getEmail(), "STUDENT"));
+        em.persist(user);
+        List<Category> categories = em.createNamedQuery("Category.findAll").getResultList();
+        for (Category category : categories) {
+            SkillsMap skillsMap = new SkillsMap();
+            skillsMap.setStudentEmail(user);
+            skillsMap.setCategoryId(category);
+           em.persist(skillsMap);   
+        }
+
     }
 }

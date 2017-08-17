@@ -13,14 +13,14 @@
 
         <h:form class="container jumbotron">
             <div class="row">
-            <p:dataList class="col-md-4" value="#{indexController.students}" var="student">
-                <p:commandLink action="#{indexController.setSelectedStudent(student)}" value="#{student.id} #{student.firstName} #{student.lastName}" ajax="true" update="@form:studentDetails" />
+                <p:dataList class="col-md-4" value="#{studentsController.students}" var="student">
+                <p:commandLink action="#{studentsController.setSelectedStudent(student)}" value="#{student.email} #{student.firstName} #{student.lastName}" ajax="true" update="@form:studentDetails" />
             </p:dataList>
-            <p:panel id="studentDetails" class="col-md-4">
-                <p:dataList value="#{indexController.selectedStudent.skillsMapList}" var="skill" emptyMessage="Please select a student">
+            <p:panel id="studentDetails" class="col-md-8">
+                <p:dataList value="#{studentsController.selectedStudent.skillsMapList}" var="skill" emptyMessage="Please select a student">
                     <p:outputLabel value="#{skill.categoryId.title}: #{skill.skillLevel}"/>
                 </p:dataList>
-<!--                <p:chart id="barChart" type="bar" model="#{indexController.barModel}" />-->
+                <p:chart rendered="#{studentsController.selectedStudent ne null}" id="barChart" type="bar" model="#{studentsController.barModel}" />
             </p:panel>  
             </div>
         </h:form>
