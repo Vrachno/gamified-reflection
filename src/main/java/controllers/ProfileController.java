@@ -5,16 +5,21 @@
  */
 package controllers;
 
+import entities.ActivitiesMap;
 import entities.AppUser;
 import entities.SkillsMap;
+import java.io.IOException;
 import java.io.Serializable;
+import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.context.FacesContext;
 import javax.faces.bean.ViewScoped;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import org.primefaces.model.chart.HorizontalBarChartModel;
 
@@ -34,6 +39,7 @@ public class ProfileController implements Serializable{
 
     private AppUser student;
     private HorizontalBarChartModel barModel;
+    private boolean activitiesPending;
 
     public ProfileController() {
     }
@@ -43,6 +49,7 @@ public class ProfileController implements Serializable{
         HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
         student = em.find(AppUser.class, request.getUserPrincipal().getName());
         setBarModel(aux.createBarModel(student, barModel));
+        setActivitiesPending(!em.createNamedQuery("ActivitiesMap.findNotLoggedByStudent").setParameter("studentEmail", student).setParameter("logged", false).getResultList().isEmpty());
     }
 
     public AppUser getStudent() {
@@ -60,8 +67,13 @@ public class ProfileController implements Serializable{
     public void setBarModel(HorizontalBarChartModel barModel) {
         this.barModel = barModel;
     }
-    
-    
-    
+
+    public boolean getActivitiesPending() {
+        return activitiesPending;
+    }
+
+    public void setActivitiesPending(boolean activitiesPending) {
+        this.activitiesPending = activitiesPending;
+    }
     
 }

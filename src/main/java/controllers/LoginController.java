@@ -62,37 +62,35 @@ public class LoginController implements Serializable {
     public void setLoggedInUser(AppUser loggedInUser) {
         this.loggedInUser = loggedInUser;
     }
-    
-    
 
     public void login() throws IOException, ServletException {
         //FacesContext.getCurrentInstance().getExternalContext().redirect("http://localhost:8080/GamifiedReflection/teacher/students.html");
         FacesContext context = FacesContext.getCurrentInstance();
-        HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();    
-            try {
-                request.login(this.username, this.password);
-                if (loggedInUser.getUserRole() == 0) {
-                    FacesContext.getCurrentInstance().getExternalContext().redirect("http://localhost:8080/GamifiedReflection/teacher/students.html");
-                } else {
-                    FacesContext.getCurrentInstance().getExternalContext().redirect("http://localhost:8080/GamifiedReflection/student/index.html");
-                }
-            } catch (ServletException e) {
+        HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
+        try {
+            request.login(this.username, this.password);
+            if (loggedInUser.getUserRole() == 0) {
+                FacesContext.getCurrentInstance().getExternalContext().redirect("http://localhost:8080/GamifiedReflection/teacher/students.html");
+            } else {
+                FacesContext.getCurrentInstance().getExternalContext().redirect("http://localhost:8080/GamifiedReflection/student/index.html");
+            }
+        } catch (ServletException e) {
 
-                context.addMessage("loginError", new FacesMessage(FacesMessage.SEVERITY_FATAL, "", "Login failed."));
+            context.addMessage("loginError", new FacesMessage(FacesMessage.SEVERITY_FATAL, "", "Login failed."));
 
-            }       
+        }
     }
 
     public void logout() throws IOException {
         FacesContext context = FacesContext.getCurrentInstance();
         HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
         try {
-      request.logout();
-      FacesContext.getCurrentInstance().getExternalContext().redirect("http://localhost:8080/GamifiedReflection/login.html");
-    } catch (ServletException e) {
+            request.logout();
+            FacesContext.getCurrentInstance().getExternalContext().redirect("http://localhost:8080/GamifiedReflection/login.html");
+        } catch (ServletException e) {
 
-      context.addMessage(null, new FacesMessage("Logout failed."));
+            context.addMessage(null, new FacesMessage("Logout failed."));
+        }
     }
-  }
 
 }

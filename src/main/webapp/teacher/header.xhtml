@@ -16,7 +16,7 @@
                 <p:menuitem outcome="students.html" value="Reflection Form" class="text-center"/>
 
             </p:tabMenu>
-                            <p:outputLabel value="Welcome, #{request.userPrincipal.name}"  style="float: right"/>
+            <p:outputLabel value="Welcome, #{request.userPrincipal.name}"  style="float: right"/>
                             <p:commandButton value="Logout" actionListener="#{loginController.logout()}" />
         </ui:composition>
     </h:body>

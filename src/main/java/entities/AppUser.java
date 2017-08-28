@@ -39,6 +39,9 @@ import javax.xml.bind.annotation.XmlTransient;
     , @NamedQuery(name = "AppUser.findByPassword", query = "SELECT u FROM AppUser u WHERE u.password = :password")})
 public class AppUser implements Serializable {
 
+    @OneToMany(mappedBy = "studentEmail")
+    private List<ActivitiesMap> activitiesMapList;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "appUser")
     private List<Groups> groupsList;
 
@@ -156,6 +159,15 @@ public class AppUser implements Serializable {
 
     public void setGroupsList(List<Groups> groupsList) {
         this.groupsList = groupsList;
+    }
+
+    @XmlTransient
+    public List<ActivitiesMap> getActivitiesMapList() {
+        return activitiesMapList;
+    }
+
+    public void setActivitiesMapList(List<ActivitiesMap> activitiesMapList) {
+        this.activitiesMapList = activitiesMapList;
     }
 
 }

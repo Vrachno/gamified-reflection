@@ -17,7 +17,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -25,16 +24,17 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author dpattas
  */
 @Entity
-@Table(name = "SKILLS_MAP")
+@Table(name = "ACTIVITIES_MAP")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "SkillsMap.findAll", query = "SELECT s FROM SkillsMap s")
-    , @NamedQuery(name = "SkillsMap.findById", query = "SELECT s FROM SkillsMap s WHERE s.id = :id")
-    , @NamedQuery(name = "SkillsMap.findBySkillLevel", query = "SELECT s FROM SkillsMap s WHERE s.skillLevel = :skillLevel")
-    , @NamedQuery(name = "SkillsMap.findByStudentEmail", query = "SELECT s FROM SkillsMap s WHERE s.studentEmail = :studentEmail")
-    , @NamedQuery(name = "SkillsMap.findByCategoryId", query = "SELECT s FROM SkillsMap s WHERE s.categoryId = :categoryId")
-    , @NamedQuery(name = "SkillsMap.findByCategoryIdAndStudentEmail", query = "SELECT s FROM SkillsMap s WHERE s.categoryId = :categoryId AND s.studentEmail = :studentEmail")})
-public class SkillsMap implements Serializable {
+    @NamedQuery(name = "ActivitiesMap.findAll", query = "SELECT a FROM ActivitiesMap a")
+    , @NamedQuery(name = "ActivitiesMap.findById", query = "SELECT a FROM ActivitiesMap a WHERE a.id = :id")
+    , @NamedQuery(name = "ActivitiesMap.findByLogged", query = "SELECT a FROM ActivitiesMap a WHERE a.logged = :logged")
+    , @NamedQuery(name = "ActivitiesMap.findByAnswer", query = "SELECT a FROM ActivitiesMap a WHERE a.answer = :answer")
+    , @NamedQuery(name = "ActivitiesMap.findByStudentEmail", query = "SELECT a FROM ActivitiesMap a WHERE a.studentEmail = :studentEmail")
+    , @NamedQuery(name = "ActivitiesMap.findByActivity", query = "SELECT a FROM ActivitiesMap a WHERE a.activity = :activity")
+    , @NamedQuery(name = "ActivitiesMap.findNotLoggedByStudent", query = "SELECT a FROM ActivitiesMap a WHERE a.studentEmail = :studentEmail AND a.logged = :logged AND a.activity.enabled = true")})
+public class ActivitiesMap implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -42,27 +42,22 @@ public class SkillsMap implements Serializable {
     @Basic(optional = false)
     @Column(name = "ID")
     private Long id;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "SKILL_LEVEL")
-    private int skillLevel;
-    @JoinColumn(name = "CATEGORY_ID", referencedColumnName = "ID")
-    @ManyToOne(optional = false)
-    private Category categoryId;
+    @Column(name = "LOGGED")
+    private Boolean logged = false;
+    @Column(name = "ANSWER")
+    private Integer answer;
+    @JoinColumn(name = "ACTIVITY", referencedColumnName = "ID")
+    @ManyToOne
+    private Activity activity;
     @JoinColumn(name = "STUDENT_EMAIL", referencedColumnName = "EMAIL")
-    @ManyToOne(optional = false)
+    @ManyToOne
     private AppUser studentEmail;
 
-    public SkillsMap() {
+    public ActivitiesMap() {
     }
 
-    public SkillsMap(Long id) {
+    public ActivitiesMap(Long id) {
         this.id = id;
-    }
-
-    public SkillsMap(Long id, int skillLevel) {
-        this.id = id;
-        this.skillLevel = skillLevel;
     }
 
     public Long getId() {
@@ -73,20 +68,28 @@ public class SkillsMap implements Serializable {
         this.id = id;
     }
 
-    public int getSkillLevel() {
-        return skillLevel;
+    public Boolean getLogged() {
+        return logged;
     }
 
-    public void setSkillLevel(int skillLevel) {
-        this.skillLevel = skillLevel;
+    public void setLogged(Boolean logged) {
+        this.logged = logged;
     }
 
-    public Category getCategoryId() {
-        return categoryId;
+    public Integer getAnswer() {
+        return answer;
     }
 
-    public void setCategoryId(Category categoryId) {
-        this.categoryId = categoryId;
+    public void setAnswer(Integer answer) {
+        this.answer = answer;
+    }
+
+    public Activity getActivity() {
+        return activity;
+    }
+
+    public void setActivity(Activity activity) {
+        this.activity = activity;
     }
 
     public AppUser getStudentEmail() {
@@ -107,10 +110,10 @@ public class SkillsMap implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof SkillsMap)) {
+        if (!(object instanceof ActivitiesMap)) {
             return false;
         }
-        SkillsMap other = (SkillsMap) object;
+        ActivitiesMap other = (ActivitiesMap) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -119,7 +122,7 @@ public class SkillsMap implements Serializable {
 
     @Override
     public String toString() {
-        return "entities.SkillsMap[ id=" + id + " ]";
+        return "entities.ActivitiesMap[ id=" + id + " ]";
     }
-
+    
 }

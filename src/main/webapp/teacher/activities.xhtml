@@ -8,10 +8,19 @@
     <h:head>
         <title>Gamified Reflection</title>
         <h:outputStylesheet library="webjars" name="bootstrap/4.0.0-alpha.6-1/css/bootstrap.min-jsf.css" />
+        <h:outputStylesheet name="resources/css/custom.css" />
+
         <style>
             .empty thead {
-    display:none;
-}
+                display:none;
+            }
+            .enabled, .disabled a {
+                color: green;
+            }
+
+            .disabled, .enabled a {
+                color: red;
+            }
         </style>
     </h:head>
     <h:body>
@@ -20,13 +29,14 @@
         <h:form id="activitiesForm" class="container jumbotron">
             <div class="row">
                 <p:dataList class="col-md-4" value="#{activitiesController.categories}" var="category">
-                    <p:commandLink actionListener="#{activitiesController.setSelectedCategory(category)}" value="#{category.title}" ajax="true" update="@form:activities, @form:newAcrivityButton" />
+                    <p:commandLink actionListener="#{activitiesController.setSelectedCategory(category)}" value="#{category.title}" ajax="true" update="@form:activities, @form:newActivityButton" />
                 </p:dataList>
                 <p:dataTable
                     id="activities"
                     value="#{activitiesController.categoryActivities}"
-                    var="actvity"
+                    var="activity"
                     styleClass="#{activitiesController.selectedCategory eq null ? 'empty col-md-6' : 'col-md-6'}"
+                    rowStyleClass="#{activity.enabled ? 'enabled' : 'disabled'}"
                     emptyMessage="#{activitiesController.selectedCategory eq null ? 'Please select a skill' : 'No activities added'}"
                     editable="true">
 
@@ -34,21 +44,24 @@
 
                     <p:column headerText="#{activitiesController.selectedCategory.title} Activities">
                         <p:cellEditor>
-                            <f:facet name="output"><h:outputText value="#{actvity.title}" /></f:facet>
-                            <f:facet name="input"><p:inputText id="titleInput" value="#{actvity.title}" style="width:100%"/></f:facet>
+                            <f:facet name="output"><h:outputText value="#{activity.title}" /></f:facet>
+                            <f:facet name="input"><p:inputText id="titleInput" value="#{activity.title}" style="width:100%"/></f:facet>
                         </p:cellEditor>
                     </p:column>
                     <p:column headerText="Edit" style="width: 10%">
                         <p:rowEditor />
                     </p:column>
+                    <p:column headerText="Enable/Disable" style="width: 30%" class="text-center">
+                        <p:commandLink value="#{activity.enabled ? 'Disable' : 'Enable'}" styleClass="#{!activity.enabled ? 'enabled' : 'disabled'}" actionListener="#{activitiesController.toggleEnabled(activity)}" ajax="true" update=":activitiesForm"/>
+                    </p:column>
                     <p:column headerText="Delete" style="width: 15%" class="text-center">
-                        <p:commandLink value="X" style="color: red" actionListener="#{activitiesController.deleteActivity(actvity)}" ajax="true" update=":activitiesForm"/>
+                        <p:commandLink value="X" style="color: red" actionListener="#{activitiesController.deleteActivity(activity)}" ajax="true" update=":activitiesForm"/>
                     </p:column>
                 </p:dataTable>
             </div>
-            <p:commandButton id="newAcrivityButton" disabled="#{activitiesController.selectedCategory eq null}" value="Add New Activity" type="button" onclick="PF('newActivityDialog').show();" />
+            <p:commandButton id="newActivityButton" disabled="#{activitiesController.selectedCategory eq null}" value="Add New Activity" type="button" onclick="PF('newActivityDialog').show();" />
         </h:form>
-
+        
     </h:body>
     <p:dialog widgetVar="newActivityDialog" modal="true" dynamic="true" height="100px" showHeader="true" header="Add new activity">
         <p:panel>

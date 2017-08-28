@@ -5,6 +5,7 @@
  */
 package controllers;
 
+import entities.ActivitiesMap;
 import entities.Activity;
 import entities.Category;
 import entities.SkillsMap;
@@ -47,6 +48,14 @@ public class TransactionsController {
 
     public void addActivity(Activity activity) {
         em.persist(activity);
+        List<AppUser> students = em.createNamedQuery("AppUser.findByUserRole").setParameter("userRole", 1).getResultList();
+        for (AppUser student : students) {
+            ActivitiesMap newActivitMap = new ActivitiesMap();
+            newActivitMap.setStudentEmail(student);
+            newActivitMap.setActivity(activity);
+            em.merge(newActivitMap);
+
+        }
     }
 
     public void saveActivity(Activity activity) {
@@ -55,6 +64,11 @@ public class TransactionsController {
 
     public void deleteActivity(Activity activity) {
         em.remove(em.merge(activity));
+    }
+    
+    public void toggleEnabled(Activity activity) {
+        activity.setEnabled(!activity.isEnabled());
+        em.merge(activity);
     }
     
     public void addUser(AppUser user) {
@@ -68,5 +82,13 @@ public class TransactionsController {
            em.persist(skillsMap);   
         }
 
+    }
+    
+    public void saveActivitiesMap(ActivitiesMap activitiesMap) {
+        em.merge(activitiesMap);
+    }
+    
+    public void saveSkillsMap(SkillsMap skillsMap) {
+        em.merge(skillsMap);
     }
 }

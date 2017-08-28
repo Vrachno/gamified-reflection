@@ -12,7 +12,7 @@
     <h:body>
         <ui:include src="header.xhtml"/>
 
-        <h:form class="container jumbotron">
+        <h:form class="container jumbotron" id="form">
             <div class="row">
                 <p:dataTable id="categoriesList"
                              class="col-md-6"
@@ -45,7 +45,7 @@
         <p:panel>
             <h:form>
                 <p:inputText value="#{categoriesController.newCategoryTitle}"/>
-                <p:commandButton actionListener="#{categoriesController.addCategory(categoriesController.newCategoryTitle)}" value="OK" oncomplete="PF('newCategoryDialog').hide();" ajax="true" update=":j_idt11:categoriesList"/>
+                <p:commandButton actionListener="#{categoriesController.addCategory(categoriesController.newCategoryTitle)}" value="OK" oncomplete="PF('newCategoryDialog').hide();" ajax="true" update=":form:categoriesList"/>
             </h:form>
         </p:panel>
     </p:dialog>

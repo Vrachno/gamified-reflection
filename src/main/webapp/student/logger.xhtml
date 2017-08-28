@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+        <p:panel id="content">
+            <p:outputLabel value="How well did you do in these activities?" />
+            <p:dataList value="#{loggerController.activities}" var="activityMap" emptyMessage="No pending activities!" id="activitiesList">
+                <h:outputText value="#{activityMap.activity.title}"/>
+                <p:panelGrid columns="3">
+                    <h:form>
+                        <p:commandButton value=":)" actionListener="#{loggerController.log(activityMap, loggerController.aux.ANSWER_GOOD)}" ajax="true" update=":activitiesList"/>
+                        <p:commandButton value=":|" actionListener="#{loggerController.log(activityMap, loggerController.aux.ANSWER_NEUTRAL)}" ajax="true" update=":activitiesList"/>
+                        <p:commandButton value=":(" actionListener="#{loggerController.log(activityMap, loggerController.aux.ANSWER_BAD)}" ajax="true" update=":activitiesList"/>
+                    </h:form>
+                </p:panelGrid>
+            </p:dataList>
+            <p:link outcome="index.html" value="Back to main page" />
+        </p:panel>
+    </h:body>
+</html>
+

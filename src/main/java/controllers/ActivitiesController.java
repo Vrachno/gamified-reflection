@@ -15,7 +15,6 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import org.primefaces.context.RequestContext;
 import org.primefaces.event.RowEditEvent;
 
 /**
@@ -114,11 +113,21 @@ public class ActivitiesController implements Serializable {
         updateActivitiesList(activity.getCategoryId());
         init();
     }
-    
+
+    public void toggleEnabled(Activity activity) {
+        transactions.toggleEnabled(activity);
+        updateActivitiesList(activity.getCategoryId());
+        init();
+    }
+
     public void updateActivitiesList(Category category) {
         
         selectedCategory.setActivityList(em.createNamedQuery("Activity.findByCategoryId").setParameter("categoryId", category).getResultList());
         setCategoryActivities(selectedCategory.getActivityList());
+        
+    }
+    
+    public void setEnabled(Activity activity) {
         
     }
 

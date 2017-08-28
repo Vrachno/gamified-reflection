@@ -11,6 +11,9 @@
         <p:panel id="studentDetails" class="col-md-8">
             <p:chart id="barChart" type="bar" model="#{profileController.barModel}" />
         </p:panel>  
+        <p:link rendered="#{profileController.activitiesPending}" value="New activities available!" outcome="logger.html" />
+        <br/>
+        <p:link value="Logout" outcome="/login.html" />
     </h:body>
 </html>
 

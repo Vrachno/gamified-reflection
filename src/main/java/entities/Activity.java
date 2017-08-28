@@ -6,6 +6,7 @@
 package entities;
 
 import java.io.Serializable;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,9 +17,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -30,8 +33,14 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "Activity.findAll", query = "SELECT a FROM Activity a")
     , @NamedQuery(name = "Activity.findById", query = "SELECT a FROM Activity a WHERE a.id = :id")
-    , @NamedQuery(name = "Activity.findByCategoryId", query = "SELECT a FROM Activity a WHERE a.categoryId = :categoryId")})
+    , @NamedQuery(name = "Activity.findByCategoryId", query = "SELECT a FROM Activity a WHERE a.categoryId = :categoryId")
+    , @NamedQuery(name = "Activity.findByEnabled", query = "SELECT a FROM Activity a WHERE a.enabled = :enabled")})
 public class Activity implements Serializable {
+
+    @Column(name = "ENABLED")
+    private Boolean enabled = false;
+    @OneToMany(mappedBy = "activity")
+    private List<ActivitiesMap> activitiesMapList;
 
     @Size(max = 255)
     @Column(name = "TITLE")
@@ -70,6 +79,7 @@ public class Activity implements Serializable {
         this.categoryId = categoryId;
     }
 
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -101,6 +111,27 @@ public class Activity implements Serializable {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public Boolean getEnabled() {
+        return enabled;
+    }
+
+    public Boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    @XmlTransient
+    public List<ActivitiesMap> getActivitiesMapList() {
+        return activitiesMapList;
+    }
+
+    public void setActivitiesMapList(List<ActivitiesMap> activitiesMapList) {
+        this.activitiesMapList = activitiesMapList;
     }
     
 }
