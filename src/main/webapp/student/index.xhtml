@@ -10,6 +10,7 @@
         <p:outputLabel value="Welcome, #{profileController.student.firstName}!" />
         <p:panel id="studentDetails" class="col-md-8">
             <p:chart id="barChart" type="bar" model="#{profileController.barModel}" />
+            <p:chart id="lineChart" type="line" model="#{profileController.lineModel}" />
         </p:panel>  
         <p:link rendered="#{profileController.activitiesPending}" value="New activities available!" outcome="logger.html" />
         <br/>

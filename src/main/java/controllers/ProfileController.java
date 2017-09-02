@@ -22,6 +22,7 @@ import javax.persistence.PersistenceContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import org.primefaces.model.chart.HorizontalBarChartModel;
+import org.primefaces.model.chart.LineChartModel;
 
 /**
  *
@@ -39,6 +40,7 @@ public class ProfileController implements Serializable{
 
     private AppUser student;
     private HorizontalBarChartModel barModel;
+    private LineChartModel lineModel;
     private boolean activitiesPending;
 
     public ProfileController() {
@@ -49,6 +51,7 @@ public class ProfileController implements Serializable{
         HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
         student = em.find(AppUser.class, request.getUserPrincipal().getName());
         setBarModel(aux.createBarModel(student, barModel));
+        setLineModel(aux.createLineModel(student, lineModel));
         setActivitiesPending(!em.createNamedQuery("ActivitiesMap.findNotLoggedByStudent").setParameter("studentEmail", student).setParameter("logged", false).getResultList().isEmpty());
     }
 
@@ -66,6 +69,14 @@ public class ProfileController implements Serializable{
 
     public void setBarModel(HorizontalBarChartModel barModel) {
         this.barModel = barModel;
+    }
+
+    public LineChartModel getLineModel() {
+        return lineModel;
+    }
+
+    public void setLineModel(LineChartModel lineModel) {
+        this.lineModel = lineModel;
     }
 
     public boolean getActivitiesPending() {

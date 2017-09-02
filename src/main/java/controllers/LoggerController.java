@@ -9,6 +9,7 @@ import entities.ActivitiesMap;
 import entities.AppUser;
 import entities.SkillsMap;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -74,11 +75,13 @@ public class LoggerController implements Serializable {
     public void log(ActivitiesMap activity, int level) {
         activity.setAnswer(level);
         activity.setLogged(true);
-        transactions.saveActivitiesMap(activity);
+        activity.setDateAnswered(new Date((long) Math.random()));
         SkillsMap skillsMap = (SkillsMap) em.createNamedQuery("SkillsMap.findByCategoryIdAndStudentEmail")
                 .setParameter("categoryId", activity.getActivity().getCategoryId())
                 .setParameter("studentEmail", student).getSingleResult();
         skillsMap.setSkillLevel(skillsMap.getSkillLevel() + level);
+        activity.setNewSkillLevel(skillsMap.getSkillLevel());
+        transactions.saveActivitiesMap(activity);
         transactions.saveSkillsMap(skillsMap);
         activities = em.createNamedQuery("ActivitiesMap.findNotLoggedByStudent").setParameter("studentEmail", student).setParameter("logged", false).getResultList();
 

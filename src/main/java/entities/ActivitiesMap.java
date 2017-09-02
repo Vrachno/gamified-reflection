@@ -6,6 +6,7 @@
 package entities;
 
 import java.io.Serializable;
+import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,6 +18,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -33,8 +36,12 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "ActivitiesMap.findByAnswer", query = "SELECT a FROM ActivitiesMap a WHERE a.answer = :answer")
     , @NamedQuery(name = "ActivitiesMap.findByStudentEmail", query = "SELECT a FROM ActivitiesMap a WHERE a.studentEmail = :studentEmail")
     , @NamedQuery(name = "ActivitiesMap.findByActivity", query = "SELECT a FROM ActivitiesMap a WHERE a.activity = :activity")
+    , @NamedQuery(name = "ActivitiesMap.findByDateAnswered", query = "SELECT a FROM ActivitiesMap a WHERE a.dateAnswered = :dateAnswered")
     , @NamedQuery(name = "ActivitiesMap.findNotLoggedByStudent", query = "SELECT a FROM ActivitiesMap a WHERE a.studentEmail = :studentEmail AND a.logged = :logged AND a.activity.enabled = true")})
 public class ActivitiesMap implements Serializable {
+
+    @Column(name = "NEW_SKILL_LEVEL")
+    private Integer newSkillLevel;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -46,6 +53,9 @@ public class ActivitiesMap implements Serializable {
     private Boolean logged = false;
     @Column(name = "ANSWER")
     private Integer answer;
+    @Column(name = "DATE_ANSWERED")
+    @Temporal(TemporalType.DATE)
+    private Date dateAnswered;
     @JoinColumn(name = "ACTIVITY", referencedColumnName = "ID")
     @ManyToOne
     private Activity activity;
@@ -123,6 +133,22 @@ public class ActivitiesMap implements Serializable {
     @Override
     public String toString() {
         return "entities.ActivitiesMap[ id=" + id + " ]";
+    }
+
+    public Date getDateAnswered() {
+        return dateAnswered;
+    }
+
+    public void setDateAnswered(Date dateAnswered) {
+        this.dateAnswered = dateAnswered;
+    }
+
+    public Integer getNewSkillLevel() {
+        return newSkillLevel;
+    }
+
+    public void setNewSkillLevel(Integer newSkillLevel) {
+        this.newSkillLevel = newSkillLevel;
     }
     
 }

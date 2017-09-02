@@ -5,22 +5,45 @@
  */
 package controllers;
 
+import entities.ActivitiesMap;
+import entities.Activity;
 import entities.AppUser;
+import entities.Category;
 import entities.SkillsMap;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.primefaces.model.chart.Axis;
 import org.primefaces.model.chart.AxisType;
+import org.primefaces.model.chart.CategoryAxis;
 import org.primefaces.model.chart.ChartSeries;
 import org.primefaces.model.chart.HorizontalBarChartModel;
+import org.primefaces.model.chart.LineChartModel;
+import org.primefaces.model.chart.LineChartSeries;
 
 /**
  *
@@ -32,7 +55,10 @@ public class Auxilliary {
     private final int ANSWER_GOOD = 10;
     private final int ANSWER_NEUTRAL = 5;
     private final int ANSWER_BAD = 1;
-    
+
+    @PersistenceContext
+    EntityManager em;
+
     private boolean activitiesPending;
 
     public int getANSWER_GOOD() {
@@ -89,6 +115,53 @@ public class Auxilliary {
         yAxis.setLabel("Skill");
 
         return barModel;
+    }
+
+    public LineChartModel createLineModel(AppUser student, LineChartModel lineModel) {
+        lineModel = new LineChartModel();
+
+        List<ActivitiesMap> activitiesMapList = em.createNamedQuery("ActivitiesMap.findNotLoggedByStudent").setParameter("studentEmail", student).setParameter("logged", true).getResultList();
+        activitiesMapList.sort(new Comparator<ActivitiesMap>() {
+            @Override
+            public int compare(ActivitiesMap o1, ActivitiesMap o2) {
+                return (int) (o1.getDateAnswered().compareTo(o2.getDateAnswered()));
+            }
+        });
+
+        for (SkillsMap skills : student.getSkillsMapList()) {
+            ChartSeries series = new ChartSeries();
+            series.setLabel(skills.getCategoryId().getTitle());
+            series.set(0, 0);
+            lineModel.addSeries(series);
+        }
+
+        for (ChartSeries series : lineModel.getSeries()) {
+        List<Integer> seriesValues = new ArrayList(series.getData().values());
+            for (ActivitiesMap activitiesMap : activitiesMapList) {
+                if (activitiesMap.getActivity().getCategoryId().getTitle().equals(series.getLabel())) {
+                    if (series.getData().get(new SimpleDateFormat("dd/MM").format(activitiesMap.getDateAnswered())) == null
+                            || activitiesMap.getNewSkillLevel() > (int) series.getData().get(new SimpleDateFormat("dd/MM").format(activitiesMap.getDateAnswered()))) {
+                        series.set(new SimpleDateFormat("dd/MM").format(activitiesMap.getDateAnswered()), activitiesMap.getNewSkillLevel());
+                        seriesValues.add(activitiesMap.getNewSkillLevel());
+                    }
+                } else {
+                    series.set(new SimpleDateFormat("dd/MM").format(activitiesMap.getDateAnswered()), seriesValues.get(seriesValues.size()-1));
+                }
+            }
+        }
+
+
+        Axis axisY = lineModel.getAxis(AxisType.Y);
+
+        axisY.setLabel("Level");
+        axisY.setMax(100);
+        axisY.setMin(0);
+
+        lineModel.setLegendPosition("ne");
+        lineModel.setShowPointLabels(true);
+        lineModel.getAxes().put(AxisType.X, new CategoryAxis("Time"));
+
+        return lineModel;
     }
 
     public String hash256(String data) throws NoSuchAlgorithmException {
