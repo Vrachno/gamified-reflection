@@ -81,6 +81,13 @@ public class TransactionsController {
             skillsMap.setCategoryId(category);
            em.persist(skillsMap);   
         }
+        List<Activity> activities = em.createNamedQuery("Activity.findAll").getResultList();
+        for (Activity activity : activities) {
+            ActivitiesMap activitiesMap = new ActivitiesMap();
+            activitiesMap.setActivity(activity);
+            activitiesMap.setStudentEmail(user);
+            em.persist(activitiesMap);
+        }
 
     }
     

@@ -75,7 +75,7 @@ public class LoggerController implements Serializable {
     public void log(ActivitiesMap activity, int level) {
         activity.setAnswer(level);
         activity.setLogged(true);
-        activity.setDateAnswered(new Date((long) Math.random()));
+        activity.setDateAnswered(new Date());
         SkillsMap skillsMap = (SkillsMap) em.createNamedQuery("SkillsMap.findByCategoryIdAndStudentEmail")
                 .setParameter("categoryId", activity.getActivity().getCategoryId())
                 .setParameter("studentEmail", student).getSingleResult();

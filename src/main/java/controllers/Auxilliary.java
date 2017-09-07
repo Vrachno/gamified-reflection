@@ -6,27 +6,15 @@
 package controllers;
 
 import entities.ActivitiesMap;
-import entities.Activity;
 import entities.AppUser;
-import entities.Category;
 import entities.SkillsMap;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -34,16 +22,12 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.primefaces.model.chart.Axis;
 import org.primefaces.model.chart.AxisType;
 import org.primefaces.model.chart.CategoryAxis;
 import org.primefaces.model.chart.ChartSeries;
 import org.primefaces.model.chart.HorizontalBarChartModel;
 import org.primefaces.model.chart.LineChartModel;
-import org.primefaces.model.chart.LineChartSeries;
 
 /**
  *
@@ -128,10 +112,11 @@ public class Auxilliary {
             }
         });
 
-        for (SkillsMap skills : student.getSkillsMapList()) {
+        List<SkillsMap> studentSkillsMapList = em.createNamedQuery("SkillsMap.findByStudentEmail").setParameter("studentEmail", student).getResultList();
+        for (SkillsMap skills : studentSkillsMapList) {
             ChartSeries series = new ChartSeries();
             series.setLabel(skills.getCategoryId().getTitle());
-            series.set(0, 0);
+            series.set(new SimpleDateFormat("dd/MM").format(student.getDateRegistered()), 0);
             lineModel.addSeries(series);
         }
 

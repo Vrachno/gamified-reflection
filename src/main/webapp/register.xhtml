@@ -8,25 +8,19 @@
     </h:head>
     <h:body>
         <h:form id="register-form">
-            <h:panelGroup>
+            <h:panelGrid columns="2" cellpadding="5">
                 <p:outputLabel value="E-mail Address" for="email"/>
                 <p:inputText id="email" value="#{registerController.student.email}"/>
-            </h:panelGroup>
-            <h:panelGroup>
                 <p:outputLabel value="First Name" for="first-name"/>
                 <p:inputText id="first-name" value="#{registerController.student.firstName}"/>
-            </h:panelGroup>
-            <h:panelGroup>
                 <p:outputLabel value="Last Name" for="last-name"/>
                 <p:inputText id="last-name" value="#{registerController.student.lastName}"/>
-            </h:panelGroup>
-            <h:panelGroup>
                 <p:outputLabel value="Password" for="password"/>
-                <p:inputText id="password" value="#{registerController.password}"/>
-            </h:panelGroup>
-            <h:panelGroup>
-                <p:commandButton id="submit" value="Submit" actionListener="#{registerController.register()}"/>
-            </h:panelGroup>
+                <p:password id="password" value="#{registerController.password}" match="validatePassword"/>
+                <p:outputLabel value="Confirm Password" for="validatePassword"/>
+                <p:password id="validatePassword" value="#{registerController.password}"/>
+            </h:panelGrid>
+            <p:commandButton id="submit" value="Submit" actionListener="#{registerController.register()}"/>
         </h:form>
     </h:body>
 </html>

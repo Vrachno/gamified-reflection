@@ -9,6 +9,7 @@ import entities.AppUser;
 import java.io.IOException;
 import java.io.Serializable;
 import java.security.NoSuchAlgorithmException;
+import java.util.Date;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
@@ -62,7 +63,7 @@ public class RegisterController implements Serializable{
     public void register() throws IOException, NoSuchAlgorithmException{
         student.setPassword(aux.hash256(password));
         student.setUserRole((short) 1);
-        
+        student.setDateRegistered(new Date());
         transactions.addUser(student);
         
         FacesContext.getCurrentInstance().getExternalContext().redirect("login.html");

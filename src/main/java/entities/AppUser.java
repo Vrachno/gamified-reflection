@@ -6,18 +6,19 @@
 package entities;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -68,6 +69,9 @@ public class AppUser implements Serializable {
     @Size(max = 255)
     @Column(name = "PASSWORD")
     private String password;
+    @Column(name = "DATE_REGISTERED")
+    @Temporal(TemporalType.DATE)
+    private Date dateRegistered;
     @OneToMany(mappedBy = "studentEmail")
     private List<SkillsMap> skills;
 
@@ -168,6 +172,14 @@ public class AppUser implements Serializable {
 
     public void setActivitiesMapList(List<ActivitiesMap> activitiesMapList) {
         this.activitiesMapList = activitiesMapList;
+    }
+
+    public Date getDateRegistered() {
+        return dateRegistered;
+    }
+
+    public void setDateRegistered(Date dateRegistered) {
+        this.dateRegistered = dateRegistered;
     }
 
 }
