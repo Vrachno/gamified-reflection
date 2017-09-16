@@ -14,7 +14,9 @@
         </p:panel>  
         <p:link rendered="#{profileController.activitiesPending}" value="New activities available!" outcome="logger.html" />
         <br/>
-        <p:link value="Logout" outcome="/login.html" />
+        <h:form>
+            <p:commandButton value="Logout" actionListener="#{loginController.logout()}" />
+        </h:form>
     </h:body>
 </html>
 
