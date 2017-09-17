@@ -14,8 +14,8 @@
             <p:panel id="info" class="col-md-6 col-lg-6">
                 <p:link rendered="#{profileController.activitiesPending}" value="New activities available!" outcome="logger.html" style="background-color: #ff9933"/>
                 <ui:repeat value="#{profileController.categories}" var="category">
-                    <div rendered="#{aux.topOfClass(category).contains(profileController.student)}" >
-                        <h:outputText value="You have the top score for '#{category.title}' in your class. Good job!" />
+                    <div >
+                        <h:outputText  rendered="#{aux.topOfClass(category).contains(profileController.student)}" value="You have the top score for '#{category.title}' in your class. Good job!" />
                     </div>
                 </ui:repeat>
                

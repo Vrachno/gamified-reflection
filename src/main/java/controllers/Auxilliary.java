@@ -188,10 +188,10 @@ public class Auxilliary {
                return (int) (o2.getSkillLevel() - o1.getSkillLevel());
             }
         });
-        if (allSkillsMaps.get(0).getSkillLevel()!=0)
+        if (allSkillsMaps.get(0).getSkillLevel()!=0) 
             topStudents.add(allSkillsMaps.get(0).getStudentEmail());
         for (int i=1; i<allSkillsMaps.size(); i++) {
-            if (allSkillsMaps.get(i).getSkillLevel() == allSkillsMaps.get(0).getSkillLevel()){
+            if ((allSkillsMaps.get(i).getSkillLevel() == allSkillsMaps.get(0).getSkillLevel()) && allSkillsMaps.get(0).getSkillLevel()!=0){
                 topStudents.add(allSkillsMaps.get(i).getStudentEmail());
             }
         }
