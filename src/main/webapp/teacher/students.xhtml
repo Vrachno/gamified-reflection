@@ -17,9 +17,6 @@
                     <p:commandLink action="#{studentsController.setSelectedStudent(student)}" value="#{student.email} #{student.firstName} #{student.lastName}" ajax="true" update="@form:studentDetails" />
                 </p:dataList>
                 <p:panel id="studentDetails" class="col-md-8">
-                    <p:dataList value="#{studentsController.selectedStudent.skillsMapList}" var="skill" emptyMessage="Please select a student">
-                        <p:outputLabel value="#{skill.categoryId.title}: #{skill.skillLevel}"/>
-                    </p:dataList>
                     <p:chart rendered="#{studentsController.selectedStudent ne null}" id="barChart" type="bar" model="#{studentsController.barModel}" />
                     <p:chart rendered="#{studentsController.selectedStudent ne null}" id="progressChart" type="line" model="#{studentsController.lineModel}" />
                 </p:panel>  
