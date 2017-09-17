@@ -2,18 +2,29 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
     <h:head>
-        <title>Facelet Title</title>
+        <title>Gamified Reflection</title>
+        <h:outputStylesheet library="webjars" name="bootstrap/4.0.0-alpha.6-1/css/bootstrap.min-jsf.css" />
     </h:head>
     <h:body>
         <p:outputLabel value="Welcome, #{profileController.student.firstName}!" />
-        <p:panel id="studentDetails" class="col-md-8">
-            <p:chart id="barChart" type="bar" model="#{profileController.barModel}" />
-            <p:chart id="lineChart" type="line" model="#{profileController.lineModel}" />
-        </p:panel>  
-        <p:link rendered="#{profileController.activitiesPending}" value="New activities available!" outcome="logger.html" />
-        <br/>
+        <div class="row">
+            <p:panel id="info" class="col-md-6 col-lg-6">
+                <p:link rendered="#{profileController.activitiesPending}" value="New activities available!" outcome="logger.html" style="background-color: #ff9933"/>
+                <ui:repeat value="#{profileController.categories}" var="category">
+                    <div rendered="#{aux.topOfClass(category).contains(profileController.student)}" >
+                        <h:outputText value="You have the top score for '#{category.title}' in your class. Good job!" />
+                    </div>
+                </ui:repeat>
+               
+            </p:panel>
+            <p:panel id="studentDetails" class="col-md-6 col-lg-6">
+                <p:chart id="barChart" type="bar" model="#{profileController.barModel}" />
+                <p:chart id="lineChart" type="line" model="#{profileController.lineModel}" />
+            </p:panel>  
+        </div>
         <h:form>
             <p:commandButton value="Logout" actionListener="#{loginController.logout()}" />
         </h:form>

@@ -6,7 +6,9 @@
 package controllers;
 
 import entities.AppUser;
+import entities.Category;
 import java.io.Serializable;
+import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
@@ -15,7 +17,6 @@ import javax.faces.bean.ViewScoped;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.servlet.http.HttpServletRequest;
-import org.primefaces.context.RequestContext;
 import org.primefaces.model.chart.HorizontalBarChartModel;
 import org.primefaces.model.chart.LineChartModel;
 
@@ -37,6 +38,7 @@ public class ProfileController implements Serializable{
     private HorizontalBarChartModel barModel;
     private LineChartModel lineModel;
     private boolean activitiesPending;
+    private List<Category> categories;
 
     public ProfileController() {
     }
@@ -44,6 +46,7 @@ public class ProfileController implements Serializable{
     @PostConstruct
     public void init() {
         HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        categories = em.createNamedQuery("Category.findAll").getResultList();
         student = em.find(AppUser.class, request.getUserPrincipal().getName());
         student.setSkillsMapList(em.createNamedQuery("SkillsMap.findByStudentEmail").setParameter("studentEmail", student).getResultList());
         setBarModel(aux.createBarModel(student, barModel));
@@ -82,5 +85,9 @@ public class ProfileController implements Serializable{
     public void setActivitiesPending(boolean activitiesPending) {
         this.activitiesPending = activitiesPending;
     }
-    
+
+    public List<Category> getCategories() {
+        return categories;
+    }   
+        
 }

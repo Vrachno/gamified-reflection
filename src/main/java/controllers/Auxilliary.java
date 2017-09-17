@@ -7,6 +7,7 @@ package controllers;
 
 import entities.ActivitiesMap;
 import entities.AppUser;
+import entities.Category;
 import entities.SkillsMap;
 import java.io.IOException;
 import java.security.MessageDigest;
@@ -18,6 +19,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.servlet.ServletException;
@@ -34,6 +36,7 @@ import org.primefaces.model.chart.LineChartModel;
  * @author dpattas
  */
 @Stateless
+@Named("aux")
 public class Auxilliary {
 
     private final int ANSWER_GOOD = 10;
@@ -145,6 +148,7 @@ public class Auxilliary {
         lineModel.setLegendPosition("ne");
         lineModel.setShowPointLabels(true);
         lineModel.getAxes().put(AxisType.X, new CategoryAxis("Time"));
+        lineModel.setTitle("Progress");
 
         return lineModel;
     }
@@ -173,5 +177,25 @@ public class Auxilliary {
 
             context.addMessage(null, new FacesMessage("Logout failed."));
         }
+    }
+    
+        public ArrayList<AppUser> topOfClass(Category category) {
+        List<SkillsMap> allSkillsMaps= em.createNamedQuery("SkillsMap.findByCategoryId").setParameter("categoryId", category).getResultList();
+        ArrayList<AppUser> topStudents = new ArrayList<>();
+        allSkillsMaps.sort(new Comparator<SkillsMap>() {
+            @Override
+            public int compare(SkillsMap o1, SkillsMap o2) {
+               return (int) (o2.getSkillLevel() - o1.getSkillLevel());
+            }
+        });
+        if (allSkillsMaps.get(0).getSkillLevel()!=0)
+            topStudents.add(allSkillsMaps.get(0).getStudentEmail());
+        for (int i=1; i<allSkillsMaps.size(); i++) {
+            if (allSkillsMaps.get(i).getSkillLevel() == allSkillsMaps.get(0).getSkillLevel()){
+                topStudents.add(allSkillsMaps.get(i).getStudentEmail());
+            }
+        }
+        
+        return topStudents;
     }
 }
