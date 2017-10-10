@@ -8,20 +8,8 @@
     <h:head>
         <title>Gamified Reflection</title>
         <h:outputStylesheet library="webjars" name="bootstrap/4.0.0-alpha.6-1/css/bootstrap.min-jsf.css" />
-        <h:outputStylesheet name="resources/css/custom.css" />
+        <h:outputStylesheet name="/resources/css/custom.css" />
 
-        <style>
-            .empty thead {
-                display:none;
-            }
-            .enabled, .disabled a {
-                color: green;
-            }
-
-            .disabled, .enabled a {
-                color: red;
-            }
-        </style>
     </h:head>
     <h:body>
         <ui:include src="header.xhtml"/>
@@ -36,7 +24,6 @@
                     value="#{activitiesController.categoryActivities}"
                     var="activity"
                     styleClass="#{activitiesController.selectedCategory eq null ? 'empty col-md-6' : 'col-md-6'}"
-                    rowStyleClass="#{activity.enabled ? 'enabled' : 'disabled'}"
                     emptyMessage="#{activitiesController.selectedCategory eq null ? 'Please select a skill' : 'No activities added'}"
                     editable="true">
 
@@ -52,7 +39,8 @@
                         <p:rowEditor />
                     </p:column>
                     <p:column headerText="Enable/Disable" style="width: 30%" class="text-center">
-                        <p:commandLink value="#{activity.enabled ? 'Disable' : 'Enable'}" styleClass="#{!activity.enabled ? 'enabled' : 'disabled'}" actionListener="#{activitiesController.toggleEnabled(activity)}" ajax="true" update=":activitiesForm"/>
+                        <p:commandButton value="Schedule" onclick="PF('schedulerDialog').show()" actionListener="#{activitiesController.setSelectedActivity(activity)}"/>
+<!--                        <p:commandLink value="#//{activity.enabled ? 'Disable' : 'Enable'}" styleClass="#//{!activity.enabled ? 'enabled' : 'disabled'}" actionListener="#//{activitiesController.toggleEnabled(activity)}" ajax="true" update=":activitiesForm"/>-->
                     </p:column>
                     <p:column headerText="Delete" style="width: 15%" class="text-center">
                         <p:commandLink value="X" style="color: red" actionListener="#{activitiesController.deleteActivity(activity)}" ajax="true" update=":activitiesForm"/>
@@ -70,6 +58,14 @@
                 <p:commandButton actionListener="#{activitiesController.addActivity(activitiesController.newActivityTitle, activitiesController.selectedCategory)}" value="OK" oncomplete="PF('newActivityDialog').hide();}" ajax="true" update=":activitiesForm" resetValues="true"/>
             </h:form>
         </p:panel>
+    </p:dialog>
+    <p:dialog widgetVar="schedulerDialog">
+        <h:form id="scheduleForm">
+            <p:schedule id="schedule" value="#{activitiesController.scheduleModel}" widgetVar="schedule">
+                <p:ajax event="dateSelect" listener="#{activitiesController.onDateSelect}" update="@this"/>
+                <p:ajax event="eventSelect" listener="#{activitiesController.onEventSelect}" />
+            </p:schedule>
+        </h:form>
     </p:dialog>
     <script>
         $(document).on("keydown", ".ui-cell-editor-input input", function (event) {

@@ -40,6 +40,10 @@ import javax.xml.bind.annotation.XmlTransient;
     , @NamedQuery(name = "AppUser.findByPassword", query = "SELECT u FROM AppUser u WHERE u.password = :password")})
 public class AppUser implements Serializable {
 
+    @Size(max = 255)
+    @Column(name = "NICKNAME")
+    private String nickname;
+
     @OneToMany(mappedBy = "studentEmail")
     private List<ActivitiesMap> activitiesMapList;
 
@@ -180,6 +184,14 @@ public class AppUser implements Serializable {
 
     public void setDateRegistered(Date dateRegistered) {
         this.dateRegistered = dateRegistered;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 
 }

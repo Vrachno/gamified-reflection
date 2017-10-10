@@ -10,15 +10,17 @@
         <h:form id="register-form">
             <h:panelGrid columns="2" cellpadding="5">
                 <p:outputLabel value="E-mail Address" for="email"/>
-                <p:inputText id="email" value="#{registerController.student.email}"/>
+                <p:inputText id="email" value="#{registerController.student.email}" required="true"/>
+                <p:outputLabel value="Nickname" for="nickname"/>
+                <p:inputText id="nickname" value="#{registerController.student.nickname}" required="true" maxlength="12"/>
                 <p:outputLabel value="First Name" for="first-name"/>
-                <p:inputText id="first-name" value="#{registerController.student.firstName}"/>
+                <p:inputText id="first-name" value="#{registerController.student.firstName}" required="true"/>
                 <p:outputLabel value="Last Name" for="last-name"/>
-                <p:inputText id="last-name" value="#{registerController.student.lastName}"/>
+                <p:inputText id="last-name" value="#{registerController.student.lastName}" required="true"/>
                 <p:outputLabel value="Password" for="password"/>
-                <p:password id="password" value="#{registerController.password}" match="validatePassword"/>
+                <p:password id="password" value="#{registerController.password}" match="validatePassword" required="true"/>
                 <p:outputLabel value="Confirm Password" for="validatePassword"/>
-                <p:password id="validatePassword" value="#{registerController.password}"/>
+                <p:password id="validatePassword" value="#{registerController.password}" required="true"/>
             </h:panelGrid>
             <p:commandButton id="submit" value="Submit" actionListener="#{registerController.register()}"/>
         </h:form>

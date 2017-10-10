@@ -37,8 +37,15 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "ActivitiesMap.findByStudentEmail", query = "SELECT a FROM ActivitiesMap a WHERE a.studentEmail = :studentEmail")
     , @NamedQuery(name = "ActivitiesMap.findByActivity", query = "SELECT a FROM ActivitiesMap a WHERE a.activity = :activity")
     , @NamedQuery(name = "ActivitiesMap.findByDateAnswered", query = "SELECT a FROM ActivitiesMap a WHERE a.dateAnswered = :dateAnswered")
-    , @NamedQuery(name = "ActivitiesMap.findNotLoggedByStudent", query = "SELECT a FROM ActivitiesMap a WHERE a.studentEmail = :studentEmail AND a.logged = :logged AND a.activity.enabled = true")})
+    , @NamedQuery(name = "ActivitiesMap.findNotLoggedByStudent", query = "SELECT a FROM ActivitiesMap a WHERE a.studentEmail = :studentEmail AND a.logged = :logged")})
 public class ActivitiesMap implements Serializable {
+
+    @Column(name = "DATE_ENABLED")
+    @Temporal(TemporalType.DATE)
+    private Date dateEnabled;
+    @Column(name = "DATE_DISABLED")
+    @Temporal(TemporalType.DATE)
+    private Date dateDisabled;
 
     @Column(name = "NEW_SKILL_LEVEL")
     private Integer newSkillLevel;
@@ -149,6 +156,22 @@ public class ActivitiesMap implements Serializable {
 
     public void setNewSkillLevel(Integer newSkillLevel) {
         this.newSkillLevel = newSkillLevel;
+    }
+
+    public Date getDateEnabled() {
+        return dateEnabled;
+    }
+
+    public void setDateEnabled(Date dateEnabled) {
+        this.dateEnabled = dateEnabled;
+    }
+
+    public Date getDateDisabled() {
+        return dateDisabled;
+    }
+
+    public void setDateDisabled(Date dateDisabled) {
+        this.dateDisabled = dateDisabled;
     }
     
 }

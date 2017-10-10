@@ -11,6 +11,8 @@ import entities.Category;
 import entities.SkillsMap;
 import entities.AppUser;
 import entities.Groups;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -38,8 +40,8 @@ public class TransactionsController {
             newSkill.setStudentEmail(student);
             newSkill.setCategoryId(category);
             em.merge(newSkill);
- 
-            }
+
+        }
     }
 
     public void deleteCategory(Category category) {
@@ -48,14 +50,6 @@ public class TransactionsController {
 
     public void addActivity(Activity activity) {
         em.persist(activity);
-        List<AppUser> students = em.createNamedQuery("AppUser.findByUserRole").setParameter("userRole", 1).getResultList();
-        for (AppUser student : students) {
-            ActivitiesMap newActivitMap = new ActivitiesMap();
-            newActivitMap.setStudentEmail(student);
-            newActivitMap.setActivity(activity);
-            em.merge(newActivitMap);
-
-        }
     }
 
     public void saveActivity(Activity activity) {
@@ -65,12 +59,41 @@ public class TransactionsController {
     public void deleteActivity(Activity activity) {
         em.remove(em.merge(activity));
     }
-    
-    public void toggleEnabled(Activity activity) {
-        activity.setEnabled(!activity.isEnabled());
-        em.merge(activity);
+
+//    public void toggleEnabled(Activity activity) {
+//        activity.setEnabled(!activity.isEnabled());
+//        em.merge(activity);
+//        if (activity.getEnabled()) {
+//            List<AppUser> students = em.createNamedQuery("AppUser.findByUserRole").setParameter("userRole", 1).getResultList();
+//            for (AppUser student : students) {
+//                ActivitiesMap newActivitMap = new ActivitiesMap();
+//                newActivitMap.setStudentEmail(student);
+//                newActivitMap.setActivity(activity);
+//                em.merge(newActivitMap);
+//            }
+//        }
+//    }
+    public void addActivitiesMaps(Activity activity, Date dateEnabled, Date dateDisabled) {
+        List<AppUser> students = em.createNamedQuery("AppUser.findByUserRole").setParameter("userRole", 1).getResultList();
+        if (!students.isEmpty()) {
+            for (AppUser student : students) {
+                ActivitiesMap newActivitiesMap = new ActivitiesMap();
+                newActivitiesMap.setStudentEmail(student);
+                newActivitiesMap.setActivity(activity);
+                newActivitiesMap.setDateEnabled(dateEnabled);
+                newActivitiesMap.setDateDisabled(dateDisabled);
+                em.merge(newActivitiesMap);
+            }
+        }
+        ActivitiesMap newActivitiesMap = new ActivitiesMap();
+        newActivitiesMap.setActivity(activity);
+        AppUser admin = (AppUser) em.createNamedQuery("AppUser.findByUserRole").setParameter("userRole", 0).getSingleResult();
+        newActivitiesMap.setStudentEmail(admin);
+        newActivitiesMap.setDateEnabled(dateEnabled);
+        newActivitiesMap.setDateDisabled(dateDisabled);
+        em.merge(newActivitiesMap);
     }
-    
+
     public void addUser(AppUser user) {
         em.persist(new Groups(user.getEmail(), "STUDENT"));
         em.persist(user);
@@ -79,22 +102,35 @@ public class TransactionsController {
             SkillsMap skillsMap = new SkillsMap();
             skillsMap.setStudentEmail(user);
             skillsMap.setCategoryId(category);
-           em.persist(skillsMap);   
+            em.persist(skillsMap);
         }
-        List<Activity> activities = em.createNamedQuery("Activity.findAll").getResultList();
-        for (Activity activity : activities) {
+        AppUser admin = (AppUser) em.createNamedQuery("AppUser.findByUserRole").setParameter("userRole", 0).getSingleResult();
+        List<ActivitiesMap> nullActivitiesMapList = em.createNamedQuery("ActivitiesMap.findByStudentEmail").setParameter("studentEmail", admin).getResultList();
+        for (ActivitiesMap nullActivitiesMap : nullActivitiesMapList) {
             ActivitiesMap activitiesMap = new ActivitiesMap();
-            activitiesMap.setActivity(activity);
+            activitiesMap.setActivity(nullActivitiesMap.getActivity());
+            activitiesMap.setDateEnabled(nullActivitiesMap.getDateEnabled());
+            activitiesMap.setDateDisabled(nullActivitiesMap.getDateDisabled());
             activitiesMap.setStudentEmail(user);
             em.persist(activitiesMap);
         }
+//        for (Activity activity : activities) {
+//            ActivitiesMap activitiesMap = new ActivitiesMap();
+//            activitiesMap.setActivity(activity);
+//            activitiesMap.setStudentEmail(user);
+//            em.persist(activitiesMap);
+//        }
 
     }
-    
+
+    public void saveUser(AppUser user) {
+        em.merge(user);
+    }
+
     public void saveActivitiesMap(ActivitiesMap activitiesMap) {
         em.merge(activitiesMap);
     }
-    
+
     public void saveSkillsMap(SkillsMap skillsMap) {
         em.merge(skillsMap);
     }

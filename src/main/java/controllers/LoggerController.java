@@ -9,6 +9,7 @@ import entities.ActivitiesMap;
 import entities.AppUser;
 import entities.SkillsMap;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -45,7 +46,14 @@ public class LoggerController implements Serializable {
     public void init() {
         HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
         student = em.find(AppUser.class, request.getUserPrincipal().getName());
-        activities = em.createNamedQuery("ActivitiesMap.findNotLoggedByStudent").setParameter("studentEmail", student).setParameter("logged", false).getResultList();
+        List<ActivitiesMap> allActivities = em.createNamedQuery("ActivitiesMap.findNotLoggedByStudent").setParameter("studentEmail", student).setParameter("logged", false).getResultList();
+        Date currentDate = new Date();
+        activities = new ArrayList<>();
+        for (ActivitiesMap activity : allActivities) {
+            if (!currentDate.before(activity.getDateEnabled()) && !currentDate.after(activity.getDateDisabled())) {
+                activities.add(activity);
+            }
+        }
     }
 
     public AppUser getStudent() {
@@ -84,7 +92,7 @@ public class LoggerController implements Serializable {
         transactions.saveActivitiesMap(activity);
         transactions.saveSkillsMap(skillsMap);
         activities = em.createNamedQuery("ActivitiesMap.findNotLoggedByStudent").setParameter("studentEmail", student).setParameter("logged", false).getResultList();
-
+        aux.setStudentLevel(student);
     }
 
 }

@@ -33,8 +33,8 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(name = "Activity.findAll", query = "SELECT a FROM Activity a")
     , @NamedQuery(name = "Activity.findById", query = "SELECT a FROM Activity a WHERE a.id = :id")
-    , @NamedQuery(name = "Activity.findByCategoryId", query = "SELECT a FROM Activity a WHERE a.categoryId = :categoryId")
-    , @NamedQuery(name = "Activity.findByEnabled", query = "SELECT a FROM Activity a WHERE a.enabled = :enabled")})
+    , @NamedQuery(name = "Activity.findByCategoryId", query = "SELECT a FROM Activity a WHERE a.categoryId = :categoryId")})
+
 public class Activity implements Serializable {
 
     @Column(name = "ENABLED")

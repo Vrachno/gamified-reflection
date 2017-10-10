@@ -5,9 +5,12 @@
  */
 package controllers;
 
+import entities.ActivitiesMap;
 import entities.AppUser;
 import entities.Category;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -26,11 +29,12 @@ import org.primefaces.model.chart.LineChartModel;
  */
 @ManagedBean(name = "profileController")
 @ViewScoped
-public class ProfileController implements Serializable{
+public class ProfileController implements Serializable {
 
     @PersistenceContext
     private EntityManager em;
-    
+    @EJB
+    private TransactionsController transactions;
     @EJB
     Auxilliary aux;
 
@@ -39,6 +43,9 @@ public class ProfileController implements Serializable{
     private LineChartModel lineModel;
     private boolean activitiesPending;
     private List<Category> categories;
+    private boolean editing;
+    private String level;
+    private int progress;
 
     public ProfileController() {
     }
@@ -51,7 +58,18 @@ public class ProfileController implements Serializable{
         student.setSkillsMapList(em.createNamedQuery("SkillsMap.findByStudentEmail").setParameter("studentEmail", student).getResultList());
         setBarModel(aux.createBarModel(student, barModel));
         setLineModel(aux.createLineModel(student, lineModel));
-        setActivitiesPending(!em.createNamedQuery("ActivitiesMap.findNotLoggedByStudent").setParameter("studentEmail", student).setParameter("logged", false).getResultList().isEmpty());
+        List<ActivitiesMap> allActivities = em.createNamedQuery("ActivitiesMap.findNotLoggedByStudent").setParameter("studentEmail", student).setParameter("logged", false).getResultList();
+        if (!allActivities.isEmpty()) {
+            List<ActivitiesMap> currentActivities = new ArrayList<>();
+            Date currentDate = new Date();
+            for (ActivitiesMap activity : allActivities) {
+                if (!currentDate.before(activity.getDateEnabled()) && !currentDate.after(activity.getDateDisabled())) {
+                    currentActivities.add(activity);
+                }
+            }
+            setActivitiesPending(!currentActivities.isEmpty());
+        }
+        aux.setStudentLevel(student);
     }
 
     public AppUser getStudent() {
@@ -88,6 +106,35 @@ public class ProfileController implements Serializable{
 
     public List<Category> getCategories() {
         return categories;
-    }   
-        
+    }
+
+    public boolean getEditing() {
+        return editing;
+    }
+
+    public void setEditing(boolean editing) {
+        this.editing = editing;
+    }
+
+    public void changeNickname() {
+        transactions.saveUser(student);
+        setEditing(false);
+    }
+
+    public String getLevel() {
+        return level;
+    }
+
+    public void setLevel(String level) {
+        this.level = level;
+    }
+
+    public int getProgress() {
+        return progress;
+    }
+
+    public void setProgress(int progress) {
+        this.progress = progress;
+    }
+
 }

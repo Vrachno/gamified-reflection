@@ -8,14 +8,21 @@
     </h:head>
     <h:body>
         <p:panel id="content">
+            
+                <div id="level" class="col-lg-2 col-md-2 center-block text-center" style="float: none; text-align: center; margin-right: 0">
+                    <h:outputText value="#{aux.level}" style="font-weight: bold"/>
+                    <br></br>
+                    <p:progressBar value="#{aux.progress}" labelTemplate="{value}%"/>
+                </div>
+            
             <p:outputLabel value="How well did you do in these activities?" />
             <p:dataList value="#{loggerController.activities}" var="activityMap" emptyMessage="No pending activities!" id="activitiesList">
                 <h:outputText value="#{activityMap.activity.title}"/>
                 <p:panelGrid columns="3">
                     <h:form>
-                        <p:commandButton value=":)" actionListener="#{loggerController.log(activityMap, loggerController.aux.ANSWER_GOOD)}" ajax="true" update=":activitiesList"/>
-                        <p:commandButton value=":|" actionListener="#{loggerController.log(activityMap, loggerController.aux.ANSWER_NEUTRAL)}" ajax="true" update=":activitiesList"/>
-                        <p:commandButton value=":(" actionListener="#{loggerController.log(activityMap, loggerController.aux.ANSWER_BAD)}" ajax="true" update=":activitiesList"/>
+                        <p:commandButton value=":)" actionListener="#{loggerController.log(activityMap, loggerController.aux.ANSWER_GOOD)}" ajax="true" update=":activitiesList @(:content:level)"/>
+                        <p:commandButton value=":|" actionListener="#{loggerController.log(activityMap, loggerController.aux.ANSWER_NEUTRAL)}" ajax="true" update=":activitiesList @(:content:level)"/>
+                        <p:commandButton value=":(" actionListener="#{loggerController.log(activityMap, loggerController.aux.ANSWER_BAD)}" ajax="true" update=":activitiesList @(:content:level)"/>
                     </h:form>
                 </p:panelGrid>
             </p:dataList>

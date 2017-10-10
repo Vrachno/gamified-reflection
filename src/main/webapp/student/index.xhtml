@@ -9,25 +9,43 @@
         <h:outputStylesheet library="webjars" name="bootstrap/4.0.0-alpha.6-1/css/bootstrap.min-jsf.css" />
     </h:head>
     <h:body>
-        <p:outputLabel value="Welcome, #{profileController.student.firstName}!" />
         <div class="row">
-            <p:panel id="info" class="col-md-6 col-lg-6">
+            <h:form id="welcome" class="col-lg-2 col-md-2">
+                <p:outputLabel value="Welcome,&#160;" /> 
+                <p:outputLabel rendered="#{!profileController.editing}" value="#{profileController.student.nickname}!" />
+                <p:inputText rendered="#{profileController.editing}" value="#{profileController.student.nickname}" maxlength="12"/>
+                <p:commandButton rendered="#{profileController.editing}" value="OK" type="submit" actionListener="#{profileController.changeNickname()}" ajax="true" update="welcome @(:info)"/>
+                <br></br>
+                <p:commandLink rendered="#{!profileController.editing}" value="Change nickname" actionListener="#{profileController.setEditing(true)}" ajax="true" update="welcome"/>
+            </h:form>
+            <div class="col-lg-2 col-md-2 center-block text-center" style="float: none; text-align: center; margin-right: 0">
+                <h:outputText value="#{aux.level}" style="font-weight: bold"/>
+                <br></br>
+                <p:progressBar value="#{aux.progress}" labelTemplate="{value}%"/>
+            </div>
+        </div>
+        <div class="row">
+            <p:panel id="info" class="col-md-4 col-lg-4">
                 <p:link rendered="#{profileController.activitiesPending}" value="New activities available!" outcome="logger.html" style="background-color: #ff9933"/>
                 <ui:repeat value="#{profileController.categories}" var="category">
                     <div >
-                        <h:outputText  rendered="#{aux.topOfClass(category).contains(profileController.student)}" value="You have the top score for '#{category.title}' in your class. Good job!" />
+                        <h:outputText rendered="#{aux.topOfClass(category).contains(profileController.student)}" value="You have the top score for '#{category.title}' in your class. Good job!" />
                     </div>
                 </ui:repeat>
-               
+                <div class="row" style="margin-top: 10%">
+                    <div class="col-md-12 col-lg-12">
+                        <p:graphicImage value="#{aux.graphicImage}" style="width: 100%; height: auto;"  />
+                    </div>
+                </div>
             </p:panel>
-            <p:panel id="studentDetails" class="col-md-6 col-lg-6">
+            <p:panel id="studentDetails" class="col-md-8 col-lg-8">
                 <p:chart id="barChart" type="bar" model="#{profileController.barModel}" />
                 <p:chart id="lineChart" type="line" model="#{profileController.lineModel}" />
             </p:panel>  
         </div>
         <h:form>
             <p:commandButton value="Logout" actionListener="#{loginController.logout()}" />
-        </h:form>
+        </h:form>            
     </h:body>
 </html>
 
