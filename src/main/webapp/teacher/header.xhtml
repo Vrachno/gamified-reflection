@@ -7,16 +7,12 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:body>
         <ui:composition>
-            <p:tabMenu activeIndex="#{(request.requestURI).equalsIgnoreCase('/GamifiedReflection/teacher/students.html') ? 0 :
-                                      (request.requestURI).equalsIgnoreCase('/GamifiedReflection/teacher/categories.html') ? 1 :
-                                      (request.requestURI).equalsIgnoreCase('/GamifiedReflection/teacher/activities.html') ? 2 : 3}">
+            <p:tabMenu activeIndex="#{(request.requestURI).equalsIgnoreCase('/GamifiedReflection/teacher/students.html') ? 0 : 1 }">
                 <p:menuitem outcome="students.html" value="Students" class="text-center"/>
-                <p:menuitem outcome="categories.html" value="Categories" class="text-center"/>
                 <p:menuitem outcome="activities.html" value="Activities" class="text-center"/>
-                <p:menuitem outcome="scheduler.html" value="Scheduler" class="text-center"/>
 
             </p:tabMenu>
-            <p:outputLabel value="Welcome, #{request.userPrincipal.name}"  style="float: right"/>
+            <p:outputLabel value="Welcome, administrator"  style="float: right"/>
                             <p:commandButton value="Logout" actionListener="#{loginController.logout()}" />
         </ui:composition>
     </h:body>

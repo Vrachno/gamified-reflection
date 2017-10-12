@@ -93,6 +93,16 @@ public class TransactionsController {
         newActivitiesMap.setDateDisabled(dateDisabled);
         em.merge(newActivitiesMap);
     }
+    
+    public void removeActivitiesMaps(ActivitiesMap activitiesMap) {
+
+        List<ActivitiesMap> activitiesMaps = em.createNamedQuery("ActivitiesMap.findByDateEnabledAndTitle")
+                .setParameter("dateEnabled", activitiesMap.getDateEnabled())
+                .setParameter("title", activitiesMap.getActivity().getTitle()).getResultList();
+        for (ActivitiesMap studentActivityMap : activitiesMaps) {
+            em.remove(em.merge(studentActivityMap));
+        }
+    }
 
     public void addUser(AppUser user) {
         em.persist(new Groups(user.getEmail(), "STUDENT"));

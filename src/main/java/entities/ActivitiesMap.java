@@ -37,7 +37,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "ActivitiesMap.findByStudentEmail", query = "SELECT a FROM ActivitiesMap a WHERE a.studentEmail = :studentEmail")
     , @NamedQuery(name = "ActivitiesMap.findByActivity", query = "SELECT a FROM ActivitiesMap a WHERE a.activity = :activity")
     , @NamedQuery(name = "ActivitiesMap.findByDateAnswered", query = "SELECT a FROM ActivitiesMap a WHERE a.dateAnswered = :dateAnswered")
-    , @NamedQuery(name = "ActivitiesMap.findNotLoggedByStudent", query = "SELECT a FROM ActivitiesMap a WHERE a.studentEmail = :studentEmail AND a.logged = :logged")})
+    , @NamedQuery(name = "ActivitiesMap.findNotLoggedByStudent", query = "SELECT a FROM ActivitiesMap a WHERE a.studentEmail = :studentEmail AND a.logged = :logged")
+    , @NamedQuery(name = "ActivitiesMap.findByDateEnabledAndTitle", query = "SELECT a FROM ActivitiesMap a WHERE a.dateEnabled = :dateEnabled AND a.activity.title = :title")})
 public class ActivitiesMap implements Serializable {
 
     @Column(name = "DATE_ENABLED")

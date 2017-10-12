@@ -8,62 +8,99 @@
     <h:head>
         <title>Gamified Reflection</title>
         <h:outputStylesheet library="webjars" name="bootstrap/4.0.0-alpha.6-1/css/bootstrap.min-jsf.css" />
-        <h:outputStylesheet name="/resources/css/custom.css" />
-
     </h:head>
     <h:body>
         <ui:include src="header.xhtml"/>
 
-        <h:form id="activitiesForm" class="container jumbotron">
+        <div class="container jumbotron">
+            <h2> Select a skill to manage the corresponding activities </h2>
+            <br></br>
             <div class="row">
-                <p:dataList class="col-md-4" value="#{activitiesController.categories}" var="category">
-                    <p:commandLink actionListener="#{activitiesController.setSelectedCategory(category)}" value="#{category.title}" ajax="true" update="@form:activities, @form:newActivityButton" />
-                </p:dataList>
-                <p:dataTable
-                    id="activities"
-                    value="#{activitiesController.categoryActivities}"
-                    var="activity"
-                    styleClass="#{activitiesController.selectedCategory eq null ? 'empty col-md-6' : 'col-md-6'}"
-                    emptyMessage="#{activitiesController.selectedCategory eq null ? 'Please select a skill' : 'No activities added'}"
-                    editable="true">
+                <div class="col-md-6">
+                    <h:form id="categoryForm">
+                        <p:dataTable id="categoriesList"
+                                     value="#{categoriesController.categories}"
+                                     var="category"
+                                     editable="true">
 
-                    <p:ajax event="rowEdit" listener="#{activitiesController.onRowEdit}" update="@this" />
+                            <p:ajax event="rowEdit" listener="#{categoriesController.onRowEditCategory}" update="@form:categoriesList" />
 
-                    <p:column headerText="#{activitiesController.selectedCategory.title} Activities">
-                        <p:cellEditor>
-                            <f:facet name="output"><h:outputText value="#{activity.title}" /></f:facet>
-                            <f:facet name="input"><p:inputText id="titleInput" value="#{activity.title}" style="width:100%"/></f:facet>
-                        </p:cellEditor>
-                    </p:column>
-                    <p:column headerText="Edit" style="width: 10%">
-                        <p:rowEditor />
-                    </p:column>
-                    <p:column headerText="Enable/Disable" style="width: 30%" class="text-center">
-                        <p:commandButton value="Schedule" onclick="PF('schedulerDialog').show()" actionListener="#{activitiesController.setSelectedActivity(activity)}"/>
-<!--                        <p:commandLink value="#//{activity.enabled ? 'Disable' : 'Enable'}" styleClass="#//{!activity.enabled ? 'enabled' : 'disabled'}" actionListener="#//{activitiesController.toggleEnabled(activity)}" ajax="true" update=":activitiesForm"/>-->
-                    </p:column>
-                    <p:column headerText="Delete" style="width: 15%" class="text-center">
-                        <p:commandLink value="X" style="color: red" actionListener="#{activitiesController.deleteActivity(activity)}" ajax="true" update=":activitiesForm"/>
-                    </p:column>
-                </p:dataTable>
+                            <p:column headerText="Skills">
+                                <p:cellEditor>
+                                    <f:facet name="output"><p:commandLink actionListener="#{categoriesController.setSelectedCategory(category)}" value="#{category.title}" ajax="true" process="@this" update=":activitiesForm:activities, :activitiesForm:newActivityButton" /></f:facet>
+                                    <f:facet name="input"><p:inputText id="titleInput" value="#{category.title}" style="width:100%"/></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="Edit" style="width:10%">
+                                <p:rowEditor />
+                            </p:column>
+                            <p:column headerText="Delete" style="width:15%" class="text-center">
+                                <p:commandLink value="X" style="color: red" actionListener="#{categoriesController.deleteCategory(category)}" ajax="true" update="@form:categoriesList"/>
+                            </p:column>
+                        </p:dataTable>
+                        <p:commandButton value="Add New Skill" type="button" onclick="PF('newCategoryDialog').show();" />
+                    </h:form>
+                </div>
+
+                <div class="col-md-6">
+                    <h:form id="activitiesForm">
+                        <p:dataTable
+                            id="activities"
+                            value="#{categoriesController.categoryActivities}"
+                            var="activity"
+                            styleClass="#{categoriesController.selectedCategory eq null ? 'empty' : ''}"
+                            emptyMessage="#{categoriesController.selectedCategory eq null ? 'Please select a skill' : 'No activities added'}"
+                            editable="true">
+
+                            <p:ajax event="rowEdit" listener="#{categoriesController.onRowEditActivity}" update="@this" />
+
+                            <p:column headerText="#{categoriesController.selectedCategory.title} Activities">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{activity.title}" /></f:facet>
+                                    <f:facet name="input"><p:inputText id="titleInput" value="#{activity.title}" style="width:100%"/></f:facet>
+                                </p:cellEditor>
+                            </p:column>
+                            <p:column headerText="Edit" style="width: 10%">
+                                <p:rowEditor />
+                            </p:column>
+                            <p:column headerText="Schedule" style="width: 30%" class="text-center">
+                                <p:commandButton value="Schedule" oncomplete="PF('schedulerDialog').show();" actionListener="#{categoriesController.setSelectedActivity(activity)}" />
+                                <!--                        <p:commandLink value="#//{activity.enabled ? 'Disable' : 'Enable'}" styleClass="#//{!activity.enabled ? 'enabled' : 'disabled'}" actionListener="#//{activitiesController.toggleEnabled(activity)}" ajax="true" update=":activitiesForm"/>-->
+                            </p:column>
+                            <p:column headerText="Delete" style="width: 15%" class="text-center">
+                                <p:commandLink value="X" style="color: red" actionListener="#{categoriesController.deleteActivity(activity)}" ajax="true" update="@form:activities"/>
+                            </p:column>
+                        </p:dataTable>
+                        <p:commandButton id="newActivityButton" disabled="#{categoriesController.selectedCategory eq null}" value="Add New Activity" type="button" onclick="PF('newActivityDialog').show();" style="float: right"/>
+                    </h:form>
+                </div>
             </div>
-            <p:commandButton id="newActivityButton" disabled="#{activitiesController.selectedCategory eq null}" value="Add New Activity" type="button" onclick="PF('newActivityDialog').show();" />
-        </h:form>
-        
+
+        </div>
+
     </h:body>
-    <p:dialog widgetVar="newActivityDialog" modal="true" dynamic="true" height="100px" showHeader="true" header="Add new activity">
+
+    <p:dialog widgetVar="newCategoryDialog" modal="true" dynamic="true" height="100px" showHeader="true" header="Add new skill">
         <p:panel>
             <h:form>
-                <p:inputText value="#{activitiesController.newActivityTitle}"/>
-                <p:commandButton actionListener="#{activitiesController.addActivity(activitiesController.newActivityTitle, activitiesController.selectedCategory)}" value="OK" oncomplete="PF('newActivityDialog').hide();}" ajax="true" update=":activitiesForm" resetValues="true"/>
+                <p:inputText value="#{categoriesController.newCategoryTitle}"/>
+                <p:commandButton actionListener="#{categoriesController.addCategory(categoriesController.newCategoryTitle)}" value="OK" oncomplete="PF('newCategoryDialog').hide();" update="@(:categoriesList)"/>
             </h:form>
         </p:panel>
     </p:dialog>
-    <p:dialog widgetVar="schedulerDialog">
+    <p:dialog widgetVar="newActivityDialog" modal="true" dynamic="true" height="100px" showHeader="true" header="Add new activity">
+        <p:panel>
+            <h:form>
+                <p:inputText value="#{categoriesController.newActivityTitle}"/>
+                <p:commandButton actionListener="#{categoriesController.addActivity(categoriesController.newActivityTitle, categoriesController.selectedCategory)}" value="OK" oncomplete="PF('newActivityDialog').hide();}" ajax="true" update="@(:activitiesForm)" resetValues="true"/>
+            </h:form>
+        </p:panel>
+    </p:dialog>
+    <p:dialog id="dlg" widgetVar="schedulerDialog" header="Select date on which '#{categoriesController.selectedActivity.title}' will be enabled">
         <h:form id="scheduleForm">
-            <p:schedule id="schedule" value="#{activitiesController.scheduleModel}" widgetVar="schedule">
-                <p:ajax event="dateSelect" listener="#{activitiesController.onDateSelect}" update="@this"/>
-                <p:ajax event="eventSelect" listener="#{activitiesController.onEventSelect}" />
+            <p:schedule id="schedule" value="#{categoriesController.scheduleModel}" widgetVar="schedule">
+                <p:ajax event="dateSelect" listener="#{categoriesController.onDateSelect}" update="@this"/>
+                <p:ajax event="eventSelect" listener="#{categoriesController.onEventSelect}" update="@this"/>
             </p:schedule>
         </h:form>
     </p:dialog>
@@ -75,6 +112,5 @@
         }
         );
     </script>
-
 </html>
 
