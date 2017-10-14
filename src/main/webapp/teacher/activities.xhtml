@@ -8,6 +8,9 @@
     <h:head>
         <title>Gamified Reflection</title>
         <h:outputStylesheet library="webjars" name="bootstrap/4.0.0-alpha.6-1/css/bootstrap.min-jsf.css" />
+        <style>
+           #{categoriesController.styles}
+        </style>
     </h:head>
     <h:body>
         <ui:include src="header.xhtml"/>
@@ -64,7 +67,7 @@
                                 <p:rowEditor />
                             </p:column>
                             <p:column headerText="Schedule" style="width: 30%" class="text-center">
-                                <p:commandButton value="Schedule" oncomplete="PF('schedulerDialog').show();" actionListener="#{categoriesController.setSelectedActivity(activity)}" />
+                                <p:commandButton value="Schedule" oncomplete="PF('schedulerDialog').show();" actionListener="#{categoriesController.setSelectedActivity(activity)}" update=":newEventDlg"/>
                                 <!--                        <p:commandLink value="#//{activity.enabled ? 'Disable' : 'Enable'}" styleClass="#//{!activity.enabled ? 'enabled' : 'disabled'}" actionListener="#//{activitiesController.toggleEnabled(activity)}" ajax="true" update=":activitiesForm"/>-->
                             </p:column>
                             <p:column headerText="Delete" style="width: 15%" class="text-center">
@@ -96,12 +99,19 @@
             </h:form>
         </p:panel>
     </p:dialog>
-    <p:dialog id="dlg" widgetVar="schedulerDialog" header="Select date on which '#{categoriesController.selectedActivity.title}' will be enabled">
+    <p:dialog id="newEventDlg" widgetVar="schedulerDialog" modal="true" header="Select date on which '#{categoriesController.selectedActivity.title}' will be enabled. Click on existing activity to delete." dynamic="true">
         <h:form id="scheduleForm">
-            <p:schedule id="schedule" value="#{categoriesController.scheduleModel}" widgetVar="schedule">
+            <p:schedule id="schedule" value="#{categoriesController.scheduleModel}" widgetVar="schedule" style="height: 700px" timeZone="GMT+2">
                 <p:ajax event="dateSelect" listener="#{categoriesController.onDateSelect}" update="@this"/>
-                <p:ajax event="eventSelect" listener="#{categoriesController.onEventSelect}" update="@this"/>
+                <p:ajax event="eventSelect" listener="#{categoriesController.onEventSelect}"  oncomplete="PF('deleteDialog').show();" update=":deleteEventDlg"/>
             </p:schedule>
+        </h:form>
+    </p:dialog>
+    <p:dialog id="deleteEventDlg" widgetVar="deleteDialog" modal="true" header="Delete scheduled activity?" dynamic="true">
+        <h:form id="deleteEventForm">
+            <h:outputText value="Delete activity '#{categoriesController.selectedActivity.title}' starting on #{categoriesController.event.startDate}?" />
+            <p:commandButton value="Yes" actionListener="#{categoriesController.deleteEvent()}" onsuccess="PF('deleteDialog').hide();" oncomplete="PF('schedulerDialog').show();" update=":newEventDlg"/>
+            <p:commandButton value="No" onclick="PF('deleteDialog').hide();" />
         </h:form>
     </p:dialog>
     <script>

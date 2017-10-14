@@ -14,6 +14,7 @@ import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
@@ -66,9 +67,10 @@ public class CategoriesController implements Serializable{
         AppUser admin = (AppUser) em.createNamedQuery("AppUser.findByUserRole").setParameter("userRole", 0).getSingleResult();
         List<ActivitiesMap> nullActivitiesMapList = em.createNamedQuery("ActivitiesMap.findByStudentEmail").setParameter("studentEmail", admin).getResultList();
         for (ActivitiesMap nullActivitiesMap : nullActivitiesMapList) {
-            scheduleModel.addEvent(new DefaultScheduleEvent(nullActivitiesMap.getActivity().getTitle(),
+            DefaultScheduleEvent newEvent = new DefaultScheduleEvent(nullActivitiesMap.getActivity().getTitle(),
                     nullActivitiesMap.getDateEnabled(),
-                    nullActivitiesMap.getDateDisabled(), true));
+                    nullActivitiesMap.getDateDisabled(), nullActivitiesMap.getActivity().getCategoryId().getTitle().toLowerCase().replace(" ", "-"));
+            scheduleModel.addEvent(newEvent);
         }
         for (Category category : categories) {
             category.setActivityList(em.createNamedQuery("Activity.findByCategoryId").setParameter("categoryId", category).getResultList());
@@ -196,11 +198,15 @@ public class CategoriesController implements Serializable{
 
     public void onEventSelect(SelectEvent e) {
         event = (ScheduleEvent) e.getObject();
+    }
+
+    public void deleteEvent() {
         ActivitiesMap activitiesMap = (ActivitiesMap) em.createNamedQuery("ActivitiesMap.findByDateEnabledAndTitle")
                 .setParameter("dateEnabled", event.getStartDate())
                 .setParameter("title", event.getTitle()).getResultList().get(0);
         transactions.removeActivitiesMaps(activitiesMap);
-        init();
+        scheduleModel.deleteEvent(event);
+        //init();
     }
 
     public void onDateSelect(SelectEvent e) {
@@ -208,7 +214,7 @@ public class CategoriesController implements Serializable{
         Calendar c = Calendar.getInstance();
         c.setTime(date);
         c.add(Calendar.DATE, 7);
-        event = new DefaultScheduleEvent(selectedActivity.getTitle(), date, c.getTime());
+        event = new DefaultScheduleEvent(selectedActivity.getTitle(), date, c.getTime(), selectedActivity.getCategoryId().getTitle().toLowerCase().replace(" ", "-"));
         try {
             em.createNamedQuery("ActivitiesMap.findByDateEnabledAndTitle")
                     .setParameter("dateEnabled", event.getStartDate())
@@ -216,8 +222,34 @@ public class CategoriesController implements Serializable{
         } catch (NoResultException ex) {
             addEvent();
         } catch (NonUniqueResultException ex) {
-            
+
         }
+    }
+
+    public String getStyles() {
+        StringBuilder style = new StringBuilder();
+        int factor = 0;
+        Random rand = new Random();
+        for (Category category : categories) {
+            String className = category.getTitle().toLowerCase().replace(' ', '-');
+            int hue = (int) (category.getId()*10 + factor);
+            int saturation = (int) (rand.nextInt(50)) + 50;
+            style.append(".")
+                    .append(className)
+                    .append(",\n.fc-agenda ")
+                    .append(className)
+                    .append(" .fc-event-time,\n")
+                    .append(className)
+                    .append(" a {\n    background-color: hsl(")
+                    .append(hue).append(", ").append(saturation+"%").append(", ").append("80%")
+                    .append(");\n    border-color: hsl(")
+                    .append(hue).append(", ").append(saturation+"%").append(", ").append("80%")
+                    .append(");\n    color: black;\n    font-weight: bold;\n}\n");
+            
+            factor+=80;
+        }
+
+        return style.toString();
     }
 
 }
