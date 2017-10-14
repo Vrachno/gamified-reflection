@@ -66,8 +66,14 @@ public class Auxilliary {
 
     private boolean activitiesPending;
     private LinkedHashMap<AppUser, Integer> studentsScores;
+    private LinkedHashMap<AppUser, Integer> studentsOverallScores;
     private String level;
     private int progress;
+    private int currentUserOverallScore;
+    private Category selectedCategory;
+    private StreamedContent graphicImage;
+    private List<AppUser> studentsList;
+    private AppUser student;
 
     public int getANSWER_GOOD() {
         return ANSWER_GOOD;
@@ -108,7 +114,7 @@ public class Auxilliary {
                 highestScore = skillsMap.getSkillLevel();
             }
         }
-        
+
         barModel.addSeries(skills);
 
         barModel.setTitle(student.getFirstName() + " " + student.getLastName() + " skills");
@@ -151,7 +157,7 @@ public class Auxilliary {
         }
 
         for (ChartSeries series : lineModel.getSeries()) {
-        List<Integer> seriesValues = new ArrayList(series.getData().values());
+            List<Integer> seriesValues = new ArrayList(series.getData().values());
             for (ActivitiesMap activitiesMap : activitiesMapList) {
                 if (activitiesMap.getActivity().getCategoryId().getTitle().equals(series.getLabel())) {
                     if (series.getData().get(new SimpleDateFormat("dd/MM").format(activitiesMap.getDateAnswered())) == null
@@ -160,11 +166,10 @@ public class Auxilliary {
                         seriesValues.add(activitiesMap.getNewSkillLevel());
                     }
                 } else {
-                    series.set(new SimpleDateFormat("dd/MM").format(activitiesMap.getDateAnswered()), seriesValues.get(seriesValues.size()-1));
+                    series.set(new SimpleDateFormat("dd/MM").format(activitiesMap.getDateAnswered()), seriesValues.get(seriesValues.size() - 1));
                 }
             }
         }
-
 
         Axis axisY = lineModel.getAxis(AxisType.Y);
 
@@ -215,82 +220,118 @@ public class Auxilliary {
             }
         });
         ArrayList<AppUser> topStudents = new ArrayList<>();
-        if (allSkillsMaps.size()>0) {
-        if (allSkillsMaps.get(0).getSkillLevel() != 0) {
-            topStudents.add(allSkillsMaps.get(0).getStudentEmail());
-        }
-        for (int i = 1; i < allSkillsMaps.size(); i++) {
-            if ((allSkillsMaps.get(i).getSkillLevel() == allSkillsMaps.get(0).getSkillLevel()) && allSkillsMaps.get(0).getSkillLevel() != 0) {
-                topStudents.add(allSkillsMaps.get(i).getStudentEmail());
+        if (allSkillsMaps.size() > 0) {
+            if (allSkillsMaps.get(0).getSkillLevel() != 0) {
+                topStudents.add(allSkillsMaps.get(0).getStudentEmail());
             }
-        }
+            for (int i = 1; i < allSkillsMaps.size(); i++) {
+                if ((allSkillsMaps.get(i).getSkillLevel() == allSkillsMaps.get(0).getSkillLevel()) && allSkillsMaps.get(0).getSkillLevel() != 0) {
+                    topStudents.add(allSkillsMaps.get(i).getStudentEmail());
+                }
+            }
         }
         return topStudents;
     }
 
     public StreamedContent getGraphicImage() {
-        FacesContext context = FacesContext.getCurrentInstance();
-        setStudentScores();
-        if (context.getCurrentPhaseId() == PhaseId.RENDER_RESPONSE) {
-            return new DefaultStreamedContent();
-        } else {
-            try {
-                File img = new File("../docroot/GamifiedReflection/topthree.png");
-                BufferedImage bufferedImg = ImageIO.read(img);
-                Graphics2D g2 = bufferedImg.createGraphics();
-                g2.setColor(Color.black);
-                g2.setFont(new Font(null, 0, 30));
-                List<AppUser> students = new ArrayList<>(studentsScores.keySet());
-                List<Integer> scores = new ArrayList<>(studentsScores.values());
-                g2.drawString(students.get(0).getNickname(), (465 - (int) g2.getFontMetrics().stringWidth(students.get(0).getNickname()) / 2), 115);
-                g2.drawString(scores.get(0).toString(), 390, 450);
-                if (students.size() > 1) {
-                    g2.drawString(students.get(1).getNickname(), (150 - (int) g2.getFontMetrics().stringWidth(students.get(1).getNickname()) / 2), 210);
-                    g2.drawString(scores.get(1).toString(), 100, 450);
-                }
-                if (students.size() > 2) {
-                    g2.drawString(students.get(2).getNickname(), (750 - (int) g2.getFontMetrics().stringWidth(students.get(2).getNickname()) / 2), 260);
-                    g2.drawString(scores.get(2).toString(), 670, 450);
-                }
-                ByteArrayOutputStream os = new ByteArrayOutputStream();
-                ImageIO.write(bufferedImg, "png", os);
-                byte[] byteArray = os.toByteArray();
-                ByteArrayInputStream inputStream = new ByteArrayInputStream(byteArray);
-                return new DefaultStreamedContent(inputStream, "image/png");
-            } catch (IOException ex) {
-                Logger.getLogger(ProfileController.class.getName()).log(Level.SEVERE, null, ex);
-                return new DefaultStreamedContent();
-            }
-        }
+        return graphicImage;
     }
-    
-    public void setStudentScores() {
-        List<AppUser> studentsList = em.createNamedQuery("AppUser.findByUserRole").setParameter("userRole", 1).getResultList();
-        HashMap<AppUser, Integer> unorderedStudentsScores = new HashMap();
-        studentsList.forEach((student) -> {
-            int score = 0;
-            List<SkillsMap> studentSkillMaps = em.createNamedQuery("SkillsMap.findByStudentEmail").setParameter("studentEmail", student).getResultList();
-            score = studentSkillMaps.stream().map((skillsMap) -> skillsMap.getSkillLevel()).reduce(score, Integer::sum);
-            unorderedStudentsScores.put(student, score);
-        });
-        studentsScores = sortByValue(unorderedStudentsScores);
+
+    public void setGraphicImage() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        setStudentScores(selectedCategory);
+//        if (context.getCurrentPhaseId() == PhaseId.RENDER_RESPONSE) {
+//            graphicImage = new DefaultStreamedContent();
+//        } else {
+        try {
+            File img = new File("../docroot/GamifiedReflection/topthree.png");
+            BufferedImage bufferedImg = ImageIO.read(img);
+            Graphics2D g2 = bufferedImg.createGraphics();
+            g2.setColor(Color.black);
+            g2.setFont(new Font(null, 0, 30));
+            List<AppUser> students;
+            List<Integer> scores;
+            if (selectedCategory != null) {
+                students = new ArrayList<>(studentsScores.keySet());
+                scores = new ArrayList<>(studentsScores.values());
+            } else {
+                students = new ArrayList<>(studentsOverallScores.keySet());
+                scores = new ArrayList<>(studentsOverallScores.values());
+            }
+            g2.drawString(students.get(0).getNickname(), (465 - (int) g2.getFontMetrics().stringWidth(students.get(0).getNickname()) / 2), 115);
+            g2.drawString(scores.get(0).toString(), 390, 450);
+            if (students.size() > 1) {
+                g2.drawString(students.get(1).getNickname(), (150 - (int) g2.getFontMetrics().stringWidth(students.get(1).getNickname()) / 2), 210);
+                g2.drawString(scores.get(1).toString(), 100, 450);
+            }
+            if (students.size() > 2) {
+                g2.drawString(students.get(2).getNickname(), (750 - (int) g2.getFontMetrics().stringWidth(students.get(2).getNickname()) / 2), 260);
+                g2.drawString(scores.get(2).toString(), 670, 450);
+            }
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            ImageIO.write(bufferedImg, "png", os);
+            byte[] byteArray = os.toByteArray();
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(byteArray);
+            graphicImage = new DefaultStreamedContent(inputStream, "image/png");
+        } catch (IOException ex) {
+            Logger.getLogger(ProfileController.class.getName()).log(Level.SEVERE, null, ex);
+            graphicImage = new DefaultStreamedContent();
+        }
+        //}
+    }
+
+    public void setStudentScores(Category category) {
+        if (category == null) {
+            setStudentsOverallScores();
+        } else {
+            HashMap<AppUser, Integer> unorderedStudentsScores = new HashMap();
+            studentsList.forEach((student) -> {
+                int score = 0;
+                List<SkillsMap> studentSkillMaps;
+
+                studentSkillMaps = em.createNamedQuery("SkillsMap.findByCategoryIdAndStudentEmail").setParameter("studentEmail", student).setParameter("categoryId", category).getResultList();
+                score = studentSkillMaps.stream().map((skillsMap) -> skillsMap.getSkillLevel()).reduce(score, Integer::sum);
+                unorderedStudentsScores.put(student, score);
+                studentsScores = sortByValue(unorderedStudentsScores);
+            });
+        }
     }
 
     public LinkedHashMap<AppUser, Integer> getStudentsScores() {
         return studentsScores;
     }
 
+    public void setStudentsOverallScores() {
+        HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        AppUser loggedInUser = em.find(AppUser.class, request.getUserPrincipal().getName());
+        HashMap<AppUser, Integer> unorderedStudentsScores = new HashMap();
+        studentsList = em.createNamedQuery("AppUser.findByUserRole").setParameter("userRole", 1).getResultList();
+        for (AppUser student : studentsList) {
+            int score = 0;
+            List<SkillsMap> studentSkillMaps;
+            studentSkillMaps = em.createNamedQuery("SkillsMap.findByStudentEmail").setParameter("studentEmail", student).getResultList();
+            score = studentSkillMaps.stream().map((skillsMap) -> skillsMap.getSkillLevel()).reduce(score, Integer::sum);
+            if (loggedInUser.getEmail().equals(student.getEmail())) {
+                this.student = student;
+                setCurrentUserOverallScore(score);
+            }
+            setStudentLevel(student, score);
+            unorderedStudentsScores.put(student, score);
+        }
+        studentsOverallScores = sortByValue(unorderedStudentsScores);
+    }
+
     public static <K, V extends Comparable<? super V>> LinkedHashMap<K, V> sortByValue(Map<K, V> map) {
-    return map.entrySet()
-              .stream()
-              .sorted(Map.Entry.comparingByValue(Collections.reverseOrder()))
-              .collect(Collectors.toMap(
-                Map.Entry::getKey, 
-                Map.Entry::getValue, 
-                (e1, e2) -> e1, 
-                LinkedHashMap::new
-              ));
-}
+        return map.entrySet()
+                .stream()
+                .sorted(Map.Entry.comparingByValue(Collections.reverseOrder()))
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (e1, e2) -> e1,
+                        LinkedHashMap::new
+                ));
+    }
 
     public int calculateProgress(double score, double currentMinimum, double nextMinimum) {
         return (int) ((int) 100 * (score - currentMinimum) / (nextMinimum - currentMinimum));
@@ -311,46 +352,131 @@ public class Auxilliary {
     public void setProgress(int progress) {
         this.progress = progress;
     }
-    
-    public void setStudentLevel(AppUser student) {
-        setStudentScores();
-        int score = getStudentsScores().get(student);
+
+    public int getCurrentUserOverallScore() {
+        return currentUserOverallScore;
+    }
+
+    public void setCurrentUserOverallScore(int currentUserOverallScore) {
+        this.currentUserOverallScore = currentUserOverallScore;
+    }
+
+    public void setStudentLevel(AppUser student, int score) {
+        //setStudentScores(null);
+        //int score = getStudentsOverallScores().get(student);
         if (score < 20) {
-            level = "n00b";
-            progress = calculateProgress(score, 0, 20);
+            student.setLevel("n00b");
+            if (this.student!=null && student.getEmail().equals(this.student.getEmail())) {
+                progress = calculateProgress(currentUserOverallScore, 0, 20);
+            }
         } else if (score <= 50) {
-            level = "Rookie";
-            progress = calculateProgress(score, 20, 50);
+            student.setLevel("Rookie");
+            if (this.student!=null && student.getEmail().equals(this.student.getEmail())) {
+                progress = calculateProgress(currentUserOverallScore, 20, 50);
+            }
         } else if (score <= 90) {
-            level = "Beginner";
-            progress = calculateProgress(score, 50, 90);
+            student.setLevel("Beginner");
+            if (this.student!=null && student.getEmail().equals(this.student.getEmail())) {
+                progress = calculateProgress(currentUserOverallScore, 50, 90);
+            }
         } else if (score <= 140) {
-            level = "Elementary";
-            progress = calculateProgress(score, 90, 140);
+            student.setLevel("Elementary");
+            if (this.student!=null && student.getEmail().equals(this.student.getEmail())) {
+                progress = calculateProgress(currentUserOverallScore, 90, 140);
+            }
         } else if (score <= 200) {
-            level = "Intermediate";
-            progress = calculateProgress(score, 140, 200);
+            student.setLevel("Intermediate");
+            if (this.student!=null && student.getEmail().equals(this.student.getEmail())) {
+                progress = calculateProgress(currentUserOverallScore, 140, 200);
+            }
         } else if (score <= 270) {
-            level = "Experienced";
-            progress = calculateProgress(score, 200, 270);
+            student.setLevel("Experienced");
+            if (this.student!=null && student.getEmail().equals(this.student.getEmail())) {
+                progress = calculateProgress(currentUserOverallScore, 200, 270);
+            }
         } else if (score <= 350) {
-            level = "Achiever";
-            progress = calculateProgress(score, 270, 350);
+            student.setLevel("Achiever");
+            if (this.student!=null && student.getEmail().equals(this.student.getEmail())) {
+                progress = calculateProgress(currentUserOverallScore, 270, 350);
+            }
         } else if (score <= 440) {
-            level = "Seasoned";
-            progress = calculateProgress(score, 350, 440);
+            student.setLevel("Seasoned");
+            if (this.student!=null && student.getEmail().equals(this.student.getEmail())) {
+                progress = calculateProgress(currentUserOverallScore, 350, 440);
+            }
         } else if (score <= 540) {
-            level = "Exemplary";
-            progress = calculateProgress(score, 440, 540);
+            student.setLevel("Exemplary");
+            if (this.student!=null && student.getEmail().equals(this.student.getEmail())) {
+                progress = calculateProgress(currentUserOverallScore, 440, 540);
+            }
         } else if (score <= 650) {
-            level = "Master";
-            progress = calculateProgress(score, 540, 650);
+            student.setLevel("Master");
+            if (this.student!=null && student.getEmail().equals(this.student.getEmail())) {
+                progress = calculateProgress(currentUserOverallScore, 540, 650);
+            }
         } else if (score <= 770) {
-            level = "Extraordinary";
-            progress = calculateProgress(score, 650, 770);
+            student.setLevel("Extraordinary");
+            if (this.student!=null && student.getEmail().equals(this.student.getEmail())) {
+                progress = calculateProgress(currentUserOverallScore, 650, 770);
+            }
         } else {
-            level = "Supreme Leader";
-            progress = 100;
+            student.setLevel("Supreme Leader");
+            if (this.student!=null && student.getEmail().equals(this.student.getEmail())) {
+                progress = 100;
+            }
         }
     }
+
+//    public void setAllLevels() {
+//        setStudentScores(null);
+//        studentsScores.keySet().forEach((student) -> {
+//            AppUser st = student;
+//            int score = studentsScores.get(student);
+//            studentsScores.remove(student);
+//            setStudentLevel(st, score);
+//            studentsScores.put(st, score);
+//        });
+//    }
+    public Category getSelectedCategory() {
+        return selectedCategory;
+    }
+
+    public void setSelectedCategory(Category selectedCategory) throws IOException {
+        this.selectedCategory = selectedCategory;
+        setGraphicImage();
+        FacesContext.getCurrentInstance().getExternalContext().redirect("/GamifiedReflection/student/index.html");
+    }
+
+    public List<AppUser> getStudentsList() {
+        return studentsList;
+    }
+
+    public void setStudentsList(List<AppUser> studentsList) {
+        this.studentsList = studentsList;
+    }
+
+    public LinkedHashMap<AppUser, Integer> getStudentsOverallScores() {
+        return studentsOverallScores;
+    }
+
+    public void setStudentsOverallScores(LinkedHashMap<AppUser, Integer> studentsOverallScores) {
+        this.studentsOverallScores = studentsOverallScores;
+    }
+
+    public AppUser getStudent() {
+        return student;
+    }
+
+    public void setStudent() {
+        HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        AppUser loggedInUser = em.find(AppUser.class, request.getUserPrincipal().getName());
+        List<AppUser> students = new ArrayList<>(studentsOverallScores.keySet());
+        for (AppUser std : students) {
+            if (loggedInUser.getEmail().equals(std.getEmail())) {
+                this.student = std;
+                setCurrentUserOverallScore(studentsOverallScores.get(std));
+            }
+        }
+    }
+
 }

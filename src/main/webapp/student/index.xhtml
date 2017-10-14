@@ -3,7 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
         <title>Gamified Reflection</title>
         <h:outputStylesheet library="webjars" name="bootstrap/4.0.0-alpha.6-1/css/bootstrap.min-jsf.css" />
@@ -19,7 +20,7 @@
                 <p:commandLink rendered="#{!profileController.editing}" value="Change nickname" actionListener="#{profileController.setEditing(true)}" ajax="true" update="welcome"/>
             </h:form>
             <div class="col-lg-2 col-md-2 center-block text-center" style="float: none; text-align: center; margin-right: 0">
-                <h:outputText value="#{aux.level}" style="font-weight: bold"/>
+                <h:outputText value="#{aux.student.level}" style="font-weight: bold"/>
                 <br></br>
                 <p:progressBar value="#{aux.progress}" labelTemplate="{value}%"/>
             </div>
@@ -27,15 +28,34 @@
         <div class="row">
             <p:panel id="info" class="col-md-4 col-lg-4">
                 <p:link rendered="#{profileController.activitiesPending}" value="New activities available!" outcome="logger.html" style="background-color: #ff9933"/>
-                <ui:repeat value="#{profileController.categories}" var="category">
-                    <div >
-                        <h:outputText rendered="#{aux.topOfClass(category).contains(profileController.student)}" value="You have the top score for '#{category.title}' in your class. Good job!" />
-                    </div>
-                </ui:repeat>
+                <!--                <ui:repeat value="#//{profileController.categories}" var="category">
+                                    <div >
+                                        <h:outputText rendered="#//{aux.topOfClass(category).contains(profileController.student)}" value="You have the top score for '#//{category.title}' in your class. Good job!" />
+                                    </div>
+                                </ui:repeat>-->
+                <h:form>
+                    <h:selectOneMenu value="#{aux.selectedCategory}" style="float: right">
+                        <f:ajax render=":topThreeImg" />
+                        <f:converter converterId="categoriesConverter" />
+                        <f:selectItem itemLabel="Overall Score" itemValue=""/>
+                        <f:selectItems value="#{profileController.categories}" var="category" itemValue="#{category.title}" itemLabel="#{category.title}" />
+                    </h:selectOneMenu>
+                </h:form>
                 <div class="row" style="margin-top: 10%">
                     <div class="col-md-12 col-lg-12">
-                        <p:graphicImage value="#{aux.graphicImage}" style="width: 100%; height: auto;"  />
+                        <p:graphicImage id="topThreeImg" value="#{aux.graphicImage}" style="width: 100%; height: auto;"  />
                     </div>
+                    <p:dataTable value="#{aux.selectedCategory ne null ? aux.studentsScores.entrySet().toArray() : aux.studentsOverallScores.entrySet().toArray()}" var="student" >
+                        <p:column headerText="Student">
+                            <h:outputText value="#{student.key.nickname}"/>
+                        </p:column>
+                        <p:column headerText="Score">
+                            <h:outputText value="#{student.value}"/>
+                        </p:column>
+                        <p:column headerText="Level">
+                            <h:outputText value="#{student.key.level}"/>
+                        </p:column>
+                    </p:dataTable>
                 </div>
             </p:panel>
             <p:panel id="studentDetails" class="col-md-8 col-lg-8">

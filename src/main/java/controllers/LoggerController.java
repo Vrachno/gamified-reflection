@@ -54,6 +54,7 @@ public class LoggerController implements Serializable {
                 activities.add(activity);
             }
         }
+        aux.setStudentScores(null);
     }
 
     public AppUser getStudent() {
@@ -92,7 +93,7 @@ public class LoggerController implements Serializable {
         transactions.saveActivitiesMap(activity);
         transactions.saveSkillsMap(skillsMap);
         //activities = em.createNamedQuery("ActivitiesMap.findNotLoggedByStudent").setParameter("studentEmail", student).setParameter("logged", false).getResultList();
-        aux.setStudentLevel(student);
+        aux.setStudentScores(null);
         init();
     }
 

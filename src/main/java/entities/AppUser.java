@@ -19,6 +19,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -78,6 +79,8 @@ public class AppUser implements Serializable {
     private Date dateRegistered;
     @OneToMany(mappedBy = "studentEmail")
     private List<SkillsMap> skills;
+    @Transient
+    private String level;
 
     public AppUser() {
     }
@@ -192,6 +195,14 @@ public class AppUser implements Serializable {
 
     public void setNickname(String nickname) {
         this.nickname = nickname;
+    }
+
+    public String getLevel() {
+        return level;
+    }
+
+    public void setLevel(String level) {
+        this.level = level;
     }
 
 }

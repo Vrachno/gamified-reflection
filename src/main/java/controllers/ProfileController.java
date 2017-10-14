@@ -17,6 +17,7 @@ import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.context.FacesContext;
 import javax.faces.bean.ViewScoped;
+import javax.faces.model.SelectItem;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.servlet.http.HttpServletRequest;
@@ -46,6 +47,8 @@ public class ProfileController implements Serializable {
     private boolean editing;
     private String level;
     private int progress;
+    private Category selectedCategory;
+    private List<SelectItem> categoriesList;
 
     public ProfileController() {
     }
@@ -54,6 +57,11 @@ public class ProfileController implements Serializable {
     public void init() {
         HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
         categories = em.createNamedQuery("Category.findAll").getResultList();
+        categoriesList = new ArrayList<>();
+        for (Category category : categories) {
+            categoriesList.add(new SelectItem(category, category.getTitle()));
+        }
+        selectedCategory = new Category();
         student = em.find(AppUser.class, request.getUserPrincipal().getName());
         student.setSkillsMapList(em.createNamedQuery("SkillsMap.findByStudentEmail").setParameter("studentEmail", student).getResultList());
         setBarModel(aux.createBarModel(student, barModel));
@@ -69,7 +77,10 @@ public class ProfileController implements Serializable {
             }
             setActivitiesPending(!currentActivities.isEmpty());
         }
-        aux.setStudentLevel(student);
+        //aux.setAllLevels();
+        aux.setStudentsOverallScores();
+        aux.setGraphicImage();
+        //aux.setStudent();
     }
 
     public AppUser getStudent() {
@@ -119,6 +130,7 @@ public class ProfileController implements Serializable {
     public void changeNickname() {
         transactions.saveUser(student);
         setEditing(false);
+        init();
     }
 
     public String getLevel() {
@@ -135,6 +147,24 @@ public class ProfileController implements Serializable {
 
     public void setProgress(int progress) {
         this.progress = progress;
+    }
+
+    public Category getSelectedCategory() {
+        return selectedCategory;
+    }
+
+    public void setSelectedCategory(Category selectedCategory) {
+        this.selectedCategory = selectedCategory;
+        init();
+        //aux.setSelectedCategory(selectedCategory);
+    }
+
+    public List<SelectItem> getCategoriesList() {
+        return categoriesList;
+    }
+
+    public void setCategoriesList(List<SelectItem> categoriesList) {
+        this.categoriesList = categoriesList;
     }
 
 }

@@ -8,6 +8,7 @@ package controllers;
 import entities.AppUser;
 import java.io.IOException;
 import java.io.Serializable;
+import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -27,6 +28,8 @@ public class LoginController implements Serializable {
 
     @PersistenceContext
     private EntityManager em;
+    @EJB
+    private Auxilliary aux;
 
     private String username;
     private String password;
