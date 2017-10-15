@@ -71,13 +71,18 @@ public class ProfileController implements Serializable {
         if (!allActivities.isEmpty()) {
             List<ActivitiesMap> currentActivities = new ArrayList<>();
             Calendar cCurrent = Calendar.getInstance();
+            cCurrent.set(Calendar.HOUR_OF_DAY, 0);
+            cCurrent.set(Calendar.MINUTE, 0);
+            cCurrent.set(Calendar.SECOND, 0);
+            cCurrent.set(Calendar.MILLISECOND, 0);
             cCurrent.setTime(new Date());
             for (ActivitiesMap activity : allActivities) {
                 Calendar cEnabled = Calendar.getInstance();
                 cEnabled.setTime(activity.getDateEnabled());
                 Calendar cDisabled = Calendar.getInstance();
                 cDisabled.setTime(activity.getDateDisabled());
-                if (activity.getEnabled() && cCurrent.get(Calendar.DAY_OF_WEEK) >= cEnabled.get(Calendar.DAY_OF_WEEK) && cCurrent.get(Calendar.DAY_OF_WEEK) <= cDisabled.get(Calendar.DAY_OF_WEEK)) {
+                cDisabled.add(Calendar.DATE, 1);
+                if (activity.getEnabled() && !cCurrent.getTime().before(cEnabled.getTime()) && !cCurrent.getTime().after(cDisabled.getTime())) {
                     currentActivities.add(activity);
                 }
             }

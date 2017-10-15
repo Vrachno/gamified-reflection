@@ -52,11 +52,12 @@ public class LoggerController implements Serializable {
         cCurrent.setTime(new Date());
         activities = new ArrayList<>();
         for (ActivitiesMap activity : allActivities) {
-            Calendar cEnabled = Calendar.getInstance();
-            cEnabled.setTime(activity.getDateEnabled());
-            Calendar cDisabled = Calendar.getInstance();
-            cDisabled.setTime(activity.getDateDisabled());
-            if (activity.getEnabled() && cCurrent.get(Calendar.DAY_OF_WEEK) >= cEnabled.get(Calendar.DAY_OF_WEEK) && cCurrent.get(Calendar.DAY_OF_WEEK) <= cDisabled.get(Calendar.DAY_OF_WEEK)) {
+             Calendar cEnabled = Calendar.getInstance();
+                cEnabled.setTime(activity.getDateEnabled());
+                Calendar cDisabled = Calendar.getInstance();
+                cDisabled.setTime(activity.getDateDisabled());
+                cDisabled.add(Calendar.DATE, 1);
+                if (activity.getEnabled() && !cCurrent.getTime().before(cEnabled.getTime()) && !cCurrent.getTime().after(cDisabled.getTime())) {
                 activities.add(activity);
             }
         }
