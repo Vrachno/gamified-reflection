@@ -47,7 +47,7 @@ public class CategoriesController implements Serializable{
     private List<Category> categories;
     private String newCategoryTitle;
     private ScheduleModel scheduleModel;
-    private ScheduleEvent event = new DefaultScheduleEvent();
+    private DefaultScheduleEvent event = new DefaultScheduleEvent();
     private Category selectedCategory;
     private List<Activity> categoryActivities;
     private Activity selectedActivity;
@@ -70,6 +70,7 @@ public class CategoriesController implements Serializable{
             DefaultScheduleEvent newEvent = new DefaultScheduleEvent(nullActivitiesMap.getActivity().getTitle(),
                     nullActivitiesMap.getDateEnabled(),
                     nullActivitiesMap.getDateDisabled(), nullActivitiesMap.getActivity().getCategoryId().getTitle().toLowerCase().replace(" ", "-"));
+            newEvent.setAllDay(true);
             scheduleModel.addEvent(newEvent);
         }
         for (Category category : categories) {
@@ -178,11 +179,11 @@ public class CategoriesController implements Serializable{
         this.scheduleModel = scheduleModel;
     }
 
-    public ScheduleEvent getEvent() {
+    public DefaultScheduleEvent getEvent() {
         return event;
     }
 
-    public void setEvent(ScheduleEvent event) {
+    public void setEvent(DefaultScheduleEvent event) {
         this.event = event;
     }
 
@@ -197,7 +198,7 @@ public class CategoriesController implements Serializable{
     }
 
     public void onEventSelect(SelectEvent e) {
-        event = (ScheduleEvent) e.getObject();
+        event = (DefaultScheduleEvent) e.getObject();
     }
 
     public void deleteEvent() {
@@ -215,6 +216,7 @@ public class CategoriesController implements Serializable{
         c.setTime(date);
         c.add(Calendar.DATE, 7);
         event = new DefaultScheduleEvent(selectedActivity.getTitle(), date, c.getTime(), selectedActivity.getCategoryId().getTitle().toLowerCase().replace(" ", "-"));
+        event.setAllDay(true);
         try {
             em.createNamedQuery("ActivitiesMap.findByDateEnabledAndTitle")
                     .setParameter("dateEnabled", event.getStartDate())

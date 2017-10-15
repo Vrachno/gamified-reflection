@@ -109,9 +109,20 @@
     </p:dialog>
     <p:dialog id="deleteEventDlg" widgetVar="deleteDialog" modal="true" header="Delete scheduled activity?" dynamic="true">
         <h:form id="deleteEventForm">
-            <h:outputText value="Delete activity '#{categoriesController.selectedActivity.title}' starting on #{categoriesController.event.startDate}?" />
-            <p:commandButton value="Yes" actionListener="#{categoriesController.deleteEvent()}" onsuccess="PF('deleteDialog').hide();" oncomplete="PF('schedulerDialog').show();" update=":newEventDlg"/>
-            <p:commandButton value="No" onclick="PF('deleteDialog').hide();" />
+            <div class="row">
+                <div class="col-md-12">
+                    <h:outputText value="Delete activity '#{categoriesController.event.title}' starting on "/>
+                    <h:outputText value="#{categoriesController.event.startDate}" >
+                        <f:convertDateTime pattern="E, dd/MM/yyy" />
+                    </h:outputText>?
+                </div>
+            </div>
+            <div class="row" style="float: right">
+                <div class="col-md-12">
+                    <p:commandButton value="Yes" actionListener="#{categoriesController.deleteEvent()}" onsuccess="PF('deleteDialog').hide();" oncomplete="PF('schedulerDialog').show();" update=":newEventDlg"/>
+                    <p:commandButton value="No" onclick="PF('deleteDialog').hide();" />
+                </div>
+            </div>
         </h:form>
     </p:dialog>
     <script>

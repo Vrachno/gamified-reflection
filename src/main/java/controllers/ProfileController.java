@@ -10,6 +10,7 @@ import entities.AppUser;
 import entities.Category;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -69,9 +70,14 @@ public class ProfileController implements Serializable {
         List<ActivitiesMap> allActivities = em.createNamedQuery("ActivitiesMap.findNotLoggedByStudent").setParameter("studentEmail", student).setParameter("logged", false).getResultList();
         if (!allActivities.isEmpty()) {
             List<ActivitiesMap> currentActivities = new ArrayList<>();
-            Date currentDate = new Date();
+            Calendar cCurrent = Calendar.getInstance();
+            cCurrent.setTime(new Date());
             for (ActivitiesMap activity : allActivities) {
-                if (!currentDate.before(activity.getDateEnabled()) && !currentDate.after(activity.getDateDisabled())) {
+                Calendar cEnabled = Calendar.getInstance();
+                cEnabled.setTime(activity.getDateEnabled());
+                Calendar cDisabled = Calendar.getInstance();
+                cDisabled.setTime(activity.getDateDisabled());
+                if (cCurrent.get(Calendar.DAY_OF_WEEK) >= cEnabled.get(Calendar.DAY_OF_WEEK) && cCurrent.get(Calendar.DAY_OF_WEEK) <= cDisabled.get(Calendar.DAY_OF_WEEK)) {
                     currentActivities.add(activity);
                 }
             }
