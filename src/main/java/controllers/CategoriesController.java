@@ -67,11 +67,13 @@ public class CategoriesController implements Serializable{
         AppUser admin = (AppUser) em.createNamedQuery("AppUser.findByUserRole").setParameter("userRole", 0).getSingleResult();
         List<ActivitiesMap> nullActivitiesMapList = em.createNamedQuery("ActivitiesMap.findByStudentEmail").setParameter("studentEmail", admin).getResultList();
         for (ActivitiesMap nullActivitiesMap : nullActivitiesMapList) {
-            DefaultScheduleEvent newEvent = new DefaultScheduleEvent(nullActivitiesMap.getActivity().getTitle(),
-                    nullActivitiesMap.getDateEnabled(),
-                    nullActivitiesMap.getDateDisabled(), nullActivitiesMap.getActivity().getCategoryId().getTitle().toLowerCase().replace(" ", "-"));
-            newEvent.setAllDay(true);
-            scheduleModel.addEvent(newEvent);
+            if (nullActivitiesMap.getEnabled()) {
+                DefaultScheduleEvent newEvent = new DefaultScheduleEvent(nullActivitiesMap.getActivity().getTitle(),
+                        nullActivitiesMap.getDateEnabled(),
+                        nullActivitiesMap.getDateDisabled(), nullActivitiesMap.getActivity().getCategoryId().getTitle().toLowerCase().replace(" ", "-"));
+                newEvent.setAllDay(true);
+                scheduleModel.addEvent(newEvent);
+            }
         }
         for (Category category : categories) {
             category.setActivityList(em.createNamedQuery("Activity.findByCategoryId").setParameter("categoryId", category).getResultList());
@@ -204,7 +206,9 @@ public class CategoriesController implements Serializable{
     public void deleteEvent() {
         ActivitiesMap activitiesMap = (ActivitiesMap) em.createNamedQuery("ActivitiesMap.findByDateEnabledAndTitle")
                 .setParameter("dateEnabled", event.getStartDate())
-                .setParameter("title", event.getTitle()).getResultList().get(0);
+                .setParameter("title", event.getTitle())
+                .setParameter("enabled", true)
+                .getResultList().get(0);
         transactions.removeActivitiesMaps(activitiesMap);
         scheduleModel.deleteEvent(event);
         //init();
@@ -220,7 +224,9 @@ public class CategoriesController implements Serializable{
         try {
             em.createNamedQuery("ActivitiesMap.findByDateEnabledAndTitle")
                     .setParameter("dateEnabled", event.getStartDate())
-                    .setParameter("title", event.getTitle()).getSingleResult();
+                    .setParameter("title", event.getTitle())
+                    .setParameter("enabled", true)
+                    .getSingleResult();
         } catch (NoResultException ex) {
             addEvent();
         } catch (NonUniqueResultException ex) {

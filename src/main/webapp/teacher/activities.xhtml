@@ -8,6 +8,7 @@
     <h:head>
         <title>Gamified Reflection</title>
         <h:outputStylesheet library="webjars" name="bootstrap/4.0.0-alpha.6-1/css/bootstrap.min-jsf.css" />
+        <h:outputStylesheet library="webjars" name="font-awesome/4.7.0/css/font-awesome-jsf.css" />
         <style>
            #{categoriesController.styles}
            
@@ -17,6 +18,10 @@
            
            .not-selected {
                color: black !important;
+           }
+           
+           .fa-calendar-o {
+               height: inherit;
            }
         </style>
     </h:head>
@@ -74,8 +79,8 @@
                             <p:column headerText="Edit" style="width: 10%">
                                 <p:rowEditor />
                             </p:column>
-                            <p:column headerText="Schedule" style="width: 30%" class="text-center">
-                                <p:commandButton value="Schedule" oncomplete="PF('schedulerDialog').show();" actionListener="#{categoriesController.setSelectedActivity(activity)}" update=":newEventDlg"/>
+                            <p:column headerText="Schedule" style="width: 20%;" class="text-center">
+                                <p:commandButton icon="fa fa-calendar-o" oncomplete="PF('schedulerDialog').show();" actionListener="#{categoriesController.setSelectedActivity(activity)}" update=":newEventDlg" style="height: 35px"/>
                                 <!--                        <p:commandLink value="#//{activity.enabled ? 'Disable' : 'Enable'}" styleClass="#//{!activity.enabled ? 'enabled' : 'disabled'}" actionListener="#//{activitiesController.toggleEnabled(activity)}" ajax="true" update=":activitiesForm"/>-->
                             </p:column>
                             <p:column headerText="Delete" style="width: 15%" class="text-center">

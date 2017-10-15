@@ -98,9 +98,11 @@ public class TransactionsController {
 
         List<ActivitiesMap> activitiesMaps = em.createNamedQuery("ActivitiesMap.findByDateEnabledAndTitle")
                 .setParameter("dateEnabled", activitiesMap.getDateEnabled())
-                .setParameter("title", activitiesMap.getActivity().getTitle()).getResultList();
+                .setParameter("title", activitiesMap.getActivity().getTitle())
+                .setParameter("enabled", true).getResultList();
         for (ActivitiesMap studentActivityMap : activitiesMaps) {
-            em.remove(em.merge(studentActivityMap));
+            studentActivityMap.setEnabled(false);
+            em.merge(studentActivityMap);
         }
     }
 

@@ -38,8 +38,11 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "ActivitiesMap.findByActivity", query = "SELECT a FROM ActivitiesMap a WHERE a.activity = :activity")
     , @NamedQuery(name = "ActivitiesMap.findByDateAnswered", query = "SELECT a FROM ActivitiesMap a WHERE a.dateAnswered = :dateAnswered")
     , @NamedQuery(name = "ActivitiesMap.findNotLoggedByStudent", query = "SELECT a FROM ActivitiesMap a WHERE a.studentEmail = :studentEmail AND a.logged = :logged")
-    , @NamedQuery(name = "ActivitiesMap.findByDateEnabledAndTitle", query = "SELECT a FROM ActivitiesMap a WHERE a.dateEnabled = :dateEnabled AND a.activity.title = :title")})
+    , @NamedQuery(name = "ActivitiesMap.findByDateEnabledAndTitle", query = "SELECT a FROM ActivitiesMap a WHERE a.dateEnabled = :dateEnabled AND a.activity.title = :title AND a.enabled = :enabled" )})
 public class ActivitiesMap implements Serializable {
+
+    @Column(name = "ENABLED")
+    private Boolean enabled = true;
 
     @Column(name = "DATE_ENABLED")
     @Temporal(TemporalType.DATE)
@@ -173,6 +176,14 @@ public class ActivitiesMap implements Serializable {
 
     public void setDateDisabled(Date dateDisabled) {
         this.dateDisabled = dateDisabled;
+    }
+
+    public Boolean getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
     }
     
 }

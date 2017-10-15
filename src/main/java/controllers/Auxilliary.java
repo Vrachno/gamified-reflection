@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -137,12 +138,12 @@ public class Auxilliary {
         lineModel = new LineChartModel();
 
         List<ActivitiesMap> activitiesMapList = em.createNamedQuery("ActivitiesMap.findNotLoggedByStudent").setParameter("studentEmail", student).setParameter("logged", true).getResultList();
-        activitiesMapList.sort(new Comparator<ActivitiesMap>() {
-            @Override
-            public int compare(ActivitiesMap o1, ActivitiesMap o2) {
-                return (int) (o1.getDateAnswered().compareTo(o2.getDateAnswered()));
-            }
-        });
+                activitiesMapList.sort(new Comparator<ActivitiesMap>() {
+                    @Override
+                    public int compare(ActivitiesMap o1, ActivitiesMap o2) {
+                        return (int) (o1.getDateAnswered().compareTo(o2.getDateAnswered()));
+                    }
+                });
 
         List<SkillsMap> studentSkillsMapList = em.createNamedQuery("SkillsMap.findByStudentEmail").setParameter("studentEmail", student).getResultList();
         int highestScore = 0;
@@ -181,6 +182,25 @@ public class Auxilliary {
         lineModel.setShowPointLabels(true);
         lineModel.getAxes().put(AxisType.X, new CategoryAxis("Time"));
         lineModel.setTitle("Progress");
+
+        String[] dates;
+        for (ChartSeries series : lineModel.getSeries()) {
+            Category skill = (Category) em.createNamedQuery("Category.findByTitle").setParameter("title", series.getLabel()).getSingleResult();
+            SkillsMap skillsMap = (SkillsMap) em.createNamedQuery("SkillsMap.findByCategoryIdAndStudentEmail").setParameter("categoryId", skill).setParameter("studentEmail", student).getSingleResult();
+            int level = skillsMap.getSkillLevel();
+            dates = series.getData().keySet().toArray(new String[series.getData().keySet().size()]);
+//            SimpleDateFormat latestDate = new SimpleDateFormat("dd/MM");
+//            try {
+//                latestDate.parse(dates[dates.length - 1]);
+//            } catch (ParseException ex) {
+//                Logger.getLogger(Auxilliary.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+            if (!series.getData().get(dates[dates.length - 1]).equals(level)) {
+                series.set(dates[dates.length - 1], level);
+            }
+
+        }
+
 
         return lineModel;
     }
