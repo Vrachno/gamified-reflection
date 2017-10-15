@@ -10,6 +10,14 @@
         <h:outputStylesheet library="webjars" name="bootstrap/4.0.0-alpha.6-1/css/bootstrap.min-jsf.css" />
         <style>
            #{categoriesController.styles}
+           
+           .selected {
+               color: blue !important;
+           }
+           
+           .not-selected {
+               color: black !important;
+           }
         </style>
     </h:head>
     <h:body>
@@ -30,7 +38,7 @@
 
                             <p:column headerText="Skills">
                                 <p:cellEditor>
-                                    <f:facet name="output"><p:commandLink actionListener="#{categoriesController.setSelectedCategory(category)}" value="#{category.title}" ajax="true" process="@this" update=":activitiesForm:activities, :activitiesForm:newActivityButton" /></f:facet>
+                                    <f:facet name="output"><p:commandLink styleClass="#{categoriesController.selectedCategory eq category ? 'selected' : 'not-selected'}" actionListener="#{categoriesController.setSelectedCategory(category)}" value="#{category.title}" ajax="true" process="@this" update=":activitiesForm:activities, :activitiesForm:newActivityButton, @form" /></f:facet>
                                     <f:facet name="input"><p:inputText id="titleInput" value="#{category.title}" style="width:100%"/></f:facet>
                                 </p:cellEditor>
                             </p:column>
