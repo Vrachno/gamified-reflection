@@ -7,31 +7,44 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
         <title>Gamified Reflection</title>
-        <h:outputStylesheet library="webjars" name="bootstrap/4.0.0-alpha.6-1/css/bootstrap.min-jsf.css" />
+        <h:outputStylesheet library="webjars" name="bootstrap/3.3.7-1/css/bootstrap.min-jsf.css" />
         <h:outputStylesheet library="webjars" name="font-awesome/4.7.0/css/font-awesome-jsf.css" />
         <style>
-           #{categoriesController.styles}
-           
-           .selected {
-               color: blue !important;
-           }
-           
-           .not-selected {
-               color: black !important;
-           }
-           
-           .fa-calendar-o {
-               height: inherit;
-           }
+            #{categoriesController.styles}
+
+            .selected {
+                color: blue !important;
+            }
+
+            .not-selected {
+                color: black !important;
+            }
+
+            .fa-calendar-o {
+                height: inherit;
+            }
+
+            .ui-tabmenu .ui-tabmenu-nav {
+                padding-left: .5em
+            }
+
+            .ui-tabmenuitem.ui-state-default.ui-corner-top:last-child {
+                float: right !important;
+                background-color: #990033 !important;
+                background: none;
+                color: white;
+            }
+
         </style>
     </h:head>
     <h:body>
         <ui:include src="header.xhtml"/>
 
-        <div class="container jumbotron">
-            <h2> Select a skill to manage the corresponding activities </h2>
-            <br></br>
-            <div class="row">
+        <div class="container-fluid">
+
+            <p:panel class="row">
+                <h2> Select a skill to manage the corresponding activities </h2>
+                <br></br>
                 <div class="col-md-6">
                     <h:form id="categoryForm">
                         <p:dataTable id="categoriesList"
@@ -51,7 +64,14 @@
                                 <p:rowEditor />
                             </p:column>
                             <p:column headerText="Delete" style="width:15%" class="text-center">
-                                <p:commandLink value="X" style="color: red" actionListener="#{categoriesController.deleteCategory(category)}" ajax="true" update="@form:categoriesList"/>
+                                <p:commandLink value="X" style="color: red" actionListener="#{categoriesController.deleteCategory(category)}">
+                                    <p:confirm header="Confirmation" message="Are you sure you want to delete '#{category.title}'? All related activities will be lost!" icon="ui-icon-alert" />
+                                </p:commandLink>
+
+                                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                                </p:confirmDialog>
                             </p:column>
                         </p:dataTable>
                         <p:commandButton value="Add New Skill" type="button" onclick="PF('newCategoryDialog').show();" />
@@ -84,16 +104,16 @@
                                 <!--                        <p:commandLink value="#//{activity.enabled ? 'Disable' : 'Enable'}" styleClass="#//{!activity.enabled ? 'enabled' : 'disabled'}" actionListener="#//{activitiesController.toggleEnabled(activity)}" ajax="true" update=":activitiesForm"/>-->
                             </p:column>
                             <p:column headerText="Delete" style="width: 15%" class="text-center">
-                                <p:commandLink value="X" style="color: red" actionListener="#{categoriesController.deleteActivity(activity)}" ajax="true" update="@form:activities"/>
+                                <p:commandLink value="X" style="color: red" actionListener="#{categoriesController.deleteActivity(activity)}" ajax="true" update="@form:activities">
+                                    <p:confirm header="Confirmation" message="Are you sure you want to delete '#{activity.title}'? Scheduled activities will be deleted!" icon="ui-icon-alert" />
+                                </p:commandLink>
                             </p:column>
                         </p:dataTable>
                         <p:commandButton id="newActivityButton" disabled="#{categoriesController.selectedCategory eq null}" value="Add New Activity" type="button" onclick="PF('newActivityDialog').show();" style="float: right"/>
                     </h:form>
                 </div>
-            </div>
-
+            </p:panel>
         </div>
-
     </h:body>
 
     <p:dialog widgetVar="newCategoryDialog" modal="true" dynamic="true" height="100px" showHeader="true" header="Add new skill">

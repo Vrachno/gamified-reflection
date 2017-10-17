@@ -7,13 +7,20 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:body>
         <ui:composition>
-            <p:tabMenu activeIndex="#{(request.requestURI).equalsIgnoreCase('/GamifiedReflection/teacher/students.html') ? 0 : 1 }">
-                <p:menuitem outcome="students.html" value="Students" class="text-center"/>
-                <p:menuitem outcome="activities.html" value="Activities" class="text-center"/>
-
-            </p:tabMenu>
-            <p:outputLabel value="Welcome, administrator"  style="float: right"/>
-                            <p:commandButton value="Logout" actionListener="#{loginController.logout()}" />
+            <div class="container-fluid">
+                 <div class="row">
+                    <h:form>
+                        <p:tabMenu activeIndex="#{(request.requestURI).equalsIgnoreCase('/GamifiedReflection/teacher/students.html') ? 0 : 1 }">
+                            <p:menuitem outcome="students.html" value="Students" class="text-center"/>
+                            <p:menuitem outcome="activities.html" value="Activities" class="text-center"/>
+                            <p:menuitem id="logout" value="Logout" class="text-center" actionListener="#{loginController.logout()}" style="color: #ffcc33;"/>
+                        </p:tabMenu>
+                    </h:form>
+                    <!--                <div style="width: 29%; display: inline-block">
+                                        <p:commandButton value="Logout" actionListener="#//{loginController.logout()}" />
+                                    </div>-->
+                </div>
+            </div>
         </ui:composition>
     </h:body>
 </html>

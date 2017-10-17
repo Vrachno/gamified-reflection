@@ -178,7 +178,7 @@ public class Auxilliary {
         axisY.setMax(highestScore + 20);
         axisY.setMin(0);
 
-        lineModel.setLegendPosition("ne");
+        lineModel.setLegendPosition("nw");
         lineModel.setShowPointLabels(true);
         lineModel.getAxes().put(AxisType.X, new CategoryAxis("Time"));
         lineModel.setTitle("Progress");

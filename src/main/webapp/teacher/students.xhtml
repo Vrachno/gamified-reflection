@@ -6,21 +6,33 @@
       xmlns:p="http://primefaces.org/ui">
     <h:head>
         <title>Gamified Reflection</title>
-        <h:outputStylesheet library="webjars" name="bootstrap/4.0.0-alpha.6-1/css/bootstrap.min-jsf.css" />
+        <h:outputStylesheet library="webjars" name="bootstrap/3.3.7-1/css/bootstrap.min-jsf.css" />
+        <style>
+            .ui-tabmenu .ui-tabmenu-nav {
+                padding-left: .5em
+            }
+            
+            .ui-tabmenuitem.ui-state-default.ui-corner-top:last-child {
+                float: right !important;
+                background-color: #990033 !important;
+                background: none;
+                color: white;
+            }
+        </style>
     </h:head>
     <h:body>
         <ui:include src="header.xhtml"/>
 
-        <h:form class="container jumbotron">
-            <div class="row">
-                <p:dataList class="col-md-4" value="#{studentsController.students}" var="student">
-                    <p:commandLink action="#{studentsController.setSelectedStudent(student)}" value="#{student.email} #{student.firstName} #{student.lastName}" ajax="true" update="@form:studentDetails" />
+        <h:form class="container-fluid">
+            <p:panel class="row">
+                <p:dataList class="col-md-4" value="#{studentsController.students}" var="student" type="definition">
+                    <p:commandLink action="#{studentsController.setSelectedStudent(student)}" value="#{student.firstName} #{student.lastName} (#{student.email})" ajax="true" update="@form:studentDetails" />
                 </p:dataList>
                 <p:panel id="studentDetails" class="col-md-8">
                     <p:chart rendered="#{studentsController.selectedStudent ne null}" id="barChart" type="bar" model="#{studentsController.barModel}" />
                     <p:chart rendered="#{studentsController.selectedStudent ne null}" id="progressChart" type="line" model="#{studentsController.lineModel}" />
                 </p:panel>  
-            </div>
+            </p:panel>
         </h:form>
 
     </h:body>

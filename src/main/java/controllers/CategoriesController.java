@@ -100,10 +100,10 @@ public class CategoriesController implements Serializable{
         transactions.saveCategory((Category) event.getObject());
 }
     
-    public void deleteCategory(Category category) {
-        
+    public void deleteCategory(Category category) throws IOException {
+
         transactions.deleteCategory(category);
-        init();
+        FacesContext.getCurrentInstance().getExternalContext().redirect("activities.html");
     }
 
     public void addCategory(String title) throws IOException {
