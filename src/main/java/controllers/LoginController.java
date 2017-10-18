@@ -67,7 +67,6 @@ public class LoginController implements Serializable {
     }
 
     public void login() throws IOException, ServletException {
-        //FacesContext.getCurrentInstance().getExternalContext().redirect("http://localhost:8080/GamifiedReflection/teacher/students.html");
         FacesContext context = FacesContext.getCurrentInstance();
         HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
         try {

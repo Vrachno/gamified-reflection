@@ -37,7 +37,6 @@ public class CategoriesConverter implements Converter {
 
     @Override
     public String getAsString(FacesContext context, UIComponent component, Object value) {
-        //category = (Category) value;
         return value.toString();
     }
     

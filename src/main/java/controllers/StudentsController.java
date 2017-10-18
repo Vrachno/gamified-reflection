@@ -51,7 +51,6 @@ public class StudentsController implements Serializable {
             student.setSkillsMapList(em.createNamedQuery("SkillsMap.findByStudentEmail").setParameter("studentEmail", student).getResultList());
             aux.createBarModel(student, barModel);
             aux.createLineModel(student, lineModel);
-//            aux.writeToProgressFile(student);
         }
 
     }

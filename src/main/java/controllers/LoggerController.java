@@ -99,7 +99,6 @@ public class LoggerController implements Serializable {
         activity.setNewSkillLevel(skillsMap.getSkillLevel());
         transactions.saveActivitiesMap(activity);
         transactions.saveSkillsMap(skillsMap);
-        //activities = em.createNamedQuery("ActivitiesMap.findNotLoggedByStudent").setParameter("studentEmail", student).setParameter("logged", false).getResultList();
         aux.setStudentScores(null);
         init();
     }

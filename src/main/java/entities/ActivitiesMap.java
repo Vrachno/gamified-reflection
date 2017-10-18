@@ -38,6 +38,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "ActivitiesMap.findByActivity", query = "SELECT a FROM ActivitiesMap a WHERE a.activity = :activity")
     , @NamedQuery(name = "ActivitiesMap.findByDateAnswered", query = "SELECT a FROM ActivitiesMap a WHERE a.dateAnswered = :dateAnswered")
     , @NamedQuery(name = "ActivitiesMap.findNotLoggedByStudent", query = "SELECT a FROM ActivitiesMap a WHERE a.studentEmail = :studentEmail AND a.logged = :logged")
+    , @NamedQuery(name = "ActivitiesMap.findByEventTitle", query = "SELECT a FROM ActivitiesMap a WHERE a.activity.title = :title AND a.studentEmail = :studentEmail AND a.enabled = true")
     , @NamedQuery(name = "ActivitiesMap.findByDateEnabledAndTitle", query = "SELECT a FROM ActivitiesMap a WHERE a.dateEnabled = :dateEnabled AND a.activity.title = :title AND a.enabled = :enabled" )})
 public class ActivitiesMap implements Serializable {
 

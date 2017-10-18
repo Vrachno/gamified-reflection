@@ -11,7 +11,6 @@ import entities.Category;
 import entities.SkillsMap;
 import entities.AppUser;
 import entities.Groups;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.Stateless;
@@ -60,19 +59,6 @@ public class TransactionsController {
         em.remove(em.merge(activity));
     }
 
-//    public void toggleEnabled(Activity activity) {
-//        activity.setEnabled(!activity.isEnabled());
-//        em.merge(activity);
-//        if (activity.getEnabled()) {
-//            List<AppUser> students = em.createNamedQuery("AppUser.findByUserRole").setParameter("userRole", 1).getResultList();
-//            for (AppUser student : students) {
-//                ActivitiesMap newActivitMap = new ActivitiesMap();
-//                newActivitMap.setStudentEmail(student);
-//                newActivitMap.setActivity(activity);
-//                em.merge(newActivitMap);
-//            }
-//        }
-//    }
     public void addActivitiesMaps(Activity activity, Date dateEnabled, Date dateDisabled) {
         List<AppUser> students = em.createNamedQuery("AppUser.findByUserRole").setParameter("userRole", 1).getResultList();
         if (!students.isEmpty()) {
@@ -126,12 +112,6 @@ public class TransactionsController {
             activitiesMap.setStudentEmail(user);
             em.persist(activitiesMap);
         }
-//        for (Activity activity : activities) {
-//            ActivitiesMap activitiesMap = new ActivitiesMap();
-//            activitiesMap.setActivity(activity);
-//            activitiesMap.setStudentEmail(user);
-//            em.persist(activitiesMap);
-//        }
 
     }
 

@@ -24,7 +24,6 @@
                 <h:panelGrid id="eventDetails" columns="2">
                     <h:outputLabel for="category" value="Skill:" />
                     <h:selectOneMenu id='category' value="#{schedulerController.selectedCategory}" valueChangeListener="#{schedulerController.setCategoryActivitiesList()}">
-                        <!--                    <p:ajax listener="#//{schedulerController.setCategoryActivitiesList()}" update="activity" />-->
                         <f:ajax render="activity" />
                         <f:selectItem itemLabel="Select Skill" itemValue="" noSelectionOption="true" />
                         <f:selectItems value="#{schedulerController.categoriesList}" var="category" itemLabel="#{category.label}" itemValue="#{category.value}" />

@@ -88,10 +88,8 @@ public class ProfileController implements Serializable {
             }
             setActivitiesPending(!currentActivities.isEmpty());
         }
-        //aux.setAllLevels();
         aux.setStudentsOverallScores();
         aux.setGraphicImage();
-        //aux.setStudent();
     }
 
     public AppUser getStudent() {
@@ -167,7 +165,6 @@ public class ProfileController implements Serializable {
     public void setSelectedCategory(Category selectedCategory) {
         this.selectedCategory = selectedCategory;
         init();
-        //aux.setSelectedCategory(selectedCategory);
     }
 
     public List<SelectItem> getCategoriesList() {

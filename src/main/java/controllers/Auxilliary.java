@@ -19,7 +19,6 @@ import java.io.File;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,7 +33,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
-import javax.faces.event.PhaseId;
 import javax.imageio.ImageIO;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
@@ -189,12 +187,6 @@ public class Auxilliary {
             SkillsMap skillsMap = (SkillsMap) em.createNamedQuery("SkillsMap.findByCategoryIdAndStudentEmail").setParameter("categoryId", skill).setParameter("studentEmail", student).getSingleResult();
             int level = skillsMap.getSkillLevel();
             dates = series.getData().keySet().toArray(new String[series.getData().keySet().size()]);
-//            SimpleDateFormat latestDate = new SimpleDateFormat("dd/MM");
-//            try {
-//                latestDate.parse(dates[dates.length - 1]);
-//            } catch (ParseException ex) {
-//                Logger.getLogger(Auxilliary.class.getName()).log(Level.SEVERE, null, ex);
-//            }
             if (!series.getData().get(dates[dates.length - 1]).equals(level)) {
                 series.set(dates[dates.length - 1], level);
             }
@@ -260,9 +252,6 @@ public class Auxilliary {
     public void setGraphicImage() {
         FacesContext context = FacesContext.getCurrentInstance();
         setStudentScores(selectedCategory);
-//        if (context.getCurrentPhaseId() == PhaseId.RENDER_RESPONSE) {
-//            graphicImage = new DefaultStreamedContent();
-//        } else {
         try {
             File img = new File("../docroot/GamifiedReflection/topthree.png");
             BufferedImage bufferedImg = ImageIO.read(img);
@@ -382,8 +371,6 @@ public class Auxilliary {
     }
 
     public void setStudentLevel(AppUser student, int score) {
-        //setStudentScores(null);
-        //int score = getStudentsOverallScores().get(student);
         if (score < 20) {
             student.setLevel("n00b");
             if (this.student!=null && student.getEmail().equals(this.student.getEmail())) {
@@ -447,16 +434,6 @@ public class Auxilliary {
         }
     }
 
-//    public void setAllLevels() {
-//        setStudentScores(null);
-//        studentsScores.keySet().forEach((student) -> {
-//            AppUser st = student;
-//            int score = studentsScores.get(student);
-//            studentsScores.remove(student);
-//            setStudentLevel(st, score);
-//            studentsScores.put(st, score);
-//        });
-//    }
     public Category getSelectedCategory() {
         return selectedCategory;
     }

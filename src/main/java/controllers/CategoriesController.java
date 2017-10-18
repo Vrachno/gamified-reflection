@@ -11,6 +11,7 @@ import entities.AppUser;
 import entities.Category;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -21,8 +22,6 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
-import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
 import org.primefaces.event.RowEditEvent;
 import org.primefaces.event.SelectEvent;
@@ -211,7 +210,6 @@ public class CategoriesController implements Serializable{
                 .getResultList().get(0);
         transactions.removeActivitiesMaps(activitiesMap);
         scheduleModel.deleteEvent(event);
-        //init();
     }
 
     public void onDateSelect(SelectEvent e) {
@@ -219,18 +217,31 @@ public class CategoriesController implements Serializable{
         Calendar c = Calendar.getInstance();
         c.setTime(date);
         c.add(Calendar.DATE, 7);
-        event = new DefaultScheduleEvent(selectedActivity.getTitle(), date, c.getTime(), selectedActivity.getCategoryId().getTitle().toLowerCase().replace(" ", "-"));
+        Date endDate = c.getTime();
+        event = new DefaultScheduleEvent(selectedActivity.getTitle(), date, endDate, selectedActivity.getCategoryId().getTitle().toLowerCase().replace(" ", "-"));
         event.setAllDay(true);
-        try {
-            em.createNamedQuery("ActivitiesMap.findByDateEnabledAndTitle")
-                    .setParameter("dateEnabled", event.getStartDate())
-                    .setParameter("title", event.getTitle())
-                    .setParameter("enabled", true)
-                    .getSingleResult();
-        } catch (NoResultException ex) {
-            addEvent();
-        } catch (NonUniqueResultException ex) {
+        List<ScheduleEvent> sameActivities = new ArrayList<>();
+        for (ScheduleEvent checkedEvent : scheduleModel.getEvents()) {
+            if (checkedEvent.getTitle().equals(event.getTitle())) {
+                sameActivities.add(checkedEvent);
+            }
+        }
+        if (sameActivities.size() > 0) {
+            boolean exists = false;
+            for (ScheduleEvent alreadyEnabled : sameActivities) {
+                if (date.equals(alreadyEnabled.getStartDate())
+                        || (date.before(alreadyEnabled.getStartDate()) && endDate.after(alreadyEnabled.getStartDate()))
+                        || (date.before(alreadyEnabled.getEndDate()) && endDate.after(alreadyEnabled.getEndDate()))) {
+                    exists = true;
+                    break;
+                }
 
+            }
+            if (!exists) {
+                addEvent();
+            }
+        } else {
+            addEvent();
         }
     }
 

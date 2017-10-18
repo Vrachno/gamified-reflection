@@ -5,6 +5,18 @@
       xmlns:p="http://primefaces.org/ui">
     <h:head>
         <title>Facelet Title</title>
+        <style>
+            .ui-button {
+                height: 2em;
+                width: 2em;
+            }
+            .ui-icon.ui-button-icon-left {
+                height: -webkit-fill-available;
+                width: -webkit-fill-available;
+                left: 0.1em;
+                    top: 15%;
+            }
+        </style>
     </h:head>
     <h:body>
         <p:panel id="content">
@@ -20,9 +32,12 @@
                 <h:outputText value="#{activityMap.activity.title}"/>
                 <p:panelGrid columns="3">
                     <h:form>
-                        <p:commandButton value=":)" actionListener="#{loggerController.log(activityMap, loggerController.aux.ANSWER_GOOD)}" ajax="true" update=":activitiesList @(:content:level)"/>
-                        <p:commandButton value=":|" actionListener="#{loggerController.log(activityMap, loggerController.aux.ANSWER_NEUTRAL)}" ajax="true" update=":activitiesList @(:content:level)"/>
-                        <p:commandButton value=":(" actionListener="#{loggerController.log(activityMap, loggerController.aux.ANSWER_BAD)}" ajax="true" update=":activitiesList @(:content:level)"/>
+                        <p:commandButton id="log-good" icon="fa fa-smile-o fa-2x" style="color: green" actionListener="#{loggerController.log(activityMap, loggerController.aux.ANSWER_GOOD)}" ajax="true" update=":activitiesList @(:content:level)"/>
+                        <p:tooltip id="toolTipGood" for="log-good" value="I did great!" trackMouse="true"  showDelay="1"/>
+                        <p:commandButton id="log-meh" icon="fa fa-meh-o fa-2x" style="color: #dd7b19" actionListener="#{loggerController.log(activityMap, loggerController.aux.ANSWER_NEUTRAL)}" ajax="true" update=":activitiesList @(:content:level)"/>
+                        <p:tooltip id="toolTipMeh" for="log-meh" value="Well, I did some of it..." trackMouse="true"  showDelay="1"/>
+                        <p:commandButton id="log-bad" icon="fa fa-frown-o fa-2x" style="color: red" actionListener="#{loggerController.log(activityMap, loggerController.aux.ANSWER_BAD)}" ajax="true" update=":activitiesList @(:content:level)"/>
+                        <p:tooltip id="toolTipBad" for="log-bad" value="I didn't really carry this out..." trackMouse="true" showDelay="1"/>
                     </h:form>
                 </p:panelGrid>
             </p:dataList>
