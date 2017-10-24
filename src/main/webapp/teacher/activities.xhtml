@@ -34,7 +34,31 @@
                 background: none;
                 color: white;
             }
-
+            
+            #newEventDlg_title {
+                margin-right: 0;
+                width: fit-content;
+            }
+            
+            .ui-dialog-titlebar {
+                height: auto;
+            }
+            
+            .ui-dialog-content {
+                width: 100% !important; 
+                height: 85% !important;
+            }
+            
+            .ui-dialog-footer {
+                text-align: right !important;
+            }
+            
+            #newEventDlg {
+                height: 80vh !important;
+                width: 60vw !important;
+                overflow: visible;
+            }
+            
         </style>
     </h:head>
     <h:body>
@@ -56,7 +80,7 @@
 
                             <p:column headerText="Skills">
                                 <p:cellEditor>
-                                    <f:facet name="output"><p:commandLink styleClass="#{categoriesController.selectedCategory eq category ? 'selected' : 'not-selected'}" actionListener="#{categoriesController.setSelectedCategory(category)}" value="#{category.title}" ajax="true" process="@this" update=":activitiesForm:activities, :activitiesForm:newActivityButton, @form" /></f:facet>
+                                    <f:facet name="output"><p:commandLink styleClass="#{categoriesController.selectedCategory eq category ? 'selected' : 'not-selected'}" onclick="document.getElementById('activitiesForm').scrollIntoView()" actionListener="#{categoriesController.setSelectedCategory(category)}" value="#{category.title}" ajax="true" process="@this" update=":activitiesForm:activities, :activitiesForm:newActivityButton, @form" /></f:facet>
                                     <f:facet name="input"><p:inputText id="titleInput" value="#{category.title}" style="width:100%"/></f:facet>
                                 </p:cellEditor>
                             </p:column>
@@ -132,13 +156,16 @@
             </h:form>
         </p:panel>
     </p:dialog>
-    <p:dialog id="newEventDlg" widgetVar="schedulerDialog" modal="true" header="Select date on which '#{categoriesController.selectedActivity.title}' will be enabled. Click on existing activity to delete." dynamic="true">
+    <p:dialog id="newEventDlg" widgetVar="schedulerDialog" modal="true" header="Select date on which '#{categoriesController.selectedActivity.title}' will be enabled. Click on existing activity to delete." dynamic="true" position="center" closeOnEscape="true" resizable="true" closable="false">
         <h:form id="scheduleForm">
-            <p:schedule id="schedule" value="#{categoriesController.scheduleModel}" widgetVar="schedule" style="height: 700px" timeZone="GMT+2">
+            <p:schedule  id="schedule" value="#{categoriesController.scheduleModel}" widgetVar="schedule" timeZone="GMT+2" leftHeaderTemplate="" centerHeaderTemplate="prev title next" rightHeaderTemplate="none">
                 <p:ajax event="dateSelect" listener="#{categoriesController.onDateSelect}" update="@this"/>
                 <p:ajax event="eventSelect" listener="#{categoriesController.onEventSelect}"  oncomplete="PF('deleteDialog').show();" update=":deleteEventDlg"/>
             </p:schedule>
         </h:form>
+        <f:facet name="footer" >
+            <p:commandButton value="Save and Close" oncomplete="PF('schedulerDialog').hide();"/>
+        </f:facet>
     </p:dialog>
     <p:dialog id="deleteEventDlg" widgetVar="deleteDialog" modal="true" header="Delete scheduled activity?" dynamic="true">
         <h:form id="deleteEventForm">

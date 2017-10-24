@@ -3,7 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
         <title>Gamified Reflection</title>
         <h:outputStylesheet library="webjars" name="bootstrap/3.3.7-1/css/bootstrap.min-jsf.css" />
@@ -18,16 +19,37 @@
                 background: none;
                 color: white;
             }
+            .ui-datalist-content {
+                border: none;
+            }
         </style>
     </h:head>
     <h:body>
         <ui:include src="header.xhtml"/>
 
-        <h:form class="container-fluid">
+        <h:form id="mainForm" class="container-fluid">
             <p:panel class="row">
-                <p:dataList class="col-md-4" value="#{studentsController.students}" var="student" type="definition">
-                    <p:commandLink action="#{studentsController.setSelectedStudent(student)}" value="#{student.firstName} #{student.lastName} (#{student.email})" ajax="true" update="@form:studentDetails" />
-                </p:dataList>
+                <p:panel class="col-md-4">
+                    <div class="row">
+                        <div class="col-lg-6 col-md-12">
+                            <h:outputText value="Active students" style="text-align: center; font-size: 1.6em; "/>
+                        </div>
+                        <div class="col-lg-6 col-md-12" style="text-align: right; margin-bottom: 20px">
+                            <h:form>
+                                <h:selectOneMenu value="#{studentsController.selectedCategory}" style="float: right">
+                                    <f:ajax render="mainForm:studentList" />
+                                    <f:converter converterId="categoriesConverter" />
+                                    <f:selectItem itemLabel="Sort by" itemValue=""/>
+                                    <f:selectItem itemLabel="Overall Score" itemValue=""/>
+                                    <f:selectItems value="#{studentsController.categories}" var="category" itemValue="#{category.title}" itemLabel="#{category.title}" />
+                                </h:selectOneMenu>
+                            </h:form>
+                        </div>
+                    </div>
+                    <p:dataList id="studentList" value="#{studentsController.selectedCategory ne null ? aux.studentsScores.entrySet().toArray() : aux.studentsOverallScores.entrySet().toArray()}" var="student" type="definition">
+                        <p:commandLink action="#{studentsController.setSelectedStudent(student.key)}" value="#{student.key.firstName} #{student.key.lastName} (#{student.key.email})" ajax="true" update="@form:studentDetails" />
+                    </p:dataList>
+                </p:panel>
                 <p:panel id="studentDetails" class="col-md-8">
                     <p:chart rendered="#{studentsController.selectedStudent ne null}" id="barChart" type="bar" model="#{studentsController.barModel}" />
                     <p:chart rendered="#{studentsController.selectedStudent ne null}" id="progressChart" type="line" model="#{studentsController.lineModel}" />

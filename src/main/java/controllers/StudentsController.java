@@ -6,6 +6,7 @@
 package controllers;
 
 import entities.AppUser;
+import entities.Category;
 import java.io.Serializable;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -36,6 +37,8 @@ public class StudentsController implements Serializable {
     private AppUser selectedStudent;
     private HorizontalBarChartModel barModel;
     private LineChartModel lineModel;
+    private List<Category> categories;
+    private Category selectedCategory;
 
     /**
      * Creates a new instance of indexController
@@ -45,8 +48,10 @@ public class StudentsController implements Serializable {
 
     @PostConstruct
     public void init() {
-        
+        aux.setStudentsOverallScores();
+        //selectedCategory = new Category();
         students = em.createNamedQuery("AppUser.findByUserRole").setParameter("userRole", 1).getResultList();
+        categories = em.createNamedQuery("Category.findAll").getResultList();
         for (AppUser student : students) {
             student.setSkillsMapList(em.createNamedQuery("SkillsMap.findByStudentEmail").setParameter("studentEmail", student).getResultList());
             aux.createBarModel(student, barModel);
@@ -82,5 +87,22 @@ public class StudentsController implements Serializable {
         return lineModel;
     }
 
+    public List<Category> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(List<Category> categories) {
+        this.categories = categories;
+    }
+
+    public Category getSelectedCategory() {
+        return selectedCategory;
+    }
+
+    public void setSelectedCategory(Category selectedCategory) {
+        this.selectedCategory = selectedCategory;
+        aux.setStudentScores(selectedCategory);
+//        init();
+    }
 
 }
