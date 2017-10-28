@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.context.FacesContext;
 import javax.faces.bean.ViewScoped;
@@ -137,8 +138,16 @@ public class ProfileController implements Serializable {
     }
 
     public void changeNickname() {
-        transactions.saveUser(student);
-        setEditing(false);
+        HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        if (em.createNamedQuery("AppUser.findByNickname").setParameter("nickname", student.getNickname()).getResultList().isEmpty()
+                || em.find(AppUser.class, request.getUserPrincipal().getName()).getNickname().equals(student.getNickname())) {
+            transactions.saveUser(student);
+            setEditing(false);
+        } else if (!student.getNickname().equals("")){
+              FacesContext.getCurrentInstance().addMessage("welcome:nicknameMsg", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Nickname already taken."));
+        } else {
+            FacesContext.getCurrentInstance().addMessage("welcome:nicknameMsg", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Please enter nickname."));
+        }
         init();
     }
 

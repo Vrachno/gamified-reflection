@@ -41,17 +41,17 @@
     <h:body>
         <div class="container-fluid">
             <div class="row header">
-                <div  class="col-lg-2 col-md-4 col-sm-4 col-xs-4">
+                <div  class="col-lg-3 col-md-4 col-sm-4 col-xs-4">
                     <h:form id="welcome">
                         <p:outputLabel value="Welcome,&#160;" /> 
                         <p:outputLabel rendered="#{!profileController.editing}" value="#{profileController.student.nickname}!" />
-                        <p:inputText rendered="#{profileController.editing}" value="#{profileController.student.nickname}" maxlength="12"/>
+                        <p:inputText id="nickname" rendered="#{profileController.editing}" value="#{profileController.student.nickname}" maxlength="12" style="width: 10em"/>
                         <p:commandButton rendered="#{profileController.editing}" value="OK" type="submit" actionListener="#{profileController.changeNickname()}" ajax="true" update="welcome @(:info)"/>
-                        <br></br>
+                        <span class="ui-state-error-text"><h:messages id="nicknameMsg" showSummary="false" showDetail="true" style="list-style-type: none; padding-left:0;"/></span>
                         <p:commandLink rendered="#{!profileController.editing}" value="Change nickname" actionListener="#{profileController.setEditing(true)}" ajax="true" update="welcome"/>
                     </h:form>
                 </div>
-                <div class="col-lg-2 col-md-4 col-lg-offset-3 col-sm-4 col-xs-4 text-center">
+                <div class="col-lg-2 col-md-4 col-lg-offset-2 col-sm-4 col-xs-4 text-center">
                     <h:outputText value="#{aux.student.level}" style="font-weight: bold"/>
                     <br></br>
                     <p:progressBar value="#{aux.progress}" labelTemplate="{value}%"/>

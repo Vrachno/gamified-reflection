@@ -160,14 +160,35 @@
     <p:dialog id="newEventDlg" widgetVar="schedulerDialog" modal="true" header="Select date on which '#{categoriesController.selectedActivity.title}' will be enabled. Click on existing activity to delete." dynamic="true" position="center" closeOnEscape="true" resizable="true" closable="false">
         <h:form id="scheduleForm">
             <p:schedule  id="schedule" value="#{categoriesController.scheduleModel}" widgetVar="schedule" timeZone="GMT+2" leftHeaderTemplate="" centerHeaderTemplate="prev title next" rightHeaderTemplate="none">
-                <p:ajax event="dateSelect" listener="#{categoriesController.onDateSelect}" update="@this"/>
-                <p:ajax event="eventSelect" listener="#{categoriesController.onEventSelect}"  oncomplete="PF('deleteDialog').show();" update=":deleteEventDlg"/>
+                <p:ajax event="dateSelect" listener="#{categoriesController.onDateSelect}" oncomplete="PF('eventDialog').show();" update=":eventDlg"/>
+                <p:ajax event="eventSelect" listener="#{categoriesController.onEventSelect}" oncomplete="PF('eventDialog').show();" update=":eventDlg"/>
             </p:schedule>
         </h:form>
         <f:facet name="footer" >
             <p:commandButton value="Save and Close" oncomplete="PF('schedulerDialog').hide();"/>
         </f:facet>
     </p:dialog>
+    <p:dialog id="eventDlg" widgetVar="eventDialog" header="Activity Details" showEffect="clip" hideEffect="clip" modal="true">
+        <h:panelGrid id="eventDetails" columns="2">
+ 
+            <p:outputLabel for="from" value="From:" />
+            <p:calendar id="from" value="#{categoriesController.event.startDate}" timeZone="GMT+2" pattern="dd/MM/yyyy HH:mm">
+                <p:ajax event="dateSelect" partialSubmit="true" listener="#{categoriesController.setStartDate}" update="to"/>
+            </p:calendar>
+ 
+            <p:outputLabel for="to" value="To:" />
+            <p:calendar id="to" value="#{categoriesController.event.endDate}" timeZone="GMT+2" pattern="dd/MM/yyyy HH:mm" mindate="#{categoriesController.event.startDate}">
+                <p:ajax event="dateSelect" partialSubmit="true" listener="#{categoriesController.setEndDate}" update="@this"/>
+            </p:calendar>
+ 
+            <p:outputLabel for="allDay" value="All Day:" />
+            <h:selectBooleanCheckbox id="allDay" value="#{categoriesController.event.allDay}" />
+ 
+            <p:commandButton id="deleteButton" value="Delete" rendered="#{categoriesController.event.id ne null}" actionListener="#{categoriesController.deleteEvent}" oncomplete="PF('eventDialog').hide(); PF('schedulerDialog').show();" update=":newEventDlg"/>
+            <p:commandButton id="addButton" value="Save" actionListener="#{categoriesController.addEvent}" oncomplete="PF('eventDialog').hide(); PF('schedulerDialog').show();" update=":newEventDlg"/>
+            
+        </h:panelGrid>
+    </p:dialog>    
     <p:dialog id="deleteEventDlg" widgetVar="deleteDialog" modal="true" header="Delete scheduled activity?" dynamic="true">
         <h:form id="deleteEventForm">
             <div class="row">

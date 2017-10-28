@@ -372,62 +372,62 @@ public class Auxilliary {
 
     public void setStudentLevel(AppUser student, int score) {
         if (score < 20) {
-            student.setLevel("n00b");
+            student.setLevel("Level 1: n00b");
             if (this.student!=null && student.getEmail().equals(this.student.getEmail())) {
                 progress = calculateProgress(currentUserOverallScore, 0, 20);
             }
         } else if (score <= 50) {
-            student.setLevel("Rookie");
+            student.setLevel("Level 2: Rookie");
             if (this.student!=null && student.getEmail().equals(this.student.getEmail())) {
                 progress = calculateProgress(currentUserOverallScore, 20, 50);
             }
         } else if (score <= 90) {
-            student.setLevel("Beginner");
+            student.setLevel("Level 3: Beginner");
             if (this.student!=null && student.getEmail().equals(this.student.getEmail())) {
                 progress = calculateProgress(currentUserOverallScore, 50, 90);
             }
         } else if (score <= 140) {
-            student.setLevel("Elementary");
+            student.setLevel("Level 4: Elementary");
             if (this.student!=null && student.getEmail().equals(this.student.getEmail())) {
                 progress = calculateProgress(currentUserOverallScore, 90, 140);
             }
         } else if (score <= 200) {
-            student.setLevel("Intermediate");
+            student.setLevel("Level 5: Intermediate");
             if (this.student!=null && student.getEmail().equals(this.student.getEmail())) {
                 progress = calculateProgress(currentUserOverallScore, 140, 200);
             }
         } else if (score <= 270) {
-            student.setLevel("Experienced");
+            student.setLevel("Level 6: Experienced");
             if (this.student!=null && student.getEmail().equals(this.student.getEmail())) {
                 progress = calculateProgress(currentUserOverallScore, 200, 270);
             }
         } else if (score <= 350) {
-            student.setLevel("Achiever");
+            student.setLevel("Level 7: Achiever");
             if (this.student!=null && student.getEmail().equals(this.student.getEmail())) {
                 progress = calculateProgress(currentUserOverallScore, 270, 350);
             }
         } else if (score <= 440) {
-            student.setLevel("Seasoned");
+            student.setLevel("Level 8: Seasoned");
             if (this.student!=null && student.getEmail().equals(this.student.getEmail())) {
                 progress = calculateProgress(currentUserOverallScore, 350, 440);
             }
         } else if (score <= 540) {
-            student.setLevel("Exemplary");
+            student.setLevel("Level 9: Exemplary");
             if (this.student!=null && student.getEmail().equals(this.student.getEmail())) {
                 progress = calculateProgress(currentUserOverallScore, 440, 540);
             }
         } else if (score <= 650) {
-            student.setLevel("Master");
+            student.setLevel("Level 10: Master");
             if (this.student!=null && student.getEmail().equals(this.student.getEmail())) {
                 progress = calculateProgress(currentUserOverallScore, 540, 650);
             }
         } else if (score <= 770) {
-            student.setLevel("Extraordinary");
+            student.setLevel("Level 11: Extraordinary");
             if (this.student!=null && student.getEmail().equals(this.student.getEmail())) {
                 progress = calculateProgress(currentUserOverallScore, 650, 770);
             }
         } else {
-            student.setLevel("Supreme Leader");
+            student.setLevel("Level 12 (Max): Supreme Leader");
             if (this.student!=null && student.getEmail().equals(this.student.getEmail())) {
                 progress = 100;
             }

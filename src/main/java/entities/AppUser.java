@@ -34,15 +34,21 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "AppUser.findAll", query = "SELECT u FROM AppUser u")
-    , @NamedQuery(name = "AppUser.findByEmail", query = "SELECT u FROM AppUser u WHERE u.email = :email")
-    , @NamedQuery(name = "AppUser.findByFirstName", query = "SELECT u FROM AppUser u WHERE u.firstName = :firstName")
-    , @NamedQuery(name = "AppUser.findByLastName", query = "SELECT u FROM AppUser u WHERE u.lastName = :lastName")
-    , @NamedQuery(name = "AppUser.findByUserRole", query = "SELECT u FROM AppUser u WHERE u.userRole = :userRole")
-    , @NamedQuery(name = "AppUser.findByPassword", query = "SELECT u FROM AppUser u WHERE u.password = :password")})
+    , @NamedQuery(name = "AppUser.findByEmail", query = "SELECT u FROM AppUser u WHERE u.email = :email AND u.active = true")
+    , @NamedQuery(name = "AppUser.findByFirstName", query = "SELECT u FROM AppUser u WHERE u.firstName = :firstName AND u.active = true")
+    , @NamedQuery(name = "AppUser.findByLastName", query = "SELECT u FROM AppUser u WHERE u.lastName = :lastName AND u.active = true")
+    , @NamedQuery(name = "AppUser.findByUserRole", query = "SELECT u FROM AppUser u WHERE u.userRole = :userRole AND u.active = true")
+    , @NamedQuery(name = "AppUser.findByPassword", query = "SELECT u FROM AppUser u WHERE u.password = :password AND u.active = true")
+    , @NamedQuery(name = "AppUser.findByActiveStudents", query = "SELECT u FROM AppUser u WHERE u.active = :active AND u.userRole = :userRole")
+    , @NamedQuery(name = "AppUser.findByNickname", query = "SELECT u FROM AppUser u WHERE u.nickname = :nickname")})
 public class AppUser implements Serializable {
 
+    @Column(name = "ACTIVE")
+    private Boolean active;
+
     @Size(max = 255)
-    @Column(name = "NICKNAME")
+    @Column(name = "NICKNAME", unique = true)
+    @NotNull
     private String nickname;
 
     @OneToMany(mappedBy = "studentEmail")
@@ -203,6 +209,14 @@ public class AppUser implements Serializable {
 
     public void setLevel(String level) {
         this.level = level;
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 
 }

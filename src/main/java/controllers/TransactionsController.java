@@ -80,14 +80,18 @@ public class TransactionsController {
         em.merge(newActivitiesMap);
     }
     
-    public void removeActivitiesMaps(ActivitiesMap activitiesMap) {
+    public void removeActivitiesMaps(List<ActivitiesMap> activitiesMaps) {
 
-        List<ActivitiesMap> activitiesMaps = em.createNamedQuery("ActivitiesMap.findByDateEnabledAndTitle")
-                .setParameter("dateEnabled", activitiesMap.getDateEnabled())
-                .setParameter("title", activitiesMap.getActivity().getTitle())
-                .setParameter("enabled", true).getResultList();
         for (ActivitiesMap studentActivityMap : activitiesMaps) {
             studentActivityMap.setEnabled(false);
+            em.merge(studentActivityMap);
+        }
+    }
+    
+    public void editActivitiesMaps (List<ActivitiesMap> activitiesMaps, Date startDate, Date endDate) {
+        for (ActivitiesMap studentActivityMap : activitiesMaps) {
+            studentActivityMap.setDateEnabled(startDate);
+            studentActivityMap.setDateDisabled(endDate);
             em.merge(studentActivityMap);
         }
     }
@@ -125,5 +129,10 @@ public class TransactionsController {
 
     public void saveSkillsMap(SkillsMap skillsMap) {
         em.merge(skillsMap);
+    }
+    
+    public void toggleActive (AppUser user) {
+        user.setActive(!user.getActive());
+        em.merge(user);
     }
 }

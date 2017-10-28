@@ -5,22 +5,41 @@
       xmlns:p="http://primefaces.org/ui">
     <h:head>
         <title>Gamified Reflection - Register</title>
+        <h:outputStylesheet library="webjars" name="bootstrap/3.3.7-1/css/bootstrap.min-jsf.css" />
     </h:head>
     <h:body>
         <h:form id="register-form">
             <h:panelGrid columns="2" cellpadding="5">
                 <p:outputLabel value="E-mail Address" for="email"/>
-                <p:inputText id="email" value="#{registerController.student.email}" required="true"/>
+                <h:panelGroup>
+                    <p:inputText id="email" value="#{registerController.student.email}" required="true" requiredMessage="Please enter your email"/>
+                    <span class="ui-state-error-text"><h:message for="email"/></span>
+                </h:panelGroup>
                 <p:outputLabel value="Nickname" for="nickname"/>
-                <p:inputText id="nickname" value="#{registerController.student.nickname}" required="true" maxlength="12"/>
+                <h:panelGroup>
+                    <p:inputText id="nickname" value="#{registerController.student.nickname}" required="true" maxlength="12" requiredMessage="Please enter a nickname"/>
+                    <span class="ui-state-error-text"><h:messages id="nicknameMsg" showSummary="false" showDetail="true" style="list-style-type: none; padding-left:0;"/></span>
+                </h:panelGroup>
                 <p:outputLabel value="First Name" for="first-name"/>
-                <p:inputText id="first-name" value="#{registerController.student.firstName}" required="true"/>
+                <h:panelGroup>
+                    <p:inputText id="first-name" value="#{registerController.student.firstName}" required="true" requiredMessage="Please enter your first name"/>
+                    <span class="ui-state-error-text"><h:message for="first-name"/></span>
+                </h:panelGroup>
                 <p:outputLabel value="Last Name" for="last-name"/>
-                <p:inputText id="last-name" value="#{registerController.student.lastName}" required="true"/>
+                <h:panelGroup>
+                    <p:inputText id="last-name" value="#{registerController.student.lastName}" required="true" requiredMessage="Please enter your last name"/>
+                    <span class="ui-state-error-text"><h:message for="last-name"/></span>
+                </h:panelGroup>
                 <p:outputLabel value="Password" for="password"/>
-                <p:password id="password" value="#{registerController.password}" match="validatePassword" required="true"/>
+                <h:panelGroup>
+                    <p:password id="password" value="#{registerController.password}" match="validatePassword" required="true" requiredMessage="Please enter a password"/>
+                    <span class="ui-state-error-text"><h:message for="password"/></span>
+                </h:panelGroup>
                 <p:outputLabel value="Confirm Password" for="validatePassword"/>
-                <p:password id="validatePassword" value="#{registerController.password}" required="true"/>
+                <h:panelGroup>
+                    <p:password id="validatePassword" value="#{registerController.password}" required="true" requiredMessage="Please re-enter your password"/>
+                    <span class="ui-state-error-text"><h:message for="validatePassword"/></span>
+                </h:panelGroup>
             </h:panelGrid>
             <p:commandButton id="submit" value="Submit" actionListener="#{registerController.register()}"/>
         </h:form>

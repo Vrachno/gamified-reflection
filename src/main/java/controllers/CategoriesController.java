@@ -20,7 +20,10 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.component.UIComponent;
+import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
+import javax.faces.event.AjaxBehaviorEvent;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import org.primefaces.event.RowEditEvent;
@@ -47,6 +50,7 @@ public class CategoriesController implements Serializable{
     private String newCategoryTitle;
     private ScheduleModel scheduleModel;
     private DefaultScheduleEvent event = new DefaultScheduleEvent();
+    private List<ActivitiesMap> selectedActivityMaps;
     private Category selectedCategory;
     private List<Activity> categoryActivities;
     private Activity selectedActivity;
@@ -77,6 +81,7 @@ public class CategoriesController implements Serializable{
         for (Category category : categories) {
             category.setActivityList(em.createNamedQuery("Activity.findByCategoryId").setParameter("categoryId", category).getResultList());
         }
+        selectedActivityMaps = new ArrayList<>();
     }
 
     public List<Category> getCategories() {
@@ -189,27 +194,66 @@ public class CategoriesController implements Serializable{
     }
 
     public void addEvent() {
-        if (event.getId() == null) {
+
+        List<ScheduleEvent> sameActivities = new ArrayList<>();
+        for (ScheduleEvent checkedEvent : scheduleModel.getEvents()) {
+            if (checkedEvent.getTitle().equals(event.getTitle())) {
+                sameActivities.add(checkedEvent);
+            }
+        }
+        if (sameActivities.size() > 0) {
+            if (!doActivitiesOverlap(sameActivities)) {
+                scheduleModel.addEvent(event);
+                transactions.addActivitiesMaps(selectedActivity, event.getStartDate(), event.getEndDate());
+            } else if (event.getId() != null) {
+                sameActivities = new ArrayList<>();
+                for (ScheduleEvent checkedEvent : scheduleModel.getEvents()) {
+                    if (checkedEvent.getTitle().equals(event.getTitle()) && checkedEvent != event) {
+                        sameActivities.add(checkedEvent);
+                    }
+                }
+                if (!doActivitiesOverlap(sameActivities)) {
+                    scheduleModel.updateEvent(event);
+                    transactions.editActivitiesMaps(selectedActivityMaps, event.getStartDate(), event.getEndDate());
+                }
+            }
+        } else {
             scheduleModel.addEvent(event);
             transactions.addActivitiesMaps(selectedActivity, event.getStartDate(), event.getEndDate());
-        } else {
-            scheduleModel.updateEvent(event);
         }
+
         event = new DefaultScheduleEvent();
+        init();
+    }
+    
+    public boolean doActivitiesOverlap(List<ScheduleEvent> sameActivities) {
+            boolean exists = false;
+            for (ScheduleEvent alreadyEnabled : sameActivities) {
+                if (event.getStartDate().equals(alreadyEnabled.getStartDate())
+                        || (event.getStartDate().before(alreadyEnabled.getStartDate()) && event.getEndDate().after(alreadyEnabled.getStartDate()))
+                        || (event.getStartDate().before(alreadyEnabled.getEndDate()) && event.getEndDate().after(alreadyEnabled.getEndDate()))) {
+                    exists = true;
+                    break;
+                }
+            }
+            
+            return exists;
     }
 
     public void onEventSelect(SelectEvent e) {
         event = (DefaultScheduleEvent) e.getObject();
-    }
-
-    public void deleteEvent() {
-        ActivitiesMap activitiesMap = (ActivitiesMap) em.createNamedQuery("ActivitiesMap.findByDateEnabledAndTitle")
+        selectedActivityMaps = em.createNamedQuery("ActivitiesMap.findByDateEnabledAndTitle")
                 .setParameter("dateEnabled", event.getStartDate())
                 .setParameter("title", event.getTitle())
                 .setParameter("enabled", true)
-                .getResultList().get(0);
-        transactions.removeActivitiesMaps(activitiesMap);
+                .getResultList();
+    }
+
+    public void deleteEvent() {
+
+        transactions.removeActivitiesMaps(selectedActivityMaps);
         scheduleModel.deleteEvent(event);
+        selectedActivityMaps = new ArrayList<>();
     }
 
     public void onDateSelect(SelectEvent e) {
@@ -219,30 +263,23 @@ public class CategoriesController implements Serializable{
         c.add(Calendar.DATE, 7);
         Date endDate = c.getTime();
         event = new DefaultScheduleEvent(selectedActivity.getTitle(), date, endDate, selectedActivity.getCategoryId().getTitle().toLowerCase().replace(" ", "-"));
-        event.setAllDay(true);
-        List<ScheduleEvent> sameActivities = new ArrayList<>();
-        for (ScheduleEvent checkedEvent : scheduleModel.getEvents()) {
-            if (checkedEvent.getTitle().equals(event.getTitle())) {
-                sameActivities.add(checkedEvent);
-            }
+        //event.setAllDay(true);
+    }
+    
+    public void setStartDate(SelectEvent e) {
+        Date startDate = (Date) e.getObject();
+        event.setStartDate(startDate);
+        Calendar c = Calendar.getInstance();
+        c.setTime(startDate);
+        c.add(Calendar.DATE, 7);
+        if (event.getEndDate().before(startDate)) {
+            event.setEndDate(c.getTime());
         }
-        if (sameActivities.size() > 0) {
-            boolean exists = false;
-            for (ScheduleEvent alreadyEnabled : sameActivities) {
-                if (date.equals(alreadyEnabled.getStartDate())
-                        || (date.before(alreadyEnabled.getStartDate()) && endDate.after(alreadyEnabled.getStartDate()))
-                        || (date.before(alreadyEnabled.getEndDate()) && endDate.after(alreadyEnabled.getEndDate()))) {
-                    exists = true;
-                    break;
-                }
+    }
 
-            }
-            if (!exists) {
-                addEvent();
-            }
-        } else {
-            addEvent();
-        }
+    public void setEndDate(SelectEvent e) {
+        Date startDate = (Date) e.getObject();
+        event.setEndDate(startDate);
     }
 
     public String getStyles() {
