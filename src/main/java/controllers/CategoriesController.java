@@ -157,7 +157,8 @@ public class CategoriesController implements Serializable{
         transactions.addActivity(newActivity);
         setNewActivityTitle(null);
         updateActivitiesList(category);
-        FacesContext.getCurrentInstance().getExternalContext().redirect("activities.html");
+        init();
+//        FacesContext.getCurrentInstance().getExternalContext().redirect("activities.html");
     }
 
     public void onRowEditActivity(RowEditEvent event) {
@@ -167,7 +168,7 @@ public class CategoriesController implements Serializable{
     public void deleteActivity(Activity activity) {
         //Category previouslySelectedCategory = selectedCategory;
         transactions.deleteActivity(activity);
-        init();
+        //init();
         updateActivitiesList(activity.getCategoryId());
     }
     

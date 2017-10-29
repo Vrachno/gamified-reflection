@@ -28,7 +28,7 @@
             <p:dataTable value="#{usersController.students}" var="student" sortBy="#{!student.active}" id="studentsTable" class="text-center">
                 <p:headerRow>
                     <p:column colspan="5">
-                        <h:outputText value="#{student.active ? 'Active Users' : 'Inavtive Users'}" />
+                        <h:outputText value="#{student.active ? 'Active Users' : 'Inactive Users'}" />
                     </p:column>
                 </p:headerRow>
                 <p:column headerText="e-mail">
@@ -46,7 +46,7 @@
                     </h:outputText>
                 </p:column>
                 <p:column headerText="Action" width="10%">
-                    <p:commandLink value="#{student.active ? 'Disable' : 'Enable'}" actionListener="#{usersController.toggleActive(student)}" update="@form:studentsTable"/>
+                    <p:commandLink value="#{student.active ? 'Disable' : 'Enable'}" actionListener="#{usersController.toggleActive(student)}" update="@form:studentsTable" style="#{student.active ? 'color: red' : 'color: green'}"/>
                     <h:outputText rendered="#{!student.active}" value=" / "/>
                     <p:commandLink rendered="#{!student.active}" value="Delete" actionListener="#{usersController.deleteUser(student)}" update="@form:studentsTable" style="color: red">
                         <p:confirm header="Confirmation" message="Are you sure you want to permanently delete '#{student.firstName} #{student.lastName}' from the user database?" icon="ui-icon-alert" />

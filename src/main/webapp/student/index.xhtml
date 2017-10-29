@@ -9,33 +9,30 @@
         <title>Gamified Reflection</title>
         <h:outputStylesheet library="webjars" name="bootstrap/3.3.7-1/css/bootstrap.min-jsf.css" />
         <h:outputStylesheet library="css" name="custom.css" />
+        <style>
+            @media screen and (max-width: 554px) {
+                #{profileController.activitiesPending ? '#logo {display: none;} #progressDiv {margin-left: -3em; width: 25%;}  #pendingActivitiesDiv {margin-left: 1.5em;} #welcomeDiv {margin-left: 5em;}' : ''}
+            }
+        </style>
     </h:head>
     <h:body>
         <div class="container-fluid" style="color: white; font: normal 1em 'Noto Serif', serif, Arial;">
             <div class="row header" style="background-color: #414042">
-<!--                <div  class="col-lg-4 hidden-md hidden-sm hidden-xs col-sm-4 col-xs-4">
-                    <h:graphicImage library="img" name="citycollege-logo.png"/>
-                    <div style="">
-                        <h:outputText value="City College Student Mentoring System" /></div>
-                </div>-->
                 <div class="col-lg-5 col-md-5 col-sm-4 col-xs-1" >
                     <h:graphicImage id="logo" library="img" name="citycollege-logo.png"/>
                     <div id="title" class="hidden-xs">
                         <h:outputText value="City College " /><br class="hidden-lg"></br><h:outputText value="Student Mentoring "/> <br class="visible-sm"></br><h:outputText value="System" />
                     </div>
                 </div>
-                <div id="progressDiv" class="col-lg-2 col-lg-offset-0 col-md-2 col-md-offset-0 col-sm-3 col-xs-4 text-center">
+                <div id="progressDiv" class="col-lg-2 col-lg-offset-0 col-md-2 col-md-offset-0 #{profileController.activitiesPending ? 'col-sm-2' : 'col-sm-4'} col-sm-offset-0 #{profileController.activitiesPending ? 'col-xs-2 col-xs-offset-1' : 'col-xs-3 col-xs-offset-3'} text-center" style="#{profileController.activitiesPending ? 'padding-left: 1em;' : ''}">
                     <h:outputText value="#{aux.student.level}" style="font-weight: bold; font-size: 1.2em;"/>
                     <br></br>
                     <p:progressBar value="#{aux.progress}" labelTemplate="{value}%"/>
                 </div>
-<!--                <div class="col-lg-2 hidden-md hidden-sm hidden-xs col-sm-4 col-xs-4 text-center" style="padding-top: 0.6em;">
-                    <p:link class="btn btn-warning blink" rendered="#/{profileController.activitiesPending}" value="New activities available!" outcome="logger.html" style="font-size: 1.5em;"/>
-                </div>-->
-                <div id="pendingActivitiesDiv" class="col-lg-2 col-md-2 col-sm-2 col-xs-4 text-center" style=" padding-right: 0">
-                    <p:link id="pendingActivitiesBtn" class="btn btn-warning blink" rendered="#{profileController.activitiesPending}" value="New activities &lt;br id='button-break'/&gt; available!" escape="false" outcome="logger.html" style=""/>
+                <div id="pendingActivitiesDiv" class="col-lg-2 #{profileController.activitiesPending ? 'col-md-2' : 'col-md-3'}  col-sm-2 col-xs-3 text-center" style=" padding-right: 0; #{!profileController.activitiesPending ? 'display: none;' : ''}">
+                    <p:link id="pendingActivitiesBtn" class="btn btn-warning blink" rendered="#{profileController.activitiesPending}" value="New activities &lt;br class='hidden-lg'/&gt; available!" escape="false" outcome="logger.html"/>
                 </div>
-                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-4 text-right" style="padding-right: 1em; padding-left: 0">
+                <div id="welcomeDiv" class="col-lg-3 #{profileController.activitiesPending ? 'col-lg-offset-0' : 'col-lg-offset-2'} col-lg-offset-2 col-md-3 #{profileController.activitiesPending ? 'col-md-offset-0' : 'col-md-offset-2'} col-sm-3 col-sm-offset-1 col-xs-3 #{profileController.activitiesPending ? 'col-xs-offset-0' : 'col-xs-offset-1'} text-right" style="padding-right: 1em; padding-left: 0">
                     <h:form id="welcome">
                         <p:outputLabel value="Welcome,&#160;" /> 
                         <p:outputLabel rendered="#{!profileController.editing}" value="#{profileController.student.nickname}!" />
@@ -55,7 +52,7 @@
                 <p:panel id="info" class="col-md-5 col-lg-5 col-xs-12">
                     <div class="row">
                         <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-                            
+
                         </div>
                         <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
                             <h:form>

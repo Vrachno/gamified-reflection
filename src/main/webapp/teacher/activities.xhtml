@@ -12,54 +12,6 @@
         <h:outputStylesheet library="css" name="custom.css" />
         <style>
             #{categoriesController.styles}
-
-            .selected {
-                color: blue !important;
-            }
-
-            .not-selected {
-                color: black !important;
-            }
-
-            .fa-calendar-o {
-                height: inherit;
-            }
-
-            .ui-tabmenu .ui-tabmenu-nav {
-                padding-left: .5em
-            }
-
-            .ui-tabmenuitem.ui-state-default.ui-corner-top:last-child {
-                float: right !important;
-                background-color: #990033 !important;
-                background: none;
-                color: white;
-            }
-            
-            #newEventDlg_title {
-                margin-right: 0;
-                width: fit-content;
-            }
-            
-            .ui-dialog-titlebar {
-                height: auto;
-            }
-            
-            .ui-dialog-content {
-                width: 100% !important; 
-                height: 75% !important;
-            }
-            
-            .ui-dialog-footer {
-                height: 15% !important;
-                text-align: right !important;
-            }
-            
-            #newEventDlg {
-                height: 80vh !important;
-                width: 60vw !important;
-/*                overflow: visible;*/
-            }
             
         </style>
     </h:head>
@@ -82,7 +34,7 @@
 
                             <p:column headerText="Skills">
                                 <p:cellEditor>
-                                    <f:facet name="output"><p:commandLink styleClass="#{categoriesController.selectedCategory eq category ? 'selected' : 'not-selected'}" onclick="document.getElementById('activitiesForm').scrollIntoView()" actionListener="#{categoriesController.setSelectedCategory(category)}" value="#{category.title}" ajax="true" process="@this" update=":activitiesForm:activities, :activitiesForm:newActivityButton, @form" /></f:facet>
+                                    <f:facet name="output"><p:commandLink styleClass="#{categoriesController.selectedCategory eq category ? 'selected' : 'not-selected'}" onclick="document.getElementById('activitiesForm').scrollIntoView()" actionListener="#{categoriesController.setSelectedCategory(category)}" value="#{category.title}" ajax="true" process="@this" update=":activitiesForm:activities, :activitiesForm:newActivityBtn, @form" /></f:facet>
                                     <f:facet name="input"><p:inputText id="titleInput" value="#{category.title}" style="width:100%"/></f:facet>
                                 </p:cellEditor>
                             </p:column>
@@ -100,7 +52,7 @@
                                 </p:confirmDialog>
                             </p:column>
                         </p:dataTable>
-                        <p:commandButton value="Add New Skill" type="button" onclick="PF('newCategoryDialog').show();" />
+                        <p:commandButton id="newSkillBtn" value="Add New Skill" type="button" onclick="PF('newCategoryDialog').show();" />
                     </h:form>
                 </div>
 
@@ -135,7 +87,7 @@
                                 </p:commandLink>
                             </p:column>
                         </p:dataTable>
-                        <p:commandButton id="newActivityButton" disabled="#{categoriesController.selectedCategory eq null}" value="Add New Activity" type="button" onclick="PF('newActivityDialog').show();" style="float: right"/>
+                        <p:commandButton id="newActivityBtn" disabled="#{categoriesController.selectedCategory eq null}" value="Add New Activity" type="button" onclick="PF('newActivityDialog').show();" style="float: right"/>
                     </h:form>
                 </div>
             </p:panel>
@@ -158,16 +110,16 @@
             </h:form>
         </p:panel>
     </p:dialog>
-    <p:dialog id="newEventDlg" widgetVar="schedulerDialog" modal="true" header="Select date on which '#{categoriesController.selectedActivity.title}' will be enabled. Click on existing activity to delete." dynamic="true" position="center" closeOnEscape="true" resizable="true" closable="false">
+    <p:dialog id="newEventDlg" widgetVar="schedulerDialog" modal="true" header="Select date on which '#{categoriesController.selectedActivity.title}' will be enabled. Click on existing activity to edit." dynamic="true" draggable="false" position="center" closeOnEscape="true" resizable="false" closable="true">
         <h:form id="scheduleForm">
             <p:schedule  id="schedule" value="#{categoriesController.scheduleModel}" widgetVar="schedule" timeZone="GMT+2" leftHeaderTemplate="" centerHeaderTemplate="prev title next" rightHeaderTemplate="none">
                 <p:ajax event="dateSelect" listener="#{categoriesController.onDateSelect}" oncomplete="PF('eventDialog').show();" update=":eventDlg"/>
                 <p:ajax event="eventSelect" listener="#{categoriesController.onEventSelect}" oncomplete="PF('eventDialog').show();" update=":eventDlg"/>
             </p:schedule>
         </h:form>
-        <f:facet name="footer" >
+<!--        <f:facet name="footer" >
             <p:commandButton value="Save and Close" oncomplete="PF('schedulerDialog').hide();"/>
-        </f:facet>
+        </f:facet>-->
     </p:dialog>
     <p:dialog id="eventDlg" widgetVar="eventDialog" header="Activity Details" showEffect="clip" hideEffect="clip" modal="true">
         <h:panelGrid id="eventDetails" columns="2">

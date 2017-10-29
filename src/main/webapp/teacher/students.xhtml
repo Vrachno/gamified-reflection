@@ -50,7 +50,7 @@
                     <p:dataTable id="studentList" value="#{studentsController.selectedCategory ne null ? aux.studentsScores.entrySet().toArray() : aux.studentsOverallScores.entrySet().toArray()}" var="student" class="text-center">
                         <p:column headerText="Name">
                             <h:outputText id="name" value="#{student.key.firstName} #{student.key.lastName}"/>
-                            <p:tooltip value="#{student.key.email}" for="name" showDelay="100" hideDelay="50"/>
+                            <p:tooltip value="#{student.key.email}" for="name" showDelay="50" hideDelay="40"/>
                         </p:column>
                         <p:column headerText="#{studentsController.selectedCategory ne null ? studentsController.selectedCategory.title : 'Overall'} Score">
                             <h:outputText value="#{student.value}"/>
@@ -59,7 +59,7 @@
                             <h:outputText value="#{student.key.level}"/>
                         </p:column>
                         <p:column headerText="Details" width="15%">
-                            <p:commandLink action="#{studentsController.setSelectedStudent(student.key)}" value="Show" ajax="true" update="@form:studentDetails"/>
+                            <p:commandLink action="#{studentsController.setSelectedStudent(student.key)}" value="Show" ajax="true" update="@form:studentDetails" style="color: #f58025"/>
                         </p:column>
                     </p:dataTable>
                 </p:panel>
