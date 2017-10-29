@@ -8,6 +8,7 @@
     <h:head>
         <title>Gamified Reflection</title>
         <h:outputStylesheet library="webjars" name="bootstrap/3.3.7-1/css/bootstrap.min-jsf.css" />
+        <h:outputStylesheet library="css" name="custom.css" />
         <style>
             .ui-tabmenu .ui-tabmenu-nav {
                 padding-left: .5em
@@ -24,33 +25,38 @@
     <h:body>
         <ui:include src="header.xhtml"/>
         <h:form>
-            <p:dataTable value="#{usersController.students}" var="student" sortBy="#{!student.active}" id="studentsTable">
+            <p:dataTable value="#{usersController.students}" var="student" sortBy="#{!student.active}" id="studentsTable" class="text-center">
                 <p:headerRow>
-                    <p:column colspan="6">
+                    <p:column colspan="5">
                         <h:outputText value="#{student.active ? 'Active Users' : 'Inavtive Users'}" />
                     </p:column>
                 </p:headerRow>
                 <p:column headerText="e-mail">
                     <h:outputText value="#{student.email}"/>
                 </p:column>
-                <p:column headerText="First Name">
-                    <h:outputText value="#{student.firstName}"/>
+                <p:column headerText="Name" width="23%">
+                    <h:outputText value="#{student.firstName} #{student.lastName}"/>
                 </p:column>
-                <p:column headerText="Last Name">
-                    <h:outputText value="#{student.lastName}"/>
-                </p:column>
-                <p:column headerText="Nickname">
+                <p:column headerText="Nickname" width="14%">
                     <h:outputText value="#{student.nickname}"/>
                 </p:column>
-                <p:column headerText="Register Date">
+                <p:column headerText="Register Date" width="15%">
                     <h:outputText value="#{student.dateRegistered}">
                         <f:convertDateTime pattern="E, dd/MM/yyy" />
                     </h:outputText>
                 </p:column>
-                <p:column headerText="Action">
+                <p:column headerText="Action" width="10%">
                     <p:commandLink value="#{student.active ? 'Disable' : 'Enable'}" actionListener="#{usersController.toggleActive(student)}" update="@form:studentsTable"/>
+                    <h:outputText rendered="#{!student.active}" value=" / "/>
+                    <p:commandLink rendered="#{!student.active}" value="Delete" actionListener="#{usersController.deleteUser(student)}" update="@form:studentsTable" style="color: red">
+                        <p:confirm header="Confirmation" message="Are you sure you want to permanently delete '#{student.firstName} #{student.lastName}' from the user database?" icon="ui-icon-alert" />
+                    </p:commandLink>
+                    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                        <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                    </p:confirmDialog>
                 </p:column>
-                
+
             </p:dataTable>
         </h:form>
     </h:body>

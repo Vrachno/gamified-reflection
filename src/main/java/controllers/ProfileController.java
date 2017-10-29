@@ -8,11 +8,14 @@ package controllers;
 import entities.ActivitiesMap;
 import entities.AppUser;
 import entities.Category;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
@@ -143,6 +146,11 @@ public class ProfileController implements Serializable {
                 || em.find(AppUser.class, request.getUserPrincipal().getName()).getNickname().equals(student.getNickname())) {
             transactions.saveUser(student);
             setEditing(false);
+            try {
+                FacesContext.getCurrentInstance().getExternalContext().redirect("index.html");
+            } catch (IOException ex) {
+                Logger.getLogger(ProfileController.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } else if (!student.getNickname().equals("")){
               FacesContext.getCurrentInstance().addMessage("welcome:nicknameMsg", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Nickname already taken."));
         } else {

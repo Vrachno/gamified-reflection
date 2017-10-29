@@ -1,0 +1,251 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Aug 23, 2017, 6:36:47 PM
+    Author     : dpattas
+*/
+
+.ui-tabmenu .ui-tabmenu-nav {
+    padding-left: .5em;
+    height: 4em;
+    background: #414042;
+}
+
+.ui-tabmenuitem {
+    height: 99%;
+    font: normal 1.5em 'Noto Serif', serif, Arial; 
+}
+
+.ui-tabmenuitem.ui-state-default.ui-corner-top:first-child{
+    background: none;
+    border: none;
+}
+.ui-tabmenuitem.ui-state-default.ui-corner-top:last-child {
+    float: right !important;
+    background-color: #990033 !important;
+    background: none;
+    color: white;
+}
+
+    #headerForm\3A logo {
+        width: 2.6em;
+        margin-top: -0.65em;
+    }
+    .ui-menuitem-text > #title {
+        font-size: 1em;
+        color: white;
+        margin-top: -3em;
+    }
+
+    .ui-progressbar {
+        height: 1.6em !important;
+    }
+    .ui-progressbar-value {
+        height: 110% !important;
+    }
+
+    @media screen and (min-width: 768px) { 
+        .row.main-content{
+            display: -webkit-box;
+            display: -webkit-flex;
+            display: -ms-flexbox;
+            display:         flex;
+    }
+    .row.main-content > [class*='col-'] {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    #logo {
+        width: 4.3em;
+        margin-top: -2.3em;
+    }
+    
+    #title {
+        font-size: 1.5em;
+        margin-left: 0.5em;
+        margin-top: 0.6em;
+        display: inline-block;
+    }
+    
+    #progressDiv {
+        padding-top: 0.3%;
+        padding-bottom: 0.3%;
+    }
+}
+
+@media screen and (min-width: 1390px) { 
+    #button-break {
+        display: none;
+    }
+    #pendingActivitiesBtn{
+        font-size: 1.5em !important;
+    }
+    .ui-tabmenuitem.ui-state-default.ui-corner-top:nth-child(2){
+        margin-left: 10%;
+    }
+}
+@media screen and (min-width: 1024px) { 
+    #logo {
+        width: 4.3em;
+        margin-top: -.2em;
+    }
+    
+    #title {
+        font-size: 1.5em;
+        margin-left: 0.5em;
+        margin-top: .8em;
+        display: inline-block;
+    }
+
+/*    #pendingActivitiesDiv {
+        padding-top: 0.2em;
+    }*/
+}
+
+@media screen and (max-width: 1199px) { 
+
+    #headerForm\3A logo {
+        width: 2.6em;
+        margin-top: -1.4em;
+    }
+
+    .ui-menuitem-text > #title {
+        margin-top: -0.5em;
+    }
+
+    #logo {
+        width: 4.3em;
+        margin-top: -2em;
+    }
+    
+    #title {
+        font-size: 1.5em;
+        margin-left: 0.5em;
+        margin-top: .2em;
+        display: inline-block;
+    }
+}
+
+    @media screen and (max-width: 1024px) { 
+        #pendingActivitiesDiv {
+            padding-left: 0;
+        }
+    }
+
+    @media screen and (min-width: 1015px) { 
+        #pendingActivitiesDiv {
+            padding-top: .5%;
+            padding-bottom: .5%;
+        }
+    }
+    @media screen and (max-width: 1014px) { 
+        #logo {
+            width: 7.2em;
+            margin-top: -1.8em;
+        }
+
+        #title {
+            font-size: 1.5em;
+            margin-left: 0.5em;
+            margin-top: 1em;
+            display: inline-block;
+        }
+        
+        #progressDiv {
+            padding-top: 2%;
+        }
+
+        #pendingActivitiesDiv {
+            padding-top: 2.2%;
+            padding-left: 5%
+        }
+    }
+
+    @media screen and (max-width: 991px) { 
+        #headerForm\3A logo {
+            width: 2.6em;
+            margin-top: -.6em;
+        }
+
+        .ui-menuitem-text > #title {
+            display: none
+        }
+
+        .ui-tabmenuitem.ui-state-default.ui-corner-top:nth-child(2){
+            margin-left: 17%;
+        }
+
+        #logo {
+            width: 5em;
+            margin-top: -20%;
+        }
+
+        #title {
+            margin-top: 5%;
+        }
+
+
+        #progressDiv {
+            padding-left: 10%;
+            padding-right: 0;
+        }
+        
+        #pendingActivitiesDiv {
+            padding-left: 5%
+        }
+    }
+    @media screen and (max-width: 767px) {
+        .row.main-content{
+        display: block !important;
+    }
+    .row.main-content > [class*='col-'] {
+        display: block;
+    }
+    #logo {
+        width: 4.3em;
+        margin-top: 0;
+    }
+}
+    .row.header > [class*='col-'] {
+        padding-left: 2em;
+        padding-right: 2em;
+}
+
+.blink {
+    -webkit-animation-name: blinker;
+    -webkit-animation-duration: 1s;
+    -webkit-animation-timing-function: linear;
+    -webkit-animation-iteration-count: infinite;
+
+    -moz-animation-name: blinker;
+    -moz-animation-duration: 1s;
+    -moz-animation-timing-function: linear;
+    -moz-animation-iteration-count: infinite;
+
+    animation-name: blinker;
+    animation-duration: 1s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+}
+
+@-moz-keyframes blinker { 
+    0% { color: #ff1313; }
+    50% { color: #850e0e; }
+    100% { color: #310404; }
+}
+
+@-webkit-keyframes blinker { 
+    0% { color: #ff1313; }
+    50% { color: #850e0e; }
+    100% { color: #310404; }
+}
+
+@keyframes blinker { 
+    0% { color: #ff1313; }
+    50% { color: #850e0e; }
+    100% { color: #310404; }
+}

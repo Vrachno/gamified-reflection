@@ -8,6 +8,7 @@
     <h:head>
         <title>Gamified Reflection</title>
         <h:outputStylesheet library="webjars" name="bootstrap/3.3.7-1/css/bootstrap.min-jsf.css" />
+        <h:outputStylesheet library="css" name="custom.css" />
         <style>
             .ui-tabmenu .ui-tabmenu-nav {
                 padding-left: .5em
@@ -29,7 +30,7 @@
 
         <h:form id="mainForm" class="container-fluid">
             <p:panel class="row">
-                <p:panel class="col-md-4">
+                <p:panel class="col-md-7 col-lg-6 col-sm-12 col-xs-12">
                     <div class="row">
                         <div class="col-lg-6 col-md-12">
                             <h:outputText value="Active students" style="text-align: center; font-size: 1.6em; "/>
@@ -46,11 +47,23 @@
                             </h:form>
                         </div>
                     </div>
-                    <p:dataList id="studentList" value="#{studentsController.selectedCategory ne null ? aux.studentsScores.entrySet().toArray() : aux.studentsOverallScores.entrySet().toArray()}" var="student" type="definition">
-                        <p:commandLink action="#{studentsController.setSelectedStudent(student.key)}" value="#{student.key.firstName} #{student.key.lastName} (#{student.key.email})" ajax="true" update="@form:studentDetails" />
-                    </p:dataList>
+                    <p:dataTable id="studentList" value="#{studentsController.selectedCategory ne null ? aux.studentsScores.entrySet().toArray() : aux.studentsOverallScores.entrySet().toArray()}" var="student" class="text-center">
+                        <p:column headerText="Name">
+                            <h:outputText id="name" value="#{student.key.firstName} #{student.key.lastName}"/>
+                            <p:tooltip value="#{student.key.email}" for="name" showDelay="100" hideDelay="50"/>
+                        </p:column>
+                        <p:column headerText="#{studentsController.selectedCategory ne null ? studentsController.selectedCategory.title : 'Overall'} Score">
+                            <h:outputText value="#{student.value}"/>
+                        </p:column>
+                        <p:column headerText="Student Level">
+                            <h:outputText value="#{student.key.level}"/>
+                        </p:column>
+                        <p:column headerText="Details" width="15%">
+                            <p:commandLink action="#{studentsController.setSelectedStudent(student.key)}" value="Show" ajax="true" update="@form:studentDetails"/>
+                        </p:column>
+                    </p:dataTable>
                 </p:panel>
-                <p:panel id="studentDetails" class="col-md-8">
+                <p:panel id="studentDetails" class="col-md-5 col-lg-6 col-sm-12 col-xs-12">
                     <p:chart rendered="#{studentsController.selectedStudent ne null}" id="barChart" type="bar" model="#{studentsController.barModel}" />
                     <p:chart rendered="#{studentsController.selectedStudent ne null}" id="progressChart" type="line" model="#{studentsController.lineModel}" />
                 </p:panel>  

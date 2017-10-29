@@ -6,26 +6,21 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <head>
-        <style>
-            .ui-tabmenu .ui-tabmenu-nav {
-                padding-left: .5em
-            }
-
-            .ui-tabmenuitem.ui-state-default.ui-corner-top:last-child {
-                float: right !important;
-                background-color: #990033 !important;
-                background: none;
-                color: white;
-            }
-        </style>
+        <h:outputStylesheet library="css" name="custom.css" />
     </head>
     <h:body>
         <ui:composition>
             <div class="container-fluid">
-                 <div class="row">
-                    <h:form>
-                        <p:tabMenu activeIndex="#{(request.requestURI).equalsIgnoreCase('/GamifiedReflection/teacher/students.html') ? 0 :
-                                                  (request.requestURI).equalsIgnoreCase('/GamifiedReflection/teacher/activities.html') ? 1 : 2}">
+                <div class="row">
+                    <h:form id="headerForm">
+                        <p:tabMenu activeIndex="#{(request.requestURI).equalsIgnoreCase('/GamifiedReflection/teacher/students.html') ? 1 :
+                                                  (request.requestURI).equalsIgnoreCase('/GamifiedReflection/teacher/activities.html') ? 2 : 3}">
+                            <p:menuitem>
+                                <h:graphicImage id="logo" library="img" name="citycollege-logo.png"/>
+                                <div id="title" class="hidden-xs">
+                                    <h:outputText value="City College " /><br class="hidden-lg"></br><h:outputText value="Student Mentoring "/> <br class="visible-sm"></br><h:outputText value="System" />
+                                </div>
+                            </p:menuitem>
                             <p:menuitem outcome="students.html" value="Mentees" class="text-center"/>
                             <p:menuitem outcome="activities.html" value="Activities" class="text-center"/>
                             <p:menuitem outcome="users.html" value="Users" class="text-center"/>

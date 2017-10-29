@@ -60,6 +60,21 @@ public class Auxilliary {
     private final int ANSWER_NEUTRAL = 1;
     private final int ANSWER_BAD = 0;
 
+    private final String levels[] = {
+        "Level 1: n00b",
+        "Level 2: Rookie",
+        "Level 3: Beginner",
+        "Level 4: Elementary",
+        "Level 5: Intermediate",
+        "Level 6: Experienced",
+        "Level 7: Achiever",
+        "Level 8: Seasoned",
+        "Level 9: Exemplary",
+        "Level 10: Master",
+        "Level 11: Extraordinar",
+        "Level 12 (Max): Supreme Leader"
+    };
+
     @PersistenceContext
     EntityManager em;
 
@@ -136,12 +151,12 @@ public class Auxilliary {
         lineModel = new LineChartModel();
 
         List<ActivitiesMap> activitiesMapList = em.createNamedQuery("ActivitiesMap.findNotLoggedByStudent").setParameter("studentEmail", student).setParameter("logged", true).getResultList();
-                activitiesMapList.sort(new Comparator<ActivitiesMap>() {
-                    @Override
-                    public int compare(ActivitiesMap o1, ActivitiesMap o2) {
-                        return (int) (o1.getDateAnswered().compareTo(o2.getDateAnswered()));
-                    }
-                });
+        activitiesMapList.sort(new Comparator<ActivitiesMap>() {
+            @Override
+            public int compare(ActivitiesMap o1, ActivitiesMap o2) {
+                return (int) (o1.getDateAnswered().compareTo(o2.getDateAnswered()));
+            }
+        });
 
         List<SkillsMap> studentSkillsMapList = em.createNamedQuery("SkillsMap.findByStudentEmail").setParameter("studentEmail", student).getResultList();
         int highestScore = 0;
@@ -192,7 +207,6 @@ public class Auxilliary {
             }
 
         }
-
 
         return lineModel;
     }
@@ -250,7 +264,6 @@ public class Auxilliary {
     }
 
     public void setGraphicImage() {
-        FacesContext context = FacesContext.getCurrentInstance();
         setStudentScores(selectedCategory);
         try {
             File img = new File("../docroot/GamifiedReflection/topthree.png");
@@ -372,64 +385,111 @@ public class Auxilliary {
 
     public void setStudentLevel(AppUser student, int score) {
         if (score < 20) {
-            student.setLevel("Level 1: n00b");
-            if (this.student!=null && student.getEmail().equals(this.student.getEmail())) {
+            student.setLevel(levels[0]);
+            if (this.student != null && student.getEmail().equals(this.student.getEmail())) {
                 progress = calculateProgress(currentUserOverallScore, 0, 20);
+                if (progress == 100) {
+                    student.setLevel(levels[1]);
+                    progress = 0;
+                }
             }
         } else if (score <= 50) {
-            student.setLevel("Level 2: Rookie");
-            if (this.student!=null && student.getEmail().equals(this.student.getEmail())) {
+            student.setLevel(levels[1]);
+            if (this.student != null && student.getEmail().equals(this.student.getEmail())) {
                 progress = calculateProgress(currentUserOverallScore, 20, 50);
+                if (progress == 100) {
+                    student.setLevel(levels[2]);
+                    progress = 0;
+                }
             }
         } else if (score <= 90) {
-            student.setLevel("Level 3: Beginner");
-            if (this.student!=null && student.getEmail().equals(this.student.getEmail())) {
+            student.setLevel(levels[2]);
+            if (this.student != null && student.getEmail().equals(this.student.getEmail())) {
                 progress = calculateProgress(currentUserOverallScore, 50, 90);
+                if (progress == 100) {
+                    student.setLevel(levels[3]);
+                    progress = 0;
+                }
             }
         } else if (score <= 140) {
-            student.setLevel("Level 4: Elementary");
-            if (this.student!=null && student.getEmail().equals(this.student.getEmail())) {
+            student.setLevel(levels[3]);
+            if (this.student != null && student.getEmail().equals(this.student.getEmail())) {
                 progress = calculateProgress(currentUserOverallScore, 90, 140);
+                if (progress == 100) {
+                    student.setLevel(levels[4]);
+                    progress = 0;
+                }
             }
         } else if (score <= 200) {
-            student.setLevel("Level 5: Intermediate");
-            if (this.student!=null && student.getEmail().equals(this.student.getEmail())) {
+            student.setLevel(levels[4]);
+            if (this.student != null && student.getEmail().equals(this.student.getEmail())) {
                 progress = calculateProgress(currentUserOverallScore, 140, 200);
+                if (progress == 100) {
+                    student.setLevel(levels[5]);
+                    progress = 0;
+                }
             }
         } else if (score <= 270) {
-            student.setLevel("Level 6: Experienced");
-            if (this.student!=null && student.getEmail().equals(this.student.getEmail())) {
+            student.setLevel(levels[5]);
+            if (this.student != null && student.getEmail().equals(this.student.getEmail())) {
                 progress = calculateProgress(currentUserOverallScore, 200, 270);
+                if (progress == 100) {
+                    student.setLevel(levels[6]);
+                    progress = 0;
+                }    
             }
         } else if (score <= 350) {
-            student.setLevel("Level 7: Achiever");
-            if (this.student!=null && student.getEmail().equals(this.student.getEmail())) {
+            student.setLevel(levels[6]);
+            if (this.student != null && student.getEmail().equals(this.student.getEmail())) {
                 progress = calculateProgress(currentUserOverallScore, 270, 350);
+                if (progress == 100) {
+                    student.setLevel(levels[7]);
+                    progress = 0;
+                }
             }
         } else if (score <= 440) {
-            student.setLevel("Level 8: Seasoned");
-            if (this.student!=null && student.getEmail().equals(this.student.getEmail())) {
+            student.setLevel(levels[7]);
+            if (this.student != null && student.getEmail().equals(this.student.getEmail())) {
                 progress = calculateProgress(currentUserOverallScore, 350, 440);
+                if (progress == 100) {
+                    student.setLevel(levels[8]);
+                    progress = 0;
+                }
             }
         } else if (score <= 540) {
-            student.setLevel("Level 9: Exemplary");
-            if (this.student!=null && student.getEmail().equals(this.student.getEmail())) {
+            student.setLevel(levels[8]);
+            if (this.student != null && student.getEmail().equals(this.student.getEmail())) {
                 progress = calculateProgress(currentUserOverallScore, 440, 540);
+                if (progress == 100) {
+                    student.setLevel(levels[9]);
+                    progress = 0;
+                }
             }
         } else if (score <= 650) {
-            student.setLevel("Level 10: Master");
-            if (this.student!=null && student.getEmail().equals(this.student.getEmail())) {
+            student.setLevel(levels[9]);
+            if (this.student != null && student.getEmail().equals(this.student.getEmail())) {
                 progress = calculateProgress(currentUserOverallScore, 540, 650);
+                if (progress == 100) {
+                    student.setLevel(levels[10]);
+                    progress = 0;
+                }
             }
         } else if (score <= 770) {
-            student.setLevel("Level 11: Extraordinary");
-            if (this.student!=null && student.getEmail().equals(this.student.getEmail())) {
+            student.setLevel(levels[10]);
+            if (this.student != null && student.getEmail().equals(this.student.getEmail())) {
                 progress = calculateProgress(currentUserOverallScore, 650, 770);
+                if (progress == 100) {
+                    student.setLevel(levels[11]);
+                    progress = 0;
+                }
             }
         } else {
-            student.setLevel("Level 12 (Max): Supreme Leader");
-            if (this.student!=null && student.getEmail().equals(this.student.getEmail())) {
-                progress = 100;
+            student.setLevel(levels[11]);
+            if (this.student != null && student.getEmail().equals(this.student.getEmail())) {
+                progress = calculateProgress(currentUserOverallScore, 770, 900);
+                if (progress > 100) {
+                    progress = 100;
+                }
             }
         }
     }

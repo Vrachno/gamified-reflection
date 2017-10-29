@@ -6,6 +6,7 @@
 package controllers;
 
 import entities.AppUser;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +14,7 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -74,5 +76,10 @@ public class UsersController implements Serializable {
     public void toggleActive(AppUser user) {
         transactions.toggleActive(user);
     }
-    
+
+    public void deleteUser(AppUser user) throws IOException {
+        transactions.deleteUser(user);
+        FacesContext.getCurrentInstance().getExternalContext().redirect("users.html");
+    }
+
 }

@@ -135,4 +135,8 @@ public class TransactionsController {
         user.setActive(!user.getActive());
         em.merge(user);
     }
+    
+    public void deleteUser (AppUser user) {
+        em.remove(em.merge(user));
+    }
 }

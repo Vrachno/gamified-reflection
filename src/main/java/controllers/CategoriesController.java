@@ -165,10 +165,10 @@ public class CategoriesController implements Serializable{
     }
 
     public void deleteActivity(Activity activity) {
-
+        //Category previouslySelectedCategory = selectedCategory;
         transactions.deleteActivity(activity);
-        updateActivitiesList(activity.getCategoryId());
         init();
+        updateActivitiesList(activity.getCategoryId());
     }
     
         public void updateActivitiesList(Category category) {

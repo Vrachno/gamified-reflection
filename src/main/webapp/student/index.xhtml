@@ -8,57 +8,46 @@
     <h:head>
         <title>Gamified Reflection</title>
         <h:outputStylesheet library="webjars" name="bootstrap/3.3.7-1/css/bootstrap.min-jsf.css" />
-        <style>
-            .ui-progressbar {
-                height: 1.6em;
-            }
-            @media screen and (min-width: 768px) { 
-                .row.main-content{
-                    display: -webkit-box;
-                    display: -webkit-flex;
-                    display: -ms-flexbox;
-                    display:         flex;
-                }
-                .row.main-content > [class*='col-'] {
-                    display: flex;
-                    flex-direction: column;
-                }
-            }
-            @media screen and (max-width: 767px) {
-                .row.main-content{
-                    display: block !important;
-                }
-                .row.main-content > [class*='col-'] {
-                    display: block;
-                }
-            }
-            .row.header > [class*='col-'] {
-                padding-left: 2em;
-                padding-right: 2em;
-            }
-        </style>
+        <h:outputStylesheet library="css" name="custom.css" />
     </h:head>
     <h:body>
-        <div class="container-fluid">
-            <div class="row header">
-                <div  class="col-lg-3 col-md-4 col-sm-4 col-xs-4">
-                    <h:form id="welcome">
-                        <p:outputLabel value="Welcome,&#160;" /> 
-                        <p:outputLabel rendered="#{!profileController.editing}" value="#{profileController.student.nickname}!" />
-                        <p:inputText id="nickname" rendered="#{profileController.editing}" value="#{profileController.student.nickname}" maxlength="12" style="width: 10em"/>
-                        <p:commandButton rendered="#{profileController.editing}" value="OK" type="submit" actionListener="#{profileController.changeNickname()}" ajax="true" update="welcome @(:info)"/>
-                        <span class="ui-state-error-text"><h:messages id="nicknameMsg" showSummary="false" showDetail="true" style="list-style-type: none; padding-left:0;"/></span>
-                        <p:commandLink rendered="#{!profileController.editing}" value="Change nickname" actionListener="#{profileController.setEditing(true)}" ajax="true" update="welcome"/>
-                    </h:form>
+        <div class="container-fluid" style="color: white; font: normal 1em 'Noto Serif', serif, Arial;">
+            <div class="row header" style="background-color: #414042">
+<!--                <div  class="col-lg-4 hidden-md hidden-sm hidden-xs col-sm-4 col-xs-4">
+                    <h:graphicImage library="img" name="citycollege-logo.png"/>
+                    <div style="">
+                        <h:outputText value="City College Student Mentoring System" /></div>
+                </div>-->
+                <div class="col-lg-5 col-md-5 col-sm-4 col-xs-1" >
+                    <h:graphicImage id="logo" library="img" name="citycollege-logo.png"/>
+                    <div id="title" class="hidden-xs">
+                        <h:outputText value="City College " /><br class="hidden-lg"></br><h:outputText value="Student Mentoring "/> <br class="visible-sm"></br><h:outputText value="System" />
+                    </div>
                 </div>
-                <div class="col-lg-2 col-md-4 col-lg-offset-2 col-sm-4 col-xs-4 text-center">
-                    <h:outputText value="#{aux.student.level}" style="font-weight: bold"/>
+                <div id="progressDiv" class="col-lg-2 col-lg-offset-0 col-md-2 col-md-offset-0 col-sm-3 col-xs-4 text-center">
+                    <h:outputText value="#{aux.student.level}" style="font-weight: bold; font-size: 1.2em;"/>
                     <br></br>
                     <p:progressBar value="#{aux.progress}" labelTemplate="{value}%"/>
                 </div>
-                <div class="col-lg-2 col-md-4 col-lg-offset-3 col-sm-4 col-xs-4 text-right" style="padding-top: 0.9em">
-                    <h:form>
-                        <p:commandButton class="btn btn-danger" value="Logout" actionListener="#{loginController.logout()}" style="padding: 0.2em" />
+<!--                <div class="col-lg-2 hidden-md hidden-sm hidden-xs col-sm-4 col-xs-4 text-center" style="padding-top: 0.6em;">
+                    <p:link class="btn btn-warning blink" rendered="#/{profileController.activitiesPending}" value="New activities available!" outcome="logger.html" style="font-size: 1.5em;"/>
+                </div>-->
+                <div id="pendingActivitiesDiv" class="col-lg-2 col-md-2 col-sm-2 col-xs-4 text-center" style=" padding-right: 0">
+                    <p:link id="pendingActivitiesBtn" class="btn btn-warning blink" rendered="#{profileController.activitiesPending}" value="New activities &lt;br id='button-break'/&gt; available!" escape="false" outcome="logger.html" style=""/>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-4 text-right" style="padding-right: 1em; padding-left: 0">
+                    <h:form id="welcome">
+                        <p:outputLabel value="Welcome,&#160;" /> 
+                        <p:outputLabel rendered="#{!profileController.editing}" value="#{profileController.student.nickname}!" />
+                        <p:inputText id="nickname" rendered="#{profileController.editing}" value="#{profileController.student.nickname}" maxlength="12" style="width: 10em; padding: 0"/>
+                        <br></br>
+                        <span><h:messages id="nicknameMsg" showSummary="false" showDetail="true" style="list-style-type: none; padding-left:0; display: inline-block; color: #ff0000"/></span>
+                        <span>
+                            <p:commandButton class="btn btn-info" rendered="#{profileController.editing}" value="OK" type="submit" actionListener="#{profileController.changeNickname()}" ajax="true" update="welcome @(:info)" style="padding: 0" />
+                            <p:commandButton class="btn btn-info" rendered="#{!profileController.editing}" value="Change nickname" actionListener="#{profileController.setEditing(true)}" ajax="true" update="welcome" style="padding: 0" />
+                        </span>
+
+                        <p:commandButton class="btn btn-danger" value="Logout" actionListener="#{loginController.logout()}" style="padding: 0em" />
                     </h:form>   
                 </div>
             </div>
@@ -66,7 +55,7 @@
                 <p:panel id="info" class="col-md-5 col-lg-5 col-xs-12">
                     <div class="row">
                         <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-                            <p:link rendered="#{profileController.activitiesPending}" value="New activities available!" outcome="logger.html" style="background-color: #ff9933"/>
+                            
                         </div>
                         <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
                             <h:form>
