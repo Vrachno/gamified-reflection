@@ -8,6 +8,44 @@ and open the template in the editor.
     Author     : dpattas
 */
 
+#loginLogo {
+    margin-left: 2em;
+    width: 5em;
+    float: left;
+}
+#loginTitle {
+    padding-top: 1em;
+    padding-left: 1em;
+    color: white;
+    font-size: 1.5em;
+    display: inline-block;
+}
+
+@media screen and (min-width: 571px) {
+
+    #loginLogo {
+        padding-right: 0 !important;
+    }
+}
+@media screen and (max-width: 506px) {
+    #loginLogo {
+        width: 5em !important;
+        margin-top: 0;
+    }
+
+    #loginTitle {
+        padding-top: .3em;
+    }  
+
+}
+@media screen and (max-width: 361px) {
+    #loginTitle {
+        font-size: 1.2em;
+        width: 60%;
+        padding-top: .7em;
+    }
+}
+
 .ui-tabmenu .ui-tabmenu-nav {
     padding-left: .5em;
     height: 4em;
@@ -35,10 +73,11 @@ and open the template in the editor.
     width: 2.6em;
     margin-top: -0.65em;
 }
-.ui-menuitem-text > #title {
+.ui-menuitem-text > #title, #title {
     font-size: 1em;
     color: white;
     margin-top: -3em;
+    display: inline-block;
 }
 
 .ui-progressbar {
@@ -64,10 +103,10 @@ and open the template in the editor.
     right: 10% !important;
 }
 
- .ui-dialog-content {
-     max-height: 90vh;
-     resize: none;
- }
+.ui-dialog-content {
+    max-height: 90vh;
+    resize: none;
+}
 
 @media screen and (min-width: 768px) { 
     .row.main-content{
@@ -90,7 +129,6 @@ and open the template in the editor.
         font-size: 1.5em;
         margin-left: 0.5em;
         margin-top: 0.6em;
-        display: inline-block;
     }
 
     #progressDiv {
@@ -128,12 +166,26 @@ and open the template in the editor.
     }
 
 }
-@media screen and (min-width: 1199px) { 
+@media screen and (max-width: 1238px) { 
+    .ui-menuitem-text > #title {
+        font-size: .6em
+    }
+}
+@media screen and (min-width: 1198px) { 
     #logo {
         width: 5.1em;
         margin-top: 0;
     }
+
+    #pendingActivitiesDiv {
+        margin-top: .8em;
+    }
+    .ui-menuitem-text > #title {
+        margin-top: -0.5em;
+        display: inline-block;
+    }
 }
+
 @media screen and (max-width: 1199px) { 
 
     #headerForm\3A logo {
@@ -143,6 +195,11 @@ and open the template in the editor.
 
     .ui-menuitem-text > #title {
         margin-top: -0.5em;
+        /*        display: none;*/
+    }
+
+    .ui-tabmenuitem.ui-state-default.ui-corner-top:nth-child(2){
+        /*        margin-left: 17%;*/
     }
 
     #logo {
@@ -158,12 +215,22 @@ and open the template in the editor.
     }
 }
 
+@media screen and (min-widrh: 959px) and (max-width: 1050px) {
+    #title {
+        font-size: 1em;
+    }
+}
+
 @media screen and (max-width: 1024px) { 
     #pendingActivitiesDiv {
         padding-left: 0;
     }
 }
-
+@media screen and (min-width: 1015px) { 
+    #welcomeDiv {
+        margin-top: .6em;
+    }
+}
 @media screen and (min-width: 1015px) { 
     #pendingActivitiesDiv {
         padding-top: .5%;
@@ -193,15 +260,46 @@ and open the template in the editor.
     }
 }
 
-@media screen and (max-width: 991px) { 
+@media screen and (max-width: 933px) {
+    .ui-tabmenuitem.ui-state-default.ui-corner-top:nth-child(2){
+        margin-left: 1%;
+    }
     #headerForm\3A logo {
-        width: 2.6em;
-        margin-top: -.6em;
+        margin-top: -.65em;
+    }
+    .ui-tabmenu .ui-tabmenu-nav {
+        padding-left: .5em;
+        height: 3em;
     }
 
-    .ui-menuitem-text > #title {
-        display: none
+    .ui-tabmenuitem {
+        height: 99%;
+        font: normal 1em 'Noto Serif', serif, Arial; 
     }
+}
+
+@media screen and (min-width: 1500px) {
+    .ui-tabmenuitem.ui-state-default.ui-corner-top:nth-child(2) {
+        margin-left: 10%;
+    }
+}
+
+
+@media screen and (min-width: 993px) and (max-width: 1199px) {
+    #headerForm\3A logo {
+        margin-top: -.7em;
+        width: 2.7em;
+    }
+}
+@media screen and (min-width: 934px) and (max-width: 991px) { 
+    #headerForm\3A logo {
+        width: 2.6em;
+       
+    }
+
+    /*    .ui-menuitem-text > #title {
+            display: none
+        }*/
 
     .ui-tabmenuitem.ui-state-default.ui-corner-top:nth-child(2){
         margin-left: 17%;
@@ -239,8 +337,14 @@ and open the template in the editor.
         display: inline-block;
     }
 }
-
+@media screen and (min-width: 768px) and (max-width: 933px) {
+    #headerForm\3A logo {
+        width: 3em;
+        margin-top: -1.2em;
+    }
+}
 @media screen and (min-width: 768px) and (max-width: 826px) {
+    
     #logo {
         width: 5.7em;
         margin-top: -2.5em;
@@ -253,7 +357,7 @@ and open the template in the editor.
         display: inline-block;
     }
 }
-    
+
 @media screen and (max-width: 767px) {
     .row.main-content{
         display: block !important;
@@ -261,6 +365,10 @@ and open the template in the editor.
     .row.main-content > [class*='col-'] {
         display: block;
     }
+    #headerForm\3A logo {
+        width: 2.8em;
+    }
+
     #logo {
         width: 6em;
         margin-top: .6em;
@@ -268,11 +376,11 @@ and open the template in the editor.
     #progressDiv {
         padding-top: 1.5em;
     }
-    
+
     #welcomeDiv {
         margin-left: 6em;
     }
-    
+
 }
 
 @media screen and (max-width: 576px) {

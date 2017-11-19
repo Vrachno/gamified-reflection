@@ -70,16 +70,18 @@ public class LoginController implements Serializable {
         FacesContext context = FacesContext.getCurrentInstance();
         HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
         try {
-            request.login(this.username, this.password);
-            if (loggedInUser.getUserRole() == 0) {
-                FacesContext.getCurrentInstance().getExternalContext().redirect("http://localhost:8080/GamifiedReflection/teacher/students.html");
+            if (loggedInUser.getUserRole() == 1 && !loggedInUser.getActive()) {
+                context.addMessage("loginError", new FacesMessage(FacesMessage.SEVERITY_FATAL, "", "User not Active."));
             } else {
-                FacesContext.getCurrentInstance().getExternalContext().redirect("http://localhost:8080/GamifiedReflection/student/index.html");
+                request.login(this.username, this.password);
+                if (loggedInUser.getUserRole() == 0) {
+                    FacesContext.getCurrentInstance().getExternalContext().redirect("http://localhost:8080/GamifiedReflection/teacher/students.html");
+                } else {
+                    FacesContext.getCurrentInstance().getExternalContext().redirect("http://localhost:8080/GamifiedReflection/student/index.html");
+                }
             }
         } catch (ServletException e) {
-
             context.addMessage("loginError", new FacesMessage(FacesMessage.SEVERITY_FATAL, "", "Login failed."));
-
         }
     }
 

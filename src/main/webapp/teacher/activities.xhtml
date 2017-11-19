@@ -6,13 +6,16 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
+        <meta http-equiv="refresh" content="#{facesContext.externalContext.sessionMaxInactiveInterval};url=#{request.contextPath}/login.html" />
         <title>Gamified Reflection</title>
         <h:outputStylesheet library="webjars" name="bootstrap/3.3.7-1/css/bootstrap.min-jsf.css" />
         <h:outputStylesheet library="webjars" name="font-awesome/4.7.0/css/font-awesome-jsf.css" />
         <h:outputStylesheet library="css" name="custom.css" />
         <style>
             #{categoriesController.styles}
-            
+            .ui-datepicker{
+                margin-left: 10em !important;
+            }
         </style>
     </h:head>
     <h:body>
@@ -117,9 +120,6 @@
                 <p:ajax event="eventSelect" listener="#{categoriesController.onEventSelect}" oncomplete="PF('eventDialog').show();" update=":eventDlg"/>
             </p:schedule>
         </h:form>
-<!--        <f:facet name="footer" >
-            <p:commandButton value="Save and Close" oncomplete="PF('schedulerDialog').hide();"/>
-        </f:facet>-->
     </p:dialog>
     <p:dialog id="eventDlg" widgetVar="eventDialog" header="Activity Details" showEffect="clip" hideEffect="clip" modal="true">
         <h:panelGrid id="eventDetails" columns="2">
@@ -134,11 +134,9 @@
                 <p:ajax event="dateSelect" partialSubmit="true" listener="#{categoriesController.setEndDate}" update="@this"/>
             </p:calendar>
  
-            <p:outputLabel for="allDay" value="All Day:" />
-            <h:selectBooleanCheckbox id="allDay" value="#{categoriesController.event.allDay}" />
- 
-            <p:commandButton id="deleteButton" value="Delete" rendered="#{categoriesController.event.id ne null}" actionListener="#{categoriesController.deleteEvent}" oncomplete="PF('eventDialog').hide(); PF('schedulerDialog').show();" update=":newEventDlg"/>
-            <p:commandButton id="addButton" value="Save" actionListener="#{categoriesController.addEvent}" oncomplete="PF('eventDialog').hide(); PF('schedulerDialog').show();" update=":newEventDlg"/>
+
+            <p:commandLink id="addButton" class="btn btn-info" value="Save" actionListener="#{categoriesController.addEvent}" oncomplete="PF('eventDialog').hide(); PF('schedulerDialog').show();" update=":newEventDlg"/>
+            <p:commandLink id="deleteButton" class="btn btn-danger" value="Delete" rendered="#{categoriesController.event.id ne null}" actionListener="#{categoriesController.deleteEvent}" oncomplete="PF('eventDialog').hide(); PF('schedulerDialog').show();" update=":newEventDlg"/>
             
         </h:panelGrid>
     </p:dialog>    

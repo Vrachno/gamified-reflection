@@ -4,25 +4,40 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui">
     <h:head>
-        <title>Facelet Title</title>
+        <title>Gamified Reflection - Login</title>
+        <h:outputStylesheet library="webjars" name="bootstrap/3.3.7-1/css/bootstrap.min-jsf.css" />
+        <h:outputStylesheet library="css" name="custom.css" />
+        <style>
+
+        </style>
     </h:head>
     <h:body>
+        <div class="row" style="background-color: #414042">
+            <h:graphicImage id="loginLogo" library="img" name="citycollege-logo.png" />
+            <div class="col-lg-6 col-md-7 col-sm-10 col-xs-9" id="loginTitle">
+                <h:outputText value="City College Student Mentoring System" />
+            </div>
+        </div>
+        <p:panel class="container" style="margin-top: 1em;">
+            <h:panelGroup>
+                <h:form>
+                    <h:panelGrid columns="2" cellpadding="5">
+                        <h:outputLabel for="username" value="Username:" />
+                        <p:inputText id="username" value="#{loginController.username}" required="true"/>
+                        <h:outputLabel for="password" value="Password:" />
+                        <p:password id="password" value="#{loginController.password}" required="true"/>
+                    </h:panelGrid>
+                    <div class="row" style="margin-top: 1em;">
+                        <div class="col-lg-12">
+                            <p:commandLink id="loginbutton" value="Login" type="submit" action="#{loginController.login()}" class="btn btn-warning" ajax="true" update="@parent"/>
 
-        <h:panelGroup>
-            <h:form>
-                <h:panelGrid columns="2" cellpadding="5">
-                    <h:outputLabel for="username" value="Username:" />
-                    <p:inputText id="username" value="#{loginController.username}" required="true"/>
-                    <h:outputLabel for="password" value="Password:" />
-                    <p:password id="password" value="#{loginController.password}" required="true"/>
-                </h:panelGrid>
-                <p:commandButton id="loginbutton" value="Login" type="submit" action="#{loginController.login()}" class="btn btn-lg btn-primary" ajax="true" update="@parent"/>
-                
-                <p:link value="Register" outcome="register.html" />
-
-                <p:messages for="loginError" showDetail="true" showSummary="true"/>
-            </h:form>
-        </h:panelGroup>
+                            <p:link class="btn btn-info" value="Register" outcome="register.html" />
+                        </div>
+                    </div>
+                    <p:messages for="loginError" showDetail="true" showSummary="true"/>
+                </h:form>
+            </h:panelGroup>
+        </p:panel>
     </h:body>
 </html>
 

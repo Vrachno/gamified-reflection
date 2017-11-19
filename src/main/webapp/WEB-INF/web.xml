@@ -97,6 +97,6 @@
     </security-constraint>
     <error-page>
         <exception-type>javax.faces.application.ViewExpiredException</exception-type>
-        <location>/login.xhtml</location>
+        <location>/login.html</location>
     </error-page>
 </web-app>
