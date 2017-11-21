@@ -48,7 +48,7 @@
                             </h:form>
                         </div>
                     </div>
-                    <p:dataTable id="studentList" value="#{studentsController.selectedCategory ne null ? aux.studentsScores.entrySet().toArray() : aux.studentsOverallScores.entrySet().toArray()}" var="student" class="text-center">
+                    <p:dataTable id="studentList" value="#{studentsController.sortedStudents}" var="student" class="text-center">
                         <p:column headerText="Name">
                             <h:outputText id="name" value="#{student.key.firstName} #{student.key.lastName}"/>
                             <p:tooltip value="#{student.key.email}" for="name" showDelay="50" hideDelay="40"/>

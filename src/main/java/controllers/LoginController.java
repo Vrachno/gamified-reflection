@@ -70,8 +70,8 @@ public class LoginController implements Serializable {
         FacesContext context = FacesContext.getCurrentInstance();
         HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
         try {
-            if (loggedInUser.getUserRole() == 1 && !loggedInUser.getActive()) {
-                context.addMessage("loginError", new FacesMessage(FacesMessage.SEVERITY_FATAL, "", "User not Active."));
+            if (loggedInUser == null || (loggedInUser.getUserRole() == 1 && !loggedInUser.getActive())) {
+                context.addMessage("loginError", new FacesMessage(FacesMessage.SEVERITY_FATAL, "", "User doesn't exist or has not been activated."));
             } else {
                 request.login(this.username, this.password);
                 if (loggedInUser.getUserRole() == 0) {

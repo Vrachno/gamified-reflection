@@ -149,8 +149,13 @@ public class Auxilliary {
 
     public LineChartModel createLineModel(AppUser student, LineChartModel lineModel) {
         lineModel = new LineChartModel();
-
-        List<ActivitiesMap> activitiesMapList = em.createNamedQuery("ActivitiesMap.findNotLoggedByStudent").setParameter("studentEmail", student).setParameter("logged", true).getResultList();
+        List<ActivitiesMap> activitiesMapList = new ArrayList<>();
+        for (ActivitiesMap activitiesMap : student.getActivitiesMapList()) {
+            if (activitiesMap.getLogged()){
+                activitiesMapList.add(activitiesMap);
+            }
+        }
+        //List<ActivitiesMap> activitiesMapList = em.createNamedQuery("ActivitiesMap.findNotLoggedByStudent").setParameter("studentEmail", student).setParameter("logged", true).getResultList();
         activitiesMapList.sort(new Comparator<ActivitiesMap>() {
             @Override
             public int compare(ActivitiesMap o1, ActivitiesMap o2) {
@@ -158,7 +163,7 @@ public class Auxilliary {
             }
         });
 
-        List<SkillsMap> studentSkillsMapList = em.createNamedQuery("SkillsMap.findByStudentEmail").setParameter("studentEmail", student).getResultList();
+        List<SkillsMap> studentSkillsMapList = student.getSkillsMapList();
         int highestScore = 0;
         for (SkillsMap skills : studentSkillsMapList) {
             ChartSeries series = new ChartSeries();
@@ -304,7 +309,7 @@ public class Auxilliary {
 
     public void setStudentScores(Category category) {
         if (category == null) {
-            setStudentsOverallScores();
+            setStudentsOverallScores(studentsList);
         } else {
             HashMap<AppUser, Integer> unorderedStudentsScores = new HashMap();
             studentsList.forEach((student) -> {
@@ -323,11 +328,12 @@ public class Auxilliary {
         return studentsScores;
     }
 
-    public void setStudentsOverallScores() {
+    public void setStudentsOverallScores(List<AppUser> students) {
         HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
         AppUser loggedInUser = em.find(AppUser.class, request.getUserPrincipal().getName());
         HashMap<AppUser, Integer> unorderedStudentsScores = new HashMap();
-        studentsList = em.createNamedQuery("AppUser.findByUserRole").setParameter("userRole", 1).getResultList();
+        //studentsList = em.createNamedQuery("AppUser.findByUserRole").setParameter("userRole", 1).getResultList();
+        studentsList = students;
         for (AppUser student : studentsList) {
             int score = 0;
             List<SkillsMap> studentSkillMaps;
@@ -436,7 +442,7 @@ public class Auxilliary {
                 if (progress == 100) {
                     student.setLevel(levels[6]);
                     progress = 0;
-                }    
+                }
             }
         } else if (score <= 350) {
             student.setLevel(levels[6]);

@@ -54,6 +54,7 @@ public class ProfileController implements Serializable {
     private int progress;
     private Category selectedCategory;
     private List<SelectItem> categoriesList;
+    private List<AppUser> students;
 
     public ProfileController() {
     }
@@ -92,7 +93,8 @@ public class ProfileController implements Serializable {
             }
             setActivitiesPending(!currentActivities.isEmpty());
         }
-        aux.setStudentsOverallScores();
+        students = em.createNamedQuery("AppUser.findByUserRole").setParameter("userRole", 1).getResultList();
+        aux.setStudentsOverallScores(students);
         aux.setGraphicImage();
     }
 
@@ -192,4 +194,12 @@ public class ProfileController implements Serializable {
         this.categoriesList = categoriesList;
     }
 
+    public List<AppUser> getStudents() {
+        return students;
+    }
+
+    public void setStudents(List<AppUser> students) {
+        this.students = students;
+    }
+    
 }

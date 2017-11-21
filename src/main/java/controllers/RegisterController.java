@@ -9,6 +9,7 @@ import entities.AppUser;
 import java.io.IOException;
 import java.io.Serializable;
 import java.security.NoSuchAlgorithmException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.Date;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -18,6 +19,7 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -66,15 +68,18 @@ public class RegisterController implements Serializable{
         HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
         if (!em.createNamedQuery("AppUser.findByNickname").setParameter("nickname", student.getNickname()).getResultList().isEmpty()) {
             FacesContext.getCurrentInstance().addMessage(":register-form:messagea", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Nickname already taken."));
-
         } else {
             student.setPassword(aux.hash256(password));
             student.setUserRole((short) 1);
             student.setDateRegistered(new Date());
-            transactions.addUser(student);
-            FacesContext.getCurrentInstance().getExternalContext().redirect("login.html");
+            try {
+                transactions.addUser(student);
+                FacesContext.getCurrentInstance().getExternalContext().redirect("login.html");
+            } catch (Exception e) {
+                FacesContext.getCurrentInstance().addMessage(":register-form:messagea", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Email already taken."));
+            }
+
         }
     }
-
 
 }

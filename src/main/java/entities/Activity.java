@@ -37,8 +37,6 @@ import javax.xml.bind.annotation.XmlTransient;
 
 public class Activity implements Serializable {
 
-    @Column(name = "ENABLED")
-    private Boolean enabled = false;
     @OneToMany(mappedBy = "activity")
     private List<ActivitiesMap> activitiesMapList;
 
@@ -113,17 +111,6 @@ public class Activity implements Serializable {
         this.title = title;
     }
 
-    public Boolean getEnabled() {
-        return enabled;
-    }
-
-    public Boolean isEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(Boolean enabled) {
-        this.enabled = enabled;
-    }
 
     @XmlTransient
     public List<ActivitiesMap> getActivitiesMapList() {

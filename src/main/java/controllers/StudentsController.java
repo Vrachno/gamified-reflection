@@ -7,6 +7,7 @@ package controllers;
 
 import entities.AppUser;
 import entities.Category;
+import entities.SkillsMap;
 import java.io.Serializable;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -29,7 +30,7 @@ public class StudentsController implements Serializable {
 
     @PersistenceContext
     EntityManager em;
-    
+
     @EJB
     Auxilliary aux;
 
@@ -38,6 +39,7 @@ public class StudentsController implements Serializable {
     private HorizontalBarChartModel barModel;
     private LineChartModel lineModel;
     private List<Category> categories;
+    private Object[] sortedStudents;
     private Category selectedCategory;
 
     /**
@@ -48,16 +50,11 @@ public class StudentsController implements Serializable {
 
     @PostConstruct
     public void init() {
-        aux.setStudentsOverallScores();
         //selectedCategory = new Category();
         students = em.createNamedQuery("AppUser.findByUserRole").setParameter("userRole", 1).getResultList();
         categories = em.createNamedQuery("Category.findAll").getResultList();
-        for (AppUser student : students) {
-            student.setSkillsMapList(em.createNamedQuery("SkillsMap.findByStudentEmail").setParameter("studentEmail", student).getResultList());
-            aux.createBarModel(student, barModel);
-            aux.createLineModel(student, lineModel);
-        }
-
+        aux.setStudentsOverallScores(students);
+        sortedStudents = (Object[]) aux.getStudentsOverallScores().entrySet().toArray();
     }
 
     public List<AppUser> getStudents() {
@@ -76,8 +73,7 @@ public class StudentsController implements Serializable {
         this.selectedStudent = selectedStudent;
         barModel = aux.createBarModel(selectedStudent, barModel);
         lineModel = aux.createLineModel(selectedStudent, lineModel);
-    }   
-    
+    }
 
     public HorizontalBarChartModel getBarModel() {
         return barModel;
@@ -99,10 +95,22 @@ public class StudentsController implements Serializable {
         return selectedCategory;
     }
 
+    public Object[] getSortedStudents() {
+        return sortedStudents;
+    }
+
+    public void setSortedStudents(Object[] sortedStudents) {
+        this.sortedStudents = sortedStudents;
+    }
+
     public void setSelectedCategory(Category selectedCategory) {
         this.selectedCategory = selectedCategory;
         aux.setStudentScores(selectedCategory);
-//        init();
+        if (selectedCategory == null) {
+            sortedStudents = (Object[]) aux.getStudentsOverallScores().entrySet().toArray();
+        } else {
+            sortedStudents = (Object[]) aux.getStudentsScores().entrySet().toArray();
+        }
     }
 
 }
