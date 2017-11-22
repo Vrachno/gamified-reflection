@@ -20,6 +20,11 @@ and open the template in the editor.
     font-size: 1.5em;
     display: inline-block;
 }
+#categoryForm\3A newSkillBtn, #activitiesForm\3A newActivityBtn {
+    margin-top: .5em;
+    background: none !important;
+    background-color: #ffa967 !important;
+}
 
 @media screen and (min-width: 571px) {
 
@@ -142,12 +147,6 @@ and open the template in the editor.
 
     .not-selected {
         color: black !important;
-    }
-
-    #categoryForm\3A newSkillBtn, #activitiesForm\3A newActivityBtn {
-        margin-top: .5em;
-        background: none !important;
-        background-color: #ffa967 !important;
     }
 
     .fa-calendar-o {
@@ -294,7 +293,7 @@ and open the template in the editor.
 @media screen and (min-width: 934px) and (max-width: 991px) { 
     #headerForm\3A logo {
         width: 2.6em;
-       
+
     }
 
     /*    .ui-menuitem-text > #title {
@@ -344,7 +343,7 @@ and open the template in the editor.
     }
 }
 @media screen and (min-width: 768px) and (max-width: 826px) {
-    
+
     #logo {
         width: 5.7em;
         margin-top: -2.5em;

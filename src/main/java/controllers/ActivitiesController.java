@@ -39,12 +39,14 @@ import org.primefaces.model.ScheduleModel;
  */
 @ManagedBean(name = "categoriesController")
 @ViewScoped
-public class CategoriesController implements Serializable{
+public class ActivitiesController implements Serializable{
 
     @PersistenceContext
     EntityManager em;
     @EJB
     private TransactionsController transactions;
+    @EJB
+    private Auxilliary aux;
     
     private List<Category> categories;
     private String newCategoryTitle;
@@ -59,7 +61,7 @@ public class CategoriesController implements Serializable{
     /**
      * Creates a new instance of categoriesController
      */
-    public CategoriesController() {
+    public ActivitiesController() {
     }
 
     @PostConstruct
@@ -81,7 +83,13 @@ public class CategoriesController implements Serializable{
         for (Category category : categories) {
             category.setActivityList(em.createNamedQuery("Activity.findByCategoryId").setParameter("categoryId", category).getResultList());
         }
+        selectedCategory = aux.getPreviousCategory();
+        if (selectedCategory!=null) {
+            selectedCategory.setActivityList(em.createNamedQuery("Activity.findByCategoryId").setParameter("categoryId", selectedCategory).getResultList());
+            setCategoryActivities(selectedCategory.getActivityList());
+        }
         selectedActivityMaps = new ArrayList<>();
+        aux.setPreviousCategory(null);
     }
 
     public List<Category> getCategories() {
@@ -114,7 +122,7 @@ public class CategoriesController implements Serializable{
         Category newCategory = new Category();
         newCategory.setTitle(title);
         transactions.addCategory(newCategory);
-        FacesContext.getCurrentInstance().getExternalContext().redirect("activities.html");
+        init();
     }
     
     public Category getSelectedCategory() {
@@ -156,9 +164,10 @@ public class CategoriesController implements Serializable{
         newActivity.setCategoryId(category);
         transactions.addActivity(newActivity);
         setNewActivityTitle(null);
-        updateActivitiesList(category);
-        init();
-//        FacesContext.getCurrentInstance().getExternalContext().redirect("activities.html");
+        //updateActivitiesList(category);
+        aux.setPreviousCategory(category);
+        //init();
+        //FacesContext.getCurrentInstance().getExternalContext().redirect("activities.html");
     }
 
     public void onRowEditActivity(RowEditEvent event) {

@@ -60,26 +60,29 @@ public class TransactionsController {
     }
 
     public void addActivitiesMaps(Activity activity, Date dateEnabled, Date dateDisabled) {
-        List<AppUser> students = em.createNamedQuery("AppUser.findByUserRole").setParameter("userRole", 1).getResultList();
-        if (!students.isEmpty()) {
-            for (AppUser student : students) {
+        //List<AppUser> students = em.createNamedQuery("AppUser.findByUserRole").setParameter("userRole", 1).getResultList();
+        List<AppUser> users = em.createNamedQuery("AppUser.findAll").getResultList();
+        //if (!students.isEmpty()) {
+        for (AppUser user : users) {
+            if (user.getActive() || user.getUserRole() == 0) {
                 ActivitiesMap newActivitiesMap = new ActivitiesMap();
-                newActivitiesMap.setStudentEmail(student);
+                newActivitiesMap.setStudentEmail(user);
                 newActivitiesMap.setActivity(activity);
                 newActivitiesMap.setDateEnabled(dateEnabled);
                 newActivitiesMap.setDateDisabled(dateDisabled);
                 em.merge(newActivitiesMap);
             }
         }
-        ActivitiesMap newActivitiesMap = new ActivitiesMap();
-        newActivitiesMap.setActivity(activity);
-        AppUser admin = (AppUser) em.createNamedQuery("AppUser.findByUserRole").setParameter("userRole", 0).getSingleResult();
-        newActivitiesMap.setStudentEmail(admin);
-        newActivitiesMap.setDateEnabled(dateEnabled);
-        newActivitiesMap.setDateDisabled(dateDisabled);
-        em.merge(newActivitiesMap);
+        //}
+//        ActivitiesMap newActivitiesMap = new ActivitiesMap();
+//        newActivitiesMap.setActivity(activity);
+//        AppUser admin = (AppUser) em.createNamedQuery("AppUser.findByUserRole").setParameter("userRole", 0).getSingleResult();
+//        newActivitiesMap.setStudentEmail(admin);
+//        newActivitiesMap.setDateEnabled(dateEnabled);
+//        newActivitiesMap.setDateDisabled(dateDisabled);
+//        em.merge(newActivitiesMap);
     }
-    
+
     public void removeActivitiesMaps(List<ActivitiesMap> activitiesMaps) {
 
         for (ActivitiesMap studentActivityMap : activitiesMaps) {

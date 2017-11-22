@@ -48,8 +48,7 @@
                                 <p:commandLink value="X" style="color: red" actionListener="#{categoriesController.deleteCategory(category)}">
                                     <p:confirm header="Confirmation" message="Are you sure you want to delete '#{category.title}'? All related activities will be lost!" icon="ui-icon-alert" />
                                 </p:commandLink>
-
-                                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" closeOnEscape="true">
                                     <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
                                     <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
                                 </p:confirmDialog>
@@ -58,7 +57,7 @@
                         <p:commandButton id="newSkillBtn" value="Add New Skill" type="button" onclick="PF('newCategoryDialog').show();" />
                     </h:form>
                 </div>
-
+                <br class="hidden-lg hidden-md"></br>
                 <div class="col-md-6">
                     <h:form id="activitiesForm">
                         <p:dataTable
@@ -88,6 +87,10 @@
                                 <p:commandLink value="X" style="color: red" actionListener="#{categoriesController.deleteActivity(activity)}" ajax="true" update="@form:activities">
                                     <p:confirm header="Confirmation" message="Are you sure you want to delete '#{activity.title}'? Scheduled activities will be deleted!" icon="ui-icon-alert" />
                                 </p:commandLink>
+                                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" closeOnEscape="true">
+                                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                                </p:confirmDialog>
                             </p:column>
                         </p:dataTable>
                         <p:commandButton id="newActivityBtn" disabled="#{categoriesController.selectedCategory eq null}" value="Add New Activity" type="button" onclick="PF('newActivityDialog').show();" style="float: right"/>
@@ -109,13 +112,13 @@
         <p:panel>
             <h:form>
                 <p:inputText value="#{categoriesController.newActivityTitle}"/>
-                <p:commandButton actionListener="#{categoriesController.addActivity(categoriesController.newActivityTitle, categoriesController.selectedCategory)}" value="OK" oncomplete="PF('newActivityDialog').hide();}" ajax="true" update="@(:activitiesForm)" resetValues="true"/>
+                <p:commandButton actionListener="#{categoriesController.addActivity(categoriesController.newActivityTitle, categoriesController.selectedCategory)}" value="OK" action="#{facesContext.externalContext.redirect('activities.html')}" resetValues="true"/>
             </h:form>
         </p:panel>
     </p:dialog>
     <p:dialog id="newEventDlg" widgetVar="schedulerDialog" modal="true" header="Select date on which '#{categoriesController.selectedActivity.title}' will be enabled. Click on existing activity to edit." dynamic="true" draggable="false" position="center" closeOnEscape="true" resizable="false" closable="true">
         <h:form id="scheduleForm">
-            <p:schedule  id="schedule" value="#{categoriesController.scheduleModel}" widgetVar="schedule" timeZone="GMT+2" leftHeaderTemplate="" centerHeaderTemplate="prev title next" rightHeaderTemplate="none">
+            <p:schedule id="schedule" value="#{categoriesController.scheduleModel}" widgetVar="schedule" timeZone="GMT+2" leftHeaderTemplate="" centerHeaderTemplate="prev title next" rightHeaderTemplate="none">
                 <p:ajax event="dateSelect" listener="#{categoriesController.onDateSelect}" oncomplete="PF('eventDialog').show();" update=":eventDlg"/>
                 <p:ajax event="eventSelect" listener="#{categoriesController.onEventSelect}" oncomplete="PF('eventDialog').show();" update=":eventDlg"/>
             </p:schedule>

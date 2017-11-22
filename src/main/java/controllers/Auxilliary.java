@@ -88,6 +88,7 @@ public class Auxilliary {
     private StreamedContent graphicImage;
     private List<AppUser> studentsList;
     private AppUser student;
+    private Category previousCategory;
 
     public int getANSWER_GOOD() {
         return ANSWER_GOOD;
@@ -195,6 +196,7 @@ public class Auxilliary {
         axisY.setLabel("Level");
         axisY.setMax(highestScore + 20);
         axisY.setMin(0);
+        axisY.setTickFormat("%s");
 
         lineModel.setLegendPosition("nw");
         lineModel.setShowPointLabels(true);
@@ -528,6 +530,14 @@ public class Auxilliary {
 
     public AppUser getStudent() {
         return student;
+    }
+
+    public Category getPreviousCategory() {
+        return previousCategory;
+    }
+
+    public void setPreviousCategory(Category previousCategory) {
+        this.previousCategory = previousCategory;
     }
 
     public void setStudent() {
