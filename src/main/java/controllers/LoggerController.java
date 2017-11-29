@@ -48,20 +48,8 @@ public class LoggerController implements Serializable {
         HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
         student = em.find(AppUser.class, request.getUserPrincipal().getName());
         List<ActivitiesMap> allActivities = em.createNamedQuery("ActivitiesMap.findNotLoggedByStudent").setParameter("studentEmail", student).setParameter("logged", false).getResultList();
-        Calendar cCurrent = Calendar.getInstance();
-        cCurrent.setTime(new Date());
-        activities = new ArrayList<>();
-        for (ActivitiesMap activity : allActivities) {
-             Calendar cEnabled = Calendar.getInstance();
-                cEnabled.setTime(activity.getDateEnabled());
-                Calendar cDisabled = Calendar.getInstance();
-                cDisabled.setTime(activity.getDateDisabled());
-                cDisabled.add(Calendar.DATE, 1);
-                if (activity.getEnabled() && !cCurrent.getTime().before(cEnabled.getTime()) && !cCurrent.getTime().after(cDisabled.getTime())) {
-                activities.add(activity);
-            }
-        }
-        aux.setStudentScores(null);
+        aux.setCurrentActivities(allActivities);
+        activities = aux.getCurrentActivities();
     }
 
     public AppUser getStudent() {
@@ -99,7 +87,7 @@ public class LoggerController implements Serializable {
         activity.setNewSkillLevel(skillsMap.getSkillLevel());
         transactions.saveActivitiesMap(activity);
         transactions.saveSkillsMap(skillsMap);
-        aux.setStudentScores(null);
+        aux.setStudentLevel(student);
         init();
     }
 

@@ -8,7 +8,6 @@ package controllers;
 import entities.AppUser;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -40,13 +39,7 @@ public class UsersController implements Serializable {
 
     @PostConstruct
     public void init() {
-        students = em.createNamedQuery("AppUser.findAll").getResultList();
-        students.removeIf((t) -> t.getUserRole() == 0);
-       // activeStudents = em.createNamedQuery("AppUser.findByActiveStudents").setParameter("active", true).setParameter("userRole", 1).getResultList();
-      //  inactiveStudents = em.createNamedQuery("AppUser.findByActiveStudents").setParameter("active", false).setParameter("userRole", 1).getResultList();
-       // students = new ArrayList<>();
-        //students.add(activeStudents);
-       // students.add(inactiveStudents);
+        students = em.createNamedQuery("AppUser.findAllStudents").getResultList();
     }
 
     public List<AppUser> getStudents() {

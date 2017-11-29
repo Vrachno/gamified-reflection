@@ -20,7 +20,7 @@
         </div>
         <p:panel class="container" style="margin-top: 1em;">
             <h:panelGroup>
-                <h:form>
+                <h:form id="loginForm">
                     <h:panelGrid columns="2" cellpadding="5">
                         <h:outputLabel for="username" value="Username:" />
                         <p:inputText id="username" value="#{loginController.username}" required="true"/>
@@ -31,7 +31,7 @@
                         <div class="col-lg-12">
                             <p:commandLink id="loginbutton" value="Login" type="submit" action="#{loginController.login()}" class="btn btn-warning" ajax="true" update="@parent"/>
 
-                            <p:link class="btn btn-info" value="Register" outcome="register.html" />
+                            <p:link id="registerbutton" class="btn btn-info" value="Register" outcome="register.html" />
                         </div>
                     </div>
                     <p:messages for="loginError" showDetail="true" showSummary="true"/>

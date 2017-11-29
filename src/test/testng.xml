@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="com.dpattas_GamifiedReflection_war_1.0-SNAPSHOT">
+            <parameter name="base-url" value="http://localhost:8080//GamifiedReflection"/>
+            <parameter name="admin-email" value="admin@example.com"/>
+            <parameter name="student-email" value="student@example.com"/>
+            <parameter name="password" value="password"/>
+            <parameter name="first-name" value="John"/>
+            <parameter name="last-name" value="Doe"/>
+            <parameter name="nickname" value="nick"/>
+            <parameter name="new-nickname" value="newNick"/>
+    <test name="All tests for com.dpattas_GamifiedReflection_war_1.0-SNAPSHOT">
+        <packages>
+            <package name=".*"/>
+        </packages>
+    </test>
+</suite>

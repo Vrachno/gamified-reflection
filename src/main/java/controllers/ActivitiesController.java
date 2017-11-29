@@ -122,7 +122,7 @@ public class ActivitiesController implements Serializable{
         Category newCategory = new Category();
         newCategory.setTitle(title);
         transactions.addCategory(newCategory);
-        init();
+        aux.setPreviousCategory(newCategory);
     }
     
     public Category getSelectedCategory() {
@@ -164,10 +164,7 @@ public class ActivitiesController implements Serializable{
         newActivity.setCategoryId(category);
         transactions.addActivity(newActivity);
         setNewActivityTitle(null);
-        //updateActivitiesList(category);
         aux.setPreviousCategory(category);
-        //init();
-        //FacesContext.getCurrentInstance().getExternalContext().redirect("activities.html");
     }
 
     public void onRowEditActivity(RowEditEvent event) {
@@ -175,17 +172,13 @@ public class ActivitiesController implements Serializable{
     }
 
     public void deleteActivity(Activity activity) {
-        //Category previouslySelectedCategory = selectedCategory;
         transactions.deleteActivity(activity);
-        //init();
         updateActivitiesList(activity.getCategoryId());
     }
     
         public void updateActivitiesList(Category category) {
-        
         selectedCategory.setActivityList(em.createNamedQuery("Activity.findByCategoryId").setParameter("categoryId", category).getResultList());
         setCategoryActivities(selectedCategory.getActivityList());
-        
     }
     public ScheduleModel getScheduleModel() {
         return scheduleModel;
@@ -204,53 +197,36 @@ public class ActivitiesController implements Serializable{
     }
 
     public void addEvent() {
-
-        List<ScheduleEvent> sameActivities = new ArrayList<>();
+        boolean sameActivitiesOverlap = false;
+        boolean editing = false;
+        if (event.getId() != null) {
+            editing = true;
+            scheduleModel.deleteEvent(event);
+        }
         for (ScheduleEvent checkedEvent : scheduleModel.getEvents()) {
-            if (checkedEvent.getTitle().equals(event.getTitle())) {
-                sameActivities.add(checkedEvent);
+            if (checkedEvent.getTitle().equals(event.getTitle())
+                    && ((!event.getStartDate().before(checkedEvent.getStartDate()) && !event.getStartDate().after(checkedEvent.getEndDate()))
+                    || (!event.getEndDate().before(checkedEvent.getStartDate()) && !event.getEndDate().after(checkedEvent.getEndDate()))
+                    || (!event.getStartDate().after(checkedEvent.getStartDate()) && !event.getEndDate().before(checkedEvent.getEndDate())))) {
+                sameActivitiesOverlap = true;
+                break;
             }
         }
-        if (sameActivities.size() > 0) {
-            if (!doActivitiesOverlap(sameActivities)) {
-                scheduleModel.addEvent(event);
-                transactions.addActivitiesMaps(selectedActivity, event.getStartDate(), event.getEndDate());
-            } else if (event.getId() != null) {
-                sameActivities = new ArrayList<>();
-                for (ScheduleEvent checkedEvent : scheduleModel.getEvents()) {
-                    if (checkedEvent.getTitle().equals(event.getTitle()) && checkedEvent != event) {
-                        sameActivities.add(checkedEvent);
-                    }
-                }
-                if (!doActivitiesOverlap(sameActivities)) {
-                    scheduleModel.updateEvent(event);
-                    transactions.editActivitiesMaps(selectedActivityMaps, event.getStartDate(), event.getEndDate());
-                }
-            }
-        } else {
+        if (!sameActivitiesOverlap) {
             scheduleModel.addEvent(event);
-            transactions.addActivitiesMaps(selectedActivity, event.getStartDate(), event.getEndDate());
+            if (!editing) {
+                transactions.addActivitiesMaps(selectedActivity, event.getStartDate(), event.getEndDate());
+            } else {
+                transactions.editActivitiesMaps(selectedActivityMaps, event.getStartDate(), event.getEndDate());
+            }
         }
 
         event = new DefaultScheduleEvent();
+
         init();
     }
-    
-    public boolean doActivitiesOverlap(List<ScheduleEvent> sameActivities) {
-            boolean exists = false;
-            for (ScheduleEvent alreadyEnabled : sameActivities) {
-                if (event.getStartDate().equals(alreadyEnabled.getStartDate())
-                        || (event.getStartDate().before(alreadyEnabled.getStartDate()) && event.getEndDate().after(alreadyEnabled.getStartDate()))
-                        || (event.getStartDate().before(alreadyEnabled.getEndDate()) && event.getEndDate().after(alreadyEnabled.getEndDate()))) {
-                    exists = true;
-                    break;
-                }
-            }
-            
-            return exists;
-    }
 
-    public void onEventSelect(SelectEvent e) {
+public void onEventSelect(SelectEvent e) {
         event = (DefaultScheduleEvent) e.getObject();
         selectedActivityMaps = em.createNamedQuery("ActivitiesMap.findByDateEnabledAndTitle")
                 .setParameter("dateEnabled", event.getStartDate())
@@ -260,19 +236,18 @@ public class ActivitiesController implements Serializable{
     }
 
     public void deleteEvent() {
-
         transactions.removeActivitiesMaps(selectedActivityMaps);
         scheduleModel.deleteEvent(event);
         selectedActivityMaps = new ArrayList<>();
     }
 
     public void onDateSelect(SelectEvent e) {
-        Date date = (Date) e.getObject();
+        Date startDate = (Date) e.getObject();
         Calendar c = Calendar.getInstance();
-        c.setTime(date);
+        c.setTime(startDate);
         c.add(Calendar.DATE, 7);
         Date endDate = c.getTime();
-        event = new DefaultScheduleEvent(selectedActivity.getTitle(), date, endDate, selectedActivity.getCategoryId().getTitle().toLowerCase().replace(" ", "-"));
+        event = new DefaultScheduleEvent(selectedActivity.getTitle(), startDate, endDate, selectedActivity.getCategoryId().getTitle().toLowerCase().replace(" ", "-"));
         //event.setAllDay(true);
     }
     
@@ -300,21 +275,21 @@ public class ActivitiesController implements Serializable{
             String className = category.getTitle().toLowerCase().replace(' ', '-');
             int hue = (int) (category.getId()*10 + factor);
             int saturation = (int) (rand.nextInt(50)) + 50;
+            String value = hue + ", " + saturation + "%" + ", " + "80%";
             style.append(".")
                     .append(className)
                     .append(",\n.fc-agenda ")
                     .append(className)
-                    .append(" .fc-event-time,\n")
+                    .append(" .fc-event,\n")
                     .append(className)
                     .append(" a {\n    background-color: hsl(")
-                    .append(hue).append(", ").append(saturation+"%").append(", ").append("80%")
+                    .append(value)
                     .append(");\n    border-color: hsl(")
-                    .append(hue).append(", ").append(saturation+"%").append(", ").append("80%")
-                    .append(");\n    color: black;\n    font-weight: bold;\n}\n");
+                    .append(value)
+                    .append(");\n    color: black !important;\n    font-weight: bold;\n}\n");
             
             factor+=80;
         }
-
         return style.toString();
     }
 

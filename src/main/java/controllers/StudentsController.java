@@ -7,7 +7,6 @@ package controllers;
 
 import entities.AppUser;
 import entities.Category;
-import entities.SkillsMap;
 import java.io.Serializable;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -39,7 +38,6 @@ public class StudentsController implements Serializable {
     private HorizontalBarChartModel barModel;
     private LineChartModel lineModel;
     private List<Category> categories;
-    private Object[] sortedStudents;
     private Category selectedCategory;
 
     /**
@@ -50,11 +48,8 @@ public class StudentsController implements Serializable {
 
     @PostConstruct
     public void init() {
-        //selectedCategory = new Category();
-        students = em.createNamedQuery("AppUser.findByUserRole").setParameter("userRole", 1).getResultList();
+        students = aux.getSortedStudents(selectedCategory);
         categories = em.createNamedQuery("Category.findAll").getResultList();
-        aux.setStudentsOverallScores(students);
-        sortedStudents = (Object[]) aux.getStudentsOverallScores().entrySet().toArray();
     }
 
     public List<AppUser> getStudents() {
@@ -95,22 +90,9 @@ public class StudentsController implements Serializable {
         return selectedCategory;
     }
 
-    public Object[] getSortedStudents() {
-        return sortedStudents;
-    }
-
-    public void setSortedStudents(Object[] sortedStudents) {
-        this.sortedStudents = sortedStudents;
-    }
-
     public void setSelectedCategory(Category selectedCategory) {
         this.selectedCategory = selectedCategory;
-        aux.setStudentScores(selectedCategory);
-        if (selectedCategory == null) {
-            sortedStudents = (Object[]) aux.getStudentsOverallScores().entrySet().toArray();
-        } else {
-            sortedStudents = (Object[]) aux.getStudentsScores().entrySet().toArray();
-        }
+        students = aux.getSortedStudents(selectedCategory);
     }
 
 }

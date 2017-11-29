@@ -25,8 +25,8 @@
     </h:head>
     <h:body>
         <ui:include src="header.xhtml"/>
-        <h:form>
-            <p:dataTable value="#{usersController.students}" var="student" sortBy="#{!student.active}" id="studentsTable" class="text-center">
+        <h:form id="usersForm">
+            <p:dataTable value="#{usersController.students}" var="student" sortBy="#{!student.active}" id="usersTable" class="text-center">
                 <p:headerRow>
                     <p:column colspan="5">
                         <h:outputText value="#{student.active ? 'Active Users' : 'Inactive Users'}" />
@@ -47,9 +47,9 @@
                     </h:outputText>
                 </p:column>
                 <p:column headerText="Action" width="10%">
-                    <p:commandLink value="#{student.active ? 'Disable' : 'Enable'}" actionListener="#{usersController.toggleActive(student)}" update="@form:studentsTable" style="#{student.active ? 'color: red' : 'color: green'}"/>
+                    <p:commandLink value="#{student.active ? 'Disable' : 'Enable'}" actionListener="#{usersController.toggleActive(student)}" update="@form:usersTable" style="#{student.active ? 'color: red' : 'color: green'}"/>
                     <h:outputText rendered="#{!student.active}" value=" / "/>
-                    <p:commandLink rendered="#{!student.active}" value="Delete" actionListener="#{usersController.deleteUser(student)}" update="@form:studentsTable" style="color: red">
+                    <p:commandLink rendered="#{!student.active}" value="Delete" actionListener="#{usersController.deleteUser(student)}" update="@form:usersTable" style="color: red">
                         <p:confirm header="Confirmation" message="Are you sure you want to permanently delete '#{student.firstName} #{student.lastName}' from the user database?" icon="ui-icon-alert" />
                     </p:commandLink>
                     <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
@@ -57,7 +57,6 @@
                         <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
                     </p:confirmDialog>
                 </p:column>
-
             </p:dataTable>
         </h:form>
     </h:body>

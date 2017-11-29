@@ -28,8 +28,6 @@ public class LoginController implements Serializable {
 
     @PersistenceContext
     private EntityManager em;
-    @EJB
-    private Auxilliary aux;
 
     private String username;
     private String password;
@@ -69,6 +67,9 @@ public class LoginController implements Serializable {
     public void login() throws IOException, ServletException {
         FacesContext context = FacesContext.getCurrentInstance();
         HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
+        if (request.getUserPrincipal()!=null) {
+            request.logout();
+        }
         try {
             if (loggedInUser == null || (loggedInUser.getUserRole() == 1 && !loggedInUser.getActive())) {
                 context.addMessage("loginError", new FacesMessage(FacesMessage.SEVERITY_FATAL, "", "User doesn't exist or has not been activated."));

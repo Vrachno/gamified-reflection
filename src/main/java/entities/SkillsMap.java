@@ -33,7 +33,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "SkillsMap.findBySkillLevel", query = "SELECT s FROM SkillsMap s WHERE s.skillLevel = :skillLevel")
     , @NamedQuery(name = "SkillsMap.findByStudentEmail", query = "SELECT s FROM SkillsMap s WHERE s.studentEmail = :studentEmail")
     , @NamedQuery(name = "SkillsMap.findByCategoryId", query = "SELECT s FROM SkillsMap s WHERE s.categoryId = :categoryId")
-    , @NamedQuery(name = "SkillsMap.findByCategoryIdAndStudentEmail", query = "SELECT s FROM SkillsMap s WHERE s.categoryId = :categoryId AND s.studentEmail = :studentEmail")})
+    , @NamedQuery(name = "SkillsMap.findByCategoryIdAndStudentEmail", query = "SELECT s FROM SkillsMap s WHERE s.categoryId = :categoryId AND s.studentEmail = :studentEmail")
+    , @NamedQuery(name = "SkillsMap.getOverallScore", query = "SELECT SUM (s.skillLevel) FROM SkillsMap s WHERE s.studentEmail = :studentEmail")})
 public class SkillsMap implements Serializable {
 
     private static final long serialVersionUID = 1L;

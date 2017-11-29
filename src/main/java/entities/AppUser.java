@@ -38,6 +38,7 @@ import javax.xml.bind.annotation.XmlTransient;
     , @NamedQuery(name = "AppUser.findByFirstName", query = "SELECT u FROM AppUser u WHERE u.firstName = :firstName AND u.active = true")
     , @NamedQuery(name = "AppUser.findByLastName", query = "SELECT u FROM AppUser u WHERE u.lastName = :lastName AND u.active = true")
     , @NamedQuery(name = "AppUser.findByUserRole", query = "SELECT u FROM AppUser u WHERE u.userRole = :userRole AND u.active = true")
+    , @NamedQuery(name = "AppUser.findAllStudents", query = "SELECT u FROM AppUser u WHERE u.userRole = 1")
     , @NamedQuery(name = "AppUser.findByPassword", query = "SELECT u FROM AppUser u WHERE u.password = :password AND u.active = true")
     , @NamedQuery(name = "AppUser.findByActiveStudents", query = "SELECT u FROM AppUser u WHERE u.active = :active AND u.userRole = :userRole")
     , @NamedQuery(name = "AppUser.findByNickname", query = "SELECT u FROM AppUser u WHERE u.nickname = :nickname")})
@@ -87,6 +88,8 @@ public class AppUser implements Serializable {
     private List<SkillsMap> skills;
     @Transient
     private String level;
+    @Transient
+    private int score;
 
     public AppUser() {
     }
@@ -217,6 +220,14 @@ public class AppUser implements Serializable {
 
     public void setActive(Boolean active) {
         this.active = active;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
     }
 
 }

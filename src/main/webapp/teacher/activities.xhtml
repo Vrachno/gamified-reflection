@@ -81,7 +81,6 @@
                             </p:column>
                             <p:column headerText="Schedule" style="width: 20%;" class="text-center">
                                 <p:commandButton icon="fa fa-calendar-o" oncomplete="PF('schedulerDialog').show();" actionListener="#{categoriesController.setSelectedActivity(activity)}" update=":newEventDlg" style="height: 35px"/>
-                                <!--                        <p:commandLink value="#//{activity.enabled ? 'Disable' : 'Enable'}" styleClass="#//{!activity.enabled ? 'enabled' : 'disabled'}" actionListener="#//{activitiesController.toggleEnabled(activity)}" ajax="true" update=":activitiesForm"/>-->
                             </p:column>
                             <p:column headerText="Delete" style="width: 15%" class="text-center">
                                 <p:commandLink value="X" style="color: red" actionListener="#{categoriesController.deleteActivity(activity)}" ajax="true" update="@form:activities">
@@ -100,19 +99,19 @@
         </div>
     </h:body>
 
-    <p:dialog widgetVar="newCategoryDialog" modal="true" dynamic="true" height="100px" showHeader="true" header="Add new skill">
+    <p:dialog id="newSkillDialog" widgetVar="newCategoryDialog" modal="true" dynamic="true" height="100px" showHeader="true" header="Add new skill">
         <p:panel>
-            <h:form>
-                <p:inputText value="#{categoriesController.newCategoryTitle}"/>
-                <p:commandButton actionListener="#{categoriesController.addCategory(categoriesController.newCategoryTitle)}" value="OK" oncomplete="PF('newCategoryDialog').hide();" update="@(:categoriesList)"/>
+            <h:form id="newSkillForm">
+                <p:inputText id="skillName" value="#{categoriesController.newCategoryTitle}"/>
+                <p:commandButton id="confirmNewSkillBtn" actionListener="#{categoriesController.addCategory(categoriesController.newCategoryTitle)}" value="OK" action="#{facesContext.externalContext.redirect('activities.html')}" oncomplete="PF('newCategoryDialog').hide();" update="@(:categoriesList)"/>
             </h:form>
         </p:panel>
     </p:dialog>
-    <p:dialog widgetVar="newActivityDialog" modal="true" dynamic="true" height="100px" showHeader="true" header="Add new activity">
+    <p:dialog id="newActivityDialog" widgetVar="newActivityDialog" modal="true" dynamic="true" height="100px" showHeader="true" header="Add new activity">
         <p:panel>
-            <h:form>
-                <p:inputText value="#{categoriesController.newActivityTitle}"/>
-                <p:commandButton actionListener="#{categoriesController.addActivity(categoriesController.newActivityTitle, categoriesController.selectedCategory)}" value="OK" action="#{facesContext.externalContext.redirect('activities.html')}" resetValues="true"/>
+            <h:form id="newActivityForm">
+                <p:inputText id="activityName" value="#{categoriesController.newActivityTitle}"/>
+                <p:commandButton id="confirmNewActivityBtn" actionListener="#{categoriesController.addActivity(categoriesController.newActivityTitle, categoriesController.selectedCategory)}" value="OK" action="#{facesContext.externalContext.redirect('activities.html')}" resetValues="true"/>
             </h:form>
         </p:panel>
     </p:dialog>

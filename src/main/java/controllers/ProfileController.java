@@ -26,6 +26,7 @@ import javax.faces.model.SelectItem;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.servlet.http.HttpServletRequest;
+import org.primefaces.model.StreamedContent;
 import org.primefaces.model.chart.HorizontalBarChartModel;
 import org.primefaces.model.chart.LineChartModel;
 
@@ -55,6 +56,7 @@ public class ProfileController implements Serializable {
     private Category selectedCategory;
     private List<SelectItem> categoriesList;
     private List<AppUser> students;
+    private StreamedContent graphicImage;
 
     public ProfileController() {
     }
@@ -67,35 +69,16 @@ public class ProfileController implements Serializable {
         for (Category category : categories) {
             categoriesList.add(new SelectItem(category, category.getTitle()));
         }
-        selectedCategory = new Category();
         student = em.find(AppUser.class, request.getUserPrincipal().getName());
         student.setSkillsMapList(em.createNamedQuery("SkillsMap.findByStudentEmail").setParameter("studentEmail", student).getResultList());
         setBarModel(aux.createBarModel(student, barModel));
         setLineModel(aux.createLineModel(student, lineModel));
         List<ActivitiesMap> allActivities = em.createNamedQuery("ActivitiesMap.findNotLoggedByStudent").setParameter("studentEmail", student).setParameter("logged", false).getResultList();
-        if (!allActivities.isEmpty()) {
-            List<ActivitiesMap> currentActivities = new ArrayList<>();
-            Calendar cCurrent = Calendar.getInstance();
-            cCurrent.set(Calendar.HOUR_OF_DAY, 0);
-            cCurrent.set(Calendar.MINUTE, 0);
-            cCurrent.set(Calendar.SECOND, 0);
-            cCurrent.set(Calendar.MILLISECOND, 0);
-            cCurrent.setTime(new Date());
-            for (ActivitiesMap activity : allActivities) {
-                Calendar cEnabled = Calendar.getInstance();
-                cEnabled.setTime(activity.getDateEnabled());
-                Calendar cDisabled = Calendar.getInstance();
-                cDisabled.setTime(activity.getDateDisabled());
-                cDisabled.add(Calendar.DATE, 1);
-                if (activity.getEnabled() && !cCurrent.getTime().before(cEnabled.getTime()) && !cCurrent.getTime().after(cDisabled.getTime())) {
-                    currentActivities.add(activity);
-                }
-            }
-            setActivitiesPending(!currentActivities.isEmpty());
-        }
-        students = em.createNamedQuery("AppUser.findByUserRole").setParameter("userRole", 1).getResultList();
-        aux.setStudentsOverallScores(students);
-        aux.setGraphicImage();
+        aux.setCurrentActivities(allActivities);
+        setActivitiesPending(!aux.getCurrentActivities().isEmpty());
+        students = aux.getSortedStudents(selectedCategory);
+        aux.setGraphicImage(selectedCategory);
+        aux.setStudent();
     }
 
     public AppUser getStudent() {
@@ -183,7 +166,8 @@ public class ProfileController implements Serializable {
 
     public void setSelectedCategory(Category selectedCategory) {
         this.selectedCategory = selectedCategory;
-        init();
+        students = aux.getSortedStudents(selectedCategory);
+        aux.setGraphicImage(selectedCategory);
     }
 
     public List<SelectItem> getCategoriesList() {
@@ -200,6 +184,14 @@ public class ProfileController implements Serializable {
 
     public void setStudents(List<AppUser> students) {
         this.students = students;
+    }
+
+    public StreamedContent getGraphicImage() {
+        return graphicImage;
+    }
+
+    public void setGraphicImage(StreamedContent graphicImage) {
+        this.graphicImage = graphicImage;
     }
     
 }

@@ -13,7 +13,7 @@
             <div class="container-fluid">
                 <div class="row">
                     <h:form id="headerForm">
-                        <p:tabMenu activeIndex="#{(request.requestURI).equalsIgnoreCase('/GamifiedReflection/teacher/students.html') ? 1 :
+                        <p:tabMenu id="headerMenu" activeIndex="#{(request.requestURI).equalsIgnoreCase('/GamifiedReflection/teacher/students.html') ? 1 :
                                                   (request.requestURI).equalsIgnoreCase('/GamifiedReflection/teacher/activities.html') ? 2 : 3}">
                             <p:menuitem>
                                 <h:graphicImage id="logo" library="img" name="citycollege-logo.png"/>
@@ -21,9 +21,9 @@
                                     <h:outputText value="City College " /><br class="hidden-lg"></br><h:outputText value="Student Mentoring "/> <br class="visible-sm"></br><h:outputText value="System" />
                                 </div>
                             </p:menuitem>
-                            <p:menuitem outcome="students.html" value="Mentees" class="text-center"/>
-                            <p:menuitem outcome="activities.html" value="Activities" class="text-center"/>
-                            <p:menuitem outcome="users.html" value="Users" class="text-center"/>
+                            <p:menuitem id="studentsTab" outcome="students.html" value="Mentees" class="text-center"/>
+                            <p:menuitem id="activitiesTab" outcome="activities.html" value="Activities" class="text-center"/>
+                            <p:menuitem id="usersTab" outcome="users.html" value="Users" class="text-center"/>
                             <p:menuitem id="logout" value="Logout" class="text-center" actionListener="#{loginController.logout()}" style="color: #ffcc33;"/>
                         </p:tabMenu>
                     </h:form>

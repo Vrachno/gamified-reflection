@@ -27,10 +27,6 @@ public class TransactionsController {
     @PersistenceContext
     private EntityManager em;
 
-    public void saveCategory(Category category) {
-        em.merge(category);
-    }
-
     public void addCategory(Category category) {
         em.persist(category);
         List<AppUser> students = em.createNamedQuery("AppUser.findByUserRole").setParameter("userRole", 1).getResultList();
@@ -39,8 +35,11 @@ public class TransactionsController {
             newSkill.setStudentEmail(student);
             newSkill.setCategoryId(category);
             em.merge(newSkill);
-
         }
+    }
+
+    public void saveCategory(Category category) {
+        em.merge(category);
     }
 
     public void deleteCategory(Category category) {
@@ -60,9 +59,7 @@ public class TransactionsController {
     }
 
     public void addActivitiesMaps(Activity activity, Date dateEnabled, Date dateDisabled) {
-        //List<AppUser> students = em.createNamedQuery("AppUser.findByUserRole").setParameter("userRole", 1).getResultList();
         List<AppUser> users = em.createNamedQuery("AppUser.findAll").getResultList();
-        //if (!students.isEmpty()) {
         for (AppUser user : users) {
             if (user.getActive() || user.getUserRole() == 0) {
                 ActivitiesMap newActivitiesMap = new ActivitiesMap();
@@ -73,14 +70,6 @@ public class TransactionsController {
                 em.merge(newActivitiesMap);
             }
         }
-        //}
-//        ActivitiesMap newActivitiesMap = new ActivitiesMap();
-//        newActivitiesMap.setActivity(activity);
-//        AppUser admin = (AppUser) em.createNamedQuery("AppUser.findByUserRole").setParameter("userRole", 0).getSingleResult();
-//        newActivitiesMap.setStudentEmail(admin);
-//        newActivitiesMap.setDateEnabled(dateEnabled);
-//        newActivitiesMap.setDateDisabled(dateDisabled);
-//        em.merge(newActivitiesMap);
     }
 
     public void removeActivitiesMaps(List<ActivitiesMap> activitiesMaps) {
@@ -100,8 +89,10 @@ public class TransactionsController {
     }
 
     public void addUser(AppUser user) {
-        em.persist(new Groups(user.getEmail(), "STUDENT"));
         em.persist(user);
+        user.setActive(false);
+        em.persist(new Groups(user.getEmail(), "STUDENT"));
+        em.merge(user);
         List<Category> categories = em.createNamedQuery("Category.findAll").getResultList();
         for (Category category : categories) {
             SkillsMap skillsMap = new SkillsMap();
@@ -112,12 +103,14 @@ public class TransactionsController {
         AppUser admin = (AppUser) em.createNamedQuery("AppUser.findByUserRole").setParameter("userRole", 0).getSingleResult();
         List<ActivitiesMap> nullActivitiesMapList = em.createNamedQuery("ActivitiesMap.findByStudentEmail").setParameter("studentEmail", admin).getResultList();
         for (ActivitiesMap nullActivitiesMap : nullActivitiesMapList) {
-            ActivitiesMap activitiesMap = new ActivitiesMap();
-            activitiesMap.setActivity(nullActivitiesMap.getActivity());
-            activitiesMap.setDateEnabled(nullActivitiesMap.getDateEnabled());
-            activitiesMap.setDateDisabled(nullActivitiesMap.getDateDisabled());
-            activitiesMap.setStudentEmail(user);
-            em.persist(activitiesMap);
+            if (nullActivitiesMap.getEnabled()) {
+                ActivitiesMap activitiesMap = new ActivitiesMap();
+                activitiesMap.setActivity(nullActivitiesMap.getActivity());
+                activitiesMap.setDateEnabled(nullActivitiesMap.getDateEnabled());
+                activitiesMap.setDateDisabled(nullActivitiesMap.getDateDisabled());
+                activitiesMap.setStudentEmail(user);
+                em.persist(activitiesMap);
+            }
         }
 
     }

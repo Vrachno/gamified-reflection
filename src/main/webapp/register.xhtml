@@ -21,32 +21,32 @@
                     <p:outputLabel value="E-mail Address" for="email"/>
                     <h:panelGroup>
                         <p:inputText id="email" value="#{registerController.student.email}" required="true" requiredMessage="Please enter your email"/>
-                        <span class="ui-state-error-text"><p:message for="email"/></span>
+                        <span class="ui-state-error-text"><p:message for="email" id="emailMsg"/></span>
                     </h:panelGroup>
                     <p:outputLabel value="First Name" for="first-name"/>
                     <h:panelGroup>
                         <p:inputText id="first-name" value="#{registerController.student.firstName}" required="true" requiredMessage="Please enter your first name"/>
-                        <span class="ui-state-error-text"><p:message for="first-name"/></span>
+                        <span class="ui-state-error-text"><p:message for="first-name" id="firstNameMsg"/></span>
                     </h:panelGroup>
                     <p:outputLabel value="Last Name" for="last-name"/>
                     <h:panelGroup>
                         <p:inputText id="last-name" value="#{registerController.student.lastName}" required="true" requiredMessage="Please enter your last name"/>
-                        <span class="ui-state-error-text"><p:message for="last-name"/></span>
+                        <span class="ui-state-error-text"><p:message for="last-name" id="lastNameMsg"/></span>
                     </h:panelGroup>
                     <p:outputLabel value="Password" for="password"/>
                     <h:panelGroup>
                         <p:password id="password" value="#{registerController.password}" match="validatePassword" required="true" requiredMessage="Please enter a password"/>
-                        <span class="ui-state-error-text"><p:message for="password"/></span>
+                        <span class="ui-state-error-text"><p:message for="password" id="pswdMsg"/></span>
                     </h:panelGroup>
                     <p:outputLabel value="Confirm Password" for="validatePassword"/>
                     <h:panelGroup>
                         <p:password id="validatePassword" value="#{registerController.password}" required="true" requiredMessage="Please re-enter your password"/>
-                        <span class="ui-state-error-text"><p:message for="validatePassword"/></span>
+                        <span class="ui-state-error-text"><p:message for="validatePassword"  id="validateMsg"/></span>
                     </h:panelGroup>
                     <p:outputLabel value="Nickname" for="nickname"/>
                     <h:panelGroup>
                         <p:inputText id="nickname" value="#{registerController.student.nickname}" required="true" maxlength="12" requiredMessage="Please enter a nickname"/>
-                        <span class="ui-state-error-text"><p:message for="nickname"/></span>
+                        <span class="ui-state-error-text"><p:message for="nickname" id="nicknameMsg"/></span>
                         
                     </h:panelGroup>
                     <p:messages id="messages" showDetail="true" showSummary="false" redisplay="false" style="display: inline-block" />

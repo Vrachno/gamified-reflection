@@ -41,11 +41,11 @@
                         <br></br>
                         <span><h:messages id="nicknameMsg" showSummary="false" showDetail="true" style="list-style-type: none; padding-left:0; display: inline-block; color: #ff0000"/></span>
                         <span>
-                            <p:commandButton class="btn btn-info" rendered="#{profileController.editing}" value="OK" type="submit" actionListener="#{profileController.changeNickname()}" ajax="true" update="welcome @(:info)" style="padding: 0" />
-                            <p:commandButton class="btn btn-info" rendered="#{!profileController.editing}" value="Change nickname" actionListener="#{profileController.setEditing(true)}" ajax="true" update="welcome" style="padding: 0" />
+                            <p:commandButton id="confirmNicknameButton" class="btn btn-info" rendered="#{profileController.editing}" value="OK" type="submit" actionListener="#{profileController.changeNickname()}" ajax="true" update="welcome @(:info)" style="padding: 0" />
+                            <p:commandButton id="changeNicknameButton" class="btn btn-info" rendered="#{!profileController.editing}" value="Change nickname" actionListener="#{profileController.setEditing(true)}" ajax="true" update="welcome" style="padding: 0" />
                         </span>
 
-                        <p:commandButton class="btn btn-danger" value="Logout" actionListener="#{loginController.logout()}" style="padding: 0em" />
+                        <p:commandButton id="logout" class="btn btn-danger" value="Logout" actionListener="#{loginController.logout()}" style="padding: 0em" />
                     </h:form>   
                 </div>
             </div>
@@ -57,8 +57,8 @@
                         </div>
                         <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
                             <h:form>
-                                <h:selectOneMenu value="#{aux.selectedCategory}" style="float: right">
-                                    <f:ajax render=":topThreeImg" />
+                                <h:selectOneMenu value="#{profileController.selectedCategory}" style="float: right">
+                                    <f:ajax render=":info" />
                                     <f:converter converterId="categoriesConverter" />
                                     <f:selectItem itemLabel="Overall Score" itemValue=""/>
                                     <f:selectItems value="#{profileController.categories}" var="category" itemValue="#{category.title}" itemLabel="#{category.title}" />
@@ -68,20 +68,22 @@
                     </div>
                     <div class="row">
                         <div class="col-lg-12 col-lg-offset-0 col-md-12 col-md-offset-0 col-sm-12 col-sm-offset-0 col-xs-8 col-xs-offset-2">
-                            <p:graphicImage id="topThreeImg" value="#{aux.graphicImage}" style="width: 100%; height: auto;"/>
+                            <p:graphicImage id="topThreeImg" value="#{aux.graphicImage}" style="width: 100%; height: auto;">
+                                <f:param name="image" value="#{aux.graphicImage}" />
+                            </p:graphicImage>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-sm-12 col-xs-12">
-                            <p:dataTable value="#{aux.selectedCategory ne null ? aux.studentsScores.entrySet().toArray() : aux.studentsOverallScores.entrySet().toArray()}" var="student" class="text-center">
+                            <p:dataTable id="studentList" value="#{profileController.students}" var="student" class="text-center">
                                 <p:column headerText="Nickname">
-                                    <h:outputText value="#{student.key.nickname}"/>
+                                    <h:outputText value="#{student.nickname}"/>
                                 </p:column>
-                                <p:column headerText="#{aux.selectedCategory ne null ? aux.selectedCategory.title : 'Overall'} Score">
-                                    <h:outputText value="#{student.value}"/>
+                                <p:column headerText="#{profileController.selectedCategory ne null ? profileController.selectedCategory.title : 'Overall'} Score">
+                                    <h:outputText value="#{student.score}"/>
                                 </p:column>
                                 <p:column headerText="Student Level">
-                                    <h:outputText value="#{student.key.level}"/>
+                                    <h:outputText value="#{student.level}"/>
                                 </p:column>
                             </p:dataTable>
                         </div>

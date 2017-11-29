@@ -29,9 +29,9 @@
     <h:body>
         <ui:include src="header.xhtml"/>
 
-        <h:form id="mainForm" class="container-fluid">
-            <p:panel class="row">
-                <p:panel class="col-md-7 col-lg-6 col-sm-12 col-xs-12">
+        <h:form id="studentsForm" class="container-fluid">
+            <p:panel id="outerPanel" class="row">
+                <p:panel id="innerPanel" class="col-md-7 col-lg-6 col-sm-12 col-xs-12">
                     <div class="row">
                         <div class="col-lg-6 col-md-12">
                             <h:outputText value="Active students" style="text-align: center; font-size: 1.6em; "/>
@@ -48,19 +48,19 @@
                             </h:form>
                         </div>
                     </div>
-                    <p:dataTable id="studentList" value="#{studentsController.sortedStudents}" var="student" class="text-center">
+                    <p:dataTable id="studentList" value="#{studentsController.students}" var="student" class="text-center">
                         <p:column headerText="Name">
-                            <h:outputText id="name" value="#{student.key.firstName} #{student.key.lastName}"/>
-                            <p:tooltip value="#{student.key.email}" for="name" showDelay="50" hideDelay="40"/>
+                            <h:outputText id="name" value="#{student.firstName} #{student.lastName}"/>
+                            <p:tooltip value="#{student.email}" for="name" showDelay="50" hideDelay="40"/>
                         </p:column>
                         <p:column headerText="#{studentsController.selectedCategory ne null ? studentsController.selectedCategory.title : 'Overall'} Score">
-                            <h:outputText value="#{student.value}"/>
+                            <h:outputText value="#{student.score}"/>
                         </p:column>
                         <p:column headerText="Student Level">
-                            <h:outputText value="#{student.key.level}"/>
+                            <h:outputText value="#{student.level}"/>
                         </p:column>
                         <p:column headerText="Details" width="15%">
-                            <p:commandLink action="#{studentsController.setSelectedStudent(student.key)}" value="Show" ajax="true" update="@form:studentDetails" style="color: #f58025"/>
+                            <p:commandLink action="#{studentsController.setSelectedStudent(student)}" value="Show" ajax="true" update="@form:studentDetails" style="color: #f58025"/>
                         </p:column>
                     </p:dataTable>
                 </p:panel>
